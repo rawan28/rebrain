@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Hash, ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Hash, Lightbulb, ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 
@@ -65,6 +65,14 @@ export default function Home() {
       icon: Hash,
       color: 'bg-teal-50 text-teal-600 border-teal-100',
       iconBg: 'bg-teal-100',
+    },
+    {
+      path: '/trivia',
+      title: t.triviaTitle,
+      description: t.triviaDesc,
+      icon: Lightbulb,
+      color: 'bg-yellow-50 text-yellow-600 border-yellow-100',
+      iconBg: 'bg-yellow-100',
     },
   ];
 

@@ -76,6 +76,8 @@ export const translations = {
     whatDoesntBelong: 'מה לא שייך?',
     sudokuTitle: 'סודוקו',
     sudokuDesc: 'מלא את הרשת עם המספרים 1-9. אתגר לוגי קלאסי!',
+    triviaTitle: 'טריוויה כללית',
+    triviaDesc: 'בחן את הידע הכללי שלך בשאלות מגוונות!',
   },
   ar: {
     dir: 'rtl',
@@ -152,6 +154,8 @@ export const translations = {
     whatDoesntBelong: 'أيهما لا ينتمي؟',
     sudokuTitle: 'سودوكو',
     sudokuDesc: 'أكمل الشبكة بالأرقام من 1-9. تحدٍّ منطقي كلاسيكي!',
+    triviaTitle: 'معلومات عامة',
+    triviaDesc: 'اختبر معلوماتك العامة بأسئلة متنوعة!',
   },
 };
 
