@@ -5,7 +5,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Layout() {
   const location = useLocation();
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   const navItems = [
     { path: '/', label: t.navHome, icon: Home },
@@ -15,7 +15,7 @@ export default function Layout() {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col" dir={t.dir} lang={lang}>
       {/* Header */}
       <header className="bg-card border-b border-border px-4 py-4 md:py-5 shadow-sm">
         <div className="max-w-5xl mx-auto flex items-center gap-3">

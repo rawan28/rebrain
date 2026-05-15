@@ -111,9 +111,7 @@ export function LanguageProvider({ children }) {
 
   return (
     <LanguageContext.Provider value={{ lang, setLang, t }}>
-      <div dir={t.dir} lang={lang}>
-        {children}
-      </div>
+      {children}
     </LanguageContext.Provider>
   );
 }
