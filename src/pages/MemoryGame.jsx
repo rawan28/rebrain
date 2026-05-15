@@ -6,6 +6,7 @@ import FeedbackOverlay from '@/components/games/FeedbackOverlay';
 import { Button } from '@/components/ui/button';
 import { Play } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
+import { saveSession } from '@/lib/progressStore';
 
 const ALL_EMOJIS = ['🌸', '🌻', '🍎', '🐶', '🐱', '🦋', '🌈', '⭐', '🎵', '🏠', '🚗', '🎨', '🌙', '🍕', '☀️'];
 
@@ -61,6 +62,12 @@ export default function MemoryGame() {
           const perfectMoves = cards.length / 2;
           const isGood = moves + 1 <= perfectMoves + 2;
           difficulty.recordAnswer(isGood);
+          saveSession('memory', {
+            level: difficulty.level,
+            streak: difficulty.streak,
+            totalCorrect: difficulty.totalCorrect + (isGood ? 1 : 0),
+            totalAttempts: difficulty.totalAttempts + 1,
+          });
           setFeedback({
             show: true,
             isCorrect: isGood,

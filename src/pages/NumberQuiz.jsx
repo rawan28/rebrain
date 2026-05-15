@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Play, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
+import { saveSession } from '@/lib/progressStore';
 
 export default function NumberQuiz() {
   const { t } = useLang();
@@ -30,6 +31,12 @@ export default function NumberQuiz() {
     setSelected(option);
     const isCorrect = option === problem.answer;
     difficulty.recordAnswer(isCorrect);
+    saveSession('numbers', {
+      level: difficulty.level,
+      streak: isCorrect ? difficulty.streak + 1 : 0,
+      totalCorrect: difficulty.totalCorrect + (isCorrect ? 1 : 0),
+      totalAttempts: difficulty.totalAttempts + 1,
+    });
 
     setFeedback({
       show: true,

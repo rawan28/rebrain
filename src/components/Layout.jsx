@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Brain, Grid3X3, Calculator, Puzzle, Home } from 'lucide-react';
+import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2 } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 
@@ -12,6 +12,7 @@ export default function Layout() {
     { path: '/memory', label: t.navMemory, icon: Grid3X3 },
     { path: '/logic', label: t.navLogic, icon: Puzzle },
     { path: '/numbers', label: t.navNumbers, icon: Calculator },
+    { path: '/progress', label: t.navProgress, icon: BarChart2 },
   ];
 
   return (

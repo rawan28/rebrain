@@ -11,6 +11,7 @@ import Home from '@/pages/Home';
 import MemoryGame from '@/pages/MemoryGame';
 import LogicPuzzle from '@/pages/LogicPuzzle';
 import NumberQuiz from '@/pages/NumberQuiz';
+import Progress from '@/pages/Progress';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -43,6 +44,7 @@ const AuthenticatedApp = () => {
         <Route path="/memory" element={<MemoryGame />} />
         <Route path="/logic" element={<LogicPuzzle />} />
         <Route path="/numbers" element={<NumberQuiz />} />
+        <Route path="/progress" element={<Progress />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
