@@ -127,7 +127,7 @@ export default function WordComplete() {
         </p>
 
         {/* Word display */}
-        <div className="flex gap-2 flex-wrap justify-center" dir="ltr">
+        <div className="flex gap-2 flex-wrap justify-center" dir="rtl">
           {cells}
         </div>
 
