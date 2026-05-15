@@ -5,7 +5,11 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-// Add page imports here
+import Layout from '@/components/Layout';
+import Home from '@/pages/Home';
+import MemoryGame from '@/pages/MemoryGame';
+import LogicPuzzle from '@/pages/LogicPuzzle';
+import NumberQuiz from '@/pages/NumberQuiz';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -33,7 +37,12 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Add your page Route elements here */}
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/memory" element={<MemoryGame />} />
+        <Route path="/logic" element={<LogicPuzzle />} />
+        <Route path="/numbers" element={<NumberQuiz />} />
+      </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
