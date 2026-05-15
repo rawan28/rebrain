@@ -74,6 +74,8 @@ export const translations = {
     whatComesNext: 'מה בא אחר כך בדפוס הזה?',
     whatNumberNext: 'איזה מספר בא אחר כך?',
     whatDoesntBelong: 'מה לא שייך?',
+    sudokuTitle: 'סודוקו',
+    sudokuDesc: 'מלא את הרשת עם המספרים 1-9. אתגר לוגי קלאסי!',
   },
   ar: {
     dir: 'rtl',
@@ -148,6 +150,8 @@ export const translations = {
     whatComesNext: 'ما الذي يأتي بعد ذلك في هذا النمط؟',
     whatNumberNext: 'ما هو الرقم التالي؟',
     whatDoesntBelong: 'أيهما لا ينتمي؟',
+    sudokuTitle: 'سودوكو',
+    sudokuDesc: 'أكمل الشبكة بالأرقام من 1-9. تحدٍّ منطقي كلاسيكي!',
   },
 };
 
