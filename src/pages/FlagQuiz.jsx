@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Play } from 'lucide-react';
 import useDifficulty from '@/lib/useDifficulty';
-import { getRandomQuestion } from '@/lib/flagsData';
+import { getRandomQuestion, getFlagUrl } from '@/lib/flagsData';
 import { useLang } from '@/lib/LanguageContext';
 import { saveSession } from '@/lib/progressStore';
 import GameHeader from '@/components/games/GameHeader';
@@ -88,17 +88,15 @@ export default function FlagQuiz() {
 
       <Card className="p-6 md:p-10 flex flex-col items-center gap-6">
         <p className="text-xl md:text-2xl font-semibold text-foreground">{t.whichCountry}</p>
-        <motion.div
+        <motion.img
           key={question.flag}
+          src={getFlagUrl(question.flag)}
+          alt={question.answer}
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className="text-8xl md:text-9xl select-none"
-          role="img"
-          aria-label={question.answer}
-        >
-          {question.flag}
-        </motion.div>
+          className="w-48 md:w-64 rounded-lg shadow-md border border-border"
+        />
 
         <div className="grid grid-cols-1 gap-3 w-full max-w-sm">
           {question.options.map((option, i) => {
