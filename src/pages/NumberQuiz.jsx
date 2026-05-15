@@ -6,9 +6,11 @@ import GameHeader from '@/components/games/GameHeader';
 import FeedbackOverlay from '@/components/games/FeedbackOverlay';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Play, ArrowRight } from 'lucide-react';
+import { Play, ArrowRight, ArrowLeft } from 'lucide-react';
+import { useLang } from '@/lib/LanguageContext';
 
 export default function NumberQuiz() {
+  const { t } = useLang();
   const difficulty = useDifficulty(1, 10);
   const [problem, setProblem] = useState(null);
   const [selected, setSelected] = useState(null);
@@ -21,9 +23,7 @@ export default function NumberQuiz() {
     setShowNext(false);
   }, []);
 
-  const handleStart = () => {
-    newProblem(difficulty.level);
-  };
+  const handleStart = () => newProblem(difficulty.level);
 
   const handleSelect = (option) => {
     if (selected !== null) return;
@@ -34,7 +34,7 @@ export default function NumberQuiz() {
     setFeedback({
       show: true,
       isCorrect,
-      message: isCorrect ? 'Correct!' : `The answer was ${problem.answer}`,
+      message: isCorrect ? t.correct : `${t.theAnswerWas} ${problem.answer}`,
     });
 
     setTimeout(() => {
@@ -43,27 +43,21 @@ export default function NumberQuiz() {
     }, 1800);
   };
 
-  const handleNext = () => {
-    newProblem(difficulty.level);
-  };
+  const handleNext = () => newProblem(difficulty.level);
+  const handleReset = () => { difficulty.reset(); setProblem(null); };
 
-  const handleReset = () => {
-    difficulty.reset();
-    setProblem(null);
-  };
+  const ArrowIcon = t.dir === 'rtl' ? ArrowLeft : ArrowRight;
 
   if (!problem) {
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">Number Quiz</h2>
-          <p className="text-lg text-muted-foreground mt-2">
-            Solve math problems that get harder as you improve. Take your time — accuracy matters more than speed!
-          </p>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t.numbersTitle}</h2>
+          <p className="text-lg text-muted-foreground mt-2">{t.numbersDescLong}</p>
         </div>
         <Button size="lg" onClick={handleStart} className="text-lg px-8 py-6 gap-3">
           <Play className="w-6 h-6" />
-          Start Playing
+          {t.startPlaying}
         </Button>
       </div>
     );
@@ -72,8 +66,8 @@ export default function NumberQuiz() {
   return (
     <div className="space-y-6">
       <GameHeader
-        title="Number Quiz"
-        description="Solve the problem"
+        title={t.numbersTitle}
+        description={t.numbersSubDesc}
         level={difficulty.level}
         streak={difficulty.streak}
         totalCorrect={difficulty.totalCorrect}
@@ -82,7 +76,6 @@ export default function NumberQuiz() {
       />
 
       <Card className="p-6 md:p-8 space-y-8">
-        {/* Question */}
         <div className="text-center">
           <motion.p
             key={problem.question}
@@ -94,7 +87,6 @@ export default function NumberQuiz() {
           </motion.p>
         </div>
 
-        {/* Answer Options */}
         <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto">
           {problem.options.map((option, i) => {
             const isSelected = selected === option;
@@ -122,13 +114,10 @@ export default function NumberQuiz() {
       </Card>
 
       {showNext && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <Button size="lg" onClick={handleNext} className="text-lg px-8 py-6 gap-3">
-            Next Question
-            <ArrowRight className="w-6 h-6" />
+            {t.nextQuestion}
+            <ArrowIcon className="w-6 h-6" />
           </Button>
         </motion.div>
       )}

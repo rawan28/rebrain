@@ -1,7 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, XCircle } from 'lucide-react';
+import { useLang } from '@/lib/LanguageContext';
 
 export default function FeedbackOverlay({ show, isCorrect, message }) {
+  const { t } = useLang();
+
   return (
     <AnimatePresence>
       {show && (
@@ -24,7 +27,7 @@ export default function FeedbackOverlay({ show, isCorrect, message }) {
               <XCircle className="w-16 h-16 text-red-500" />
             )}
             <p className={`text-2xl md:text-3xl font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-              {isCorrect ? 'Well Done!' : 'Not Quite'}
+              {isCorrect ? t.correct : t.incorrect}
             </p>
             {message && (
               <p className="text-lg text-muted-foreground text-center max-w-xs">{message}</p>

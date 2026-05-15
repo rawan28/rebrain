@@ -1,34 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, ArrowRight, Heart, Sparkles } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-const exercises = [
-  {
-    path: '/memory',
-    title: 'Memory Cards',
-    description: 'Flip cards and find matching pairs. Great for training your memory!',
-    icon: Grid3X3,
-    color: 'bg-blue-50 text-blue-600 border-blue-100',
-    iconBg: 'bg-blue-100',
-  },
-  {
-    path: '/logic',
-    title: 'Logic Puzzles',
-    description: 'Find the pattern and choose what comes next. Sharpen your reasoning!',
-    icon: Puzzle,
-    color: 'bg-purple-50 text-purple-600 border-purple-100',
-    iconBg: 'bg-purple-100',
-  },
-  {
-    path: '/numbers',
-    title: 'Number Quiz',
-    description: 'Solve math problems that adapt to your skill level. Keep counting!',
-    icon: Calculator,
-    color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
-    iconBg: 'bg-emerald-100',
-  },
-];
+import { useLang } from '@/lib/LanguageContext';
 
 const container = {
   hidden: {},
@@ -41,6 +15,37 @@ const item = {
 };
 
 export default function Home() {
+  const { t } = useLang();
+
+  const exercises = [
+    {
+      path: '/memory',
+      title: t.memoryTitle,
+      description: t.memoryDesc,
+      icon: Grid3X3,
+      color: 'bg-blue-50 text-blue-600 border-blue-100',
+      iconBg: 'bg-blue-100',
+    },
+    {
+      path: '/logic',
+      title: t.logicTitle,
+      description: t.logicDesc,
+      icon: Puzzle,
+      color: 'bg-purple-50 text-purple-600 border-purple-100',
+      iconBg: 'bg-purple-100',
+    },
+    {
+      path: '/numbers',
+      title: t.numbersTitle,
+      description: t.numbersDesc,
+      icon: Calculator,
+      color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+      iconBg: 'bg-emerald-100',
+    },
+  ];
+
+  const ArrowIcon = t.dir === 'rtl' ? ArrowLeft : ArrowRight;
+
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
@@ -51,14 +56,13 @@ export default function Home() {
       >
         <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full">
           <Sparkles className="w-5 h-5" />
-          <span className="text-base font-medium">Daily Brain Training</span>
+          <span className="text-base font-medium">{t.dailyBrainTraining}</span>
         </div>
         <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-          Welcome to MindFit
+          {t.welcomeTitle}
         </h2>
         <p className="text-lg md:text-xl text-muted-foreground max-w-lg mx-auto leading-relaxed">
-          Choose an exercise below to get started. Each game adapts to your level — 
-          the better you do, the more challenging it gets!
+          {t.welcomeDesc}
         </p>
       </motion.div>
 
@@ -85,7 +89,7 @@ export default function Home() {
                         {exercise.description}
                       </CardDescription>
                     </div>
-                    <ArrowRight className="w-6 h-6 md:w-7 md:h-7 text-muted-foreground group-hover:translate-x-1 transition-transform shrink-0" />
+                    <ArrowIcon className="w-6 h-6 md:w-7 md:h-7 text-muted-foreground group-hover:translate-x-1 transition-transform shrink-0" />
                   </CardHeader>
                 </Card>
               </Link>
@@ -102,7 +106,7 @@ export default function Home() {
         className="flex items-center justify-center gap-2 text-muted-foreground py-4"
       >
         <Heart className="w-5 h-5 text-red-400" />
-        <p className="text-base">A little practice each day goes a long way</p>
+        <p className="text-base">{t.encouragement}</p>
       </motion.div>
     </div>
   );

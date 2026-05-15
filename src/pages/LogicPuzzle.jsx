@@ -6,14 +6,24 @@ import GameHeader from '@/components/games/GameHeader';
 import FeedbackOverlay from '@/components/games/FeedbackOverlay';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Play, ArrowRight } from 'lucide-react';
+import { Play, ArrowRight, ArrowLeft } from 'lucide-react';
+import { useLang } from '@/lib/LanguageContext';
 
 export default function LogicPuzzle() {
+  const { t } = useLang();
   const difficulty = useDifficulty(1, 10);
   const [puzzle, setPuzzle] = useState(null);
   const [selected, setSelected] = useState(null);
   const [feedback, setFeedback] = useState({ show: false, isCorrect: false, message: '' });
   const [showNext, setShowNext] = useState(false);
+
+  const getLocalizedQuestion = useCallback((puz) => {
+    if (!puz) return '';
+    if (puz.type === 'pattern') return t.whatComesNext;
+    if (puz.type === 'number_pattern') return t.whatNumberNext;
+    if (puz.type === 'odd_one_out') return t.whatDoesntBelong;
+    return puz.question;
+  }, [t]);
 
   const newPuzzle = useCallback((level) => {
     setPuzzle(generatePuzzle(level));
@@ -21,20 +31,18 @@ export default function LogicPuzzle() {
     setShowNext(false);
   }, []);
 
-  const handleStart = () => {
-    newPuzzle(difficulty.level);
-  };
+  const handleStart = () => newPuzzle(difficulty.level);
 
   const handleSelect = (option) => {
     if (selected !== null) return;
     setSelected(option);
     const isCorrect = option === puzzle.answer;
     difficulty.recordAnswer(isCorrect);
-    
+
     setFeedback({
       show: true,
       isCorrect,
-      message: isCorrect ? 'Great thinking!' : `The answer was ${puzzle.answer}`,
+      message: isCorrect ? t.greatThinking : `${t.theAnswerWas} ${puzzle.answer}`,
     });
 
     setTimeout(() => {
@@ -43,27 +51,21 @@ export default function LogicPuzzle() {
     }, 1800);
   };
 
-  const handleNext = () => {
-    newPuzzle(difficulty.level);
-  };
+  const handleNext = () => newPuzzle(difficulty.level);
+  const handleReset = () => { difficulty.reset(); setPuzzle(null); };
 
-  const handleReset = () => {
-    difficulty.reset();
-    setPuzzle(null);
-  };
+  const ArrowIcon = t.dir === 'rtl' ? ArrowLeft : ArrowRight;
 
   if (!puzzle) {
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">Logic Puzzles</h2>
-          <p className="text-lg text-muted-foreground mt-2">
-            Look at the pattern or group and choose the right answer. Think carefully!
-          </p>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t.logicTitle}</h2>
+          <p className="text-lg text-muted-foreground mt-2">{t.logicDescLong}</p>
         </div>
         <Button size="lg" onClick={handleStart} className="text-lg px-8 py-6 gap-3">
           <Play className="w-6 h-6" />
-          Start Playing
+          {t.startPlaying}
         </Button>
       </div>
     );
@@ -72,8 +74,8 @@ export default function LogicPuzzle() {
   return (
     <div className="space-y-6">
       <GameHeader
-        title="Logic Puzzles"
-        description="Find the pattern"
+        title={t.logicTitle}
+        description={t.logicSubDesc}
         level={difficulty.level}
         streak={difficulty.streak}
         totalCorrect={difficulty.totalCorrect}
@@ -82,7 +84,7 @@ export default function LogicPuzzle() {
       />
 
       <Card className="p-6 md:p-8 space-y-6">
-        <h3 className="text-xl md:text-2xl font-semibold text-foreground">{puzzle.question}</h3>
+        <h3 className="text-xl md:text-2xl font-semibold text-foreground">{getLocalizedQuestion(puzzle)}</h3>
 
         {/* Sequence display */}
         <div className="flex flex-wrap items-center gap-2 md:gap-3">
@@ -132,13 +134,10 @@ export default function LogicPuzzle() {
       </Card>
 
       {showNext && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <Button size="lg" onClick={handleNext} className="text-lg px-8 py-6 gap-3">
-            Next Puzzle
-            <ArrowRight className="w-6 h-6" />
+            {t.nextPuzzle}
+            <ArrowIcon className="w-6 h-6" />
           </Button>
         </motion.div>
       )}

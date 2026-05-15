@@ -5,11 +5,11 @@ import GameHeader from '@/components/games/GameHeader';
 import FeedbackOverlay from '@/components/games/FeedbackOverlay';
 import { Button } from '@/components/ui/button';
 import { Play } from 'lucide-react';
+import { useLang } from '@/lib/LanguageContext';
 
 const ALL_EMOJIS = ['🌸', '🌻', '🍎', '🐶', '🐱', '🦋', '🌈', '⭐', '🎵', '🏠', '🚗', '🎨', '🌙', '🍕', '☀️'];
 
 function getGridForLevel(level) {
-  // Level 1-3: 4 cards (2 pairs), Level 4-6: 6 cards (3 pairs), etc.
   const pairs = Math.min(2 + Math.floor((level - 1) / 2), 8);
   return pairs;
 }
@@ -24,6 +24,7 @@ function shuffleArray(arr) {
 }
 
 export default function MemoryGame() {
+  const { t } = useLang();
   const difficulty = useDifficulty(1, 10);
   const [cards, setCards] = useState([]);
   const [flipped, setFlipped] = useState([]);
@@ -52,12 +53,10 @@ export default function MemoryGame() {
       setMoves(prev => prev + 1);
 
       if (cards[first].emoji === cards[second].emoji) {
-        // Match found
         const newMatched = [...matched, cards[first].emoji];
         setMatched(newMatched);
         setFlipped([]);
 
-        // Check if all matched
         if (newMatched.length === cards.length / 2) {
           const perfectMoves = cards.length / 2;
           const isGood = moves + 1 <= perfectMoves + 2;
@@ -65,9 +64,9 @@ export default function MemoryGame() {
           setFeedback({
             show: true,
             isCorrect: isGood,
-            message: isGood 
-              ? `Excellent! Completed in ${moves + 1} moves.` 
-              : `Done in ${moves + 1} moves. Try fewer next time!`,
+            message: isGood
+              ? `${t.excellent} ${t.completedIn} ${moves + 1} ${t.movesWord}.`
+              : `${moves + 1} ${t.movesWord}. ${t.tryFewer}`,
           });
           setTimeout(() => {
             setFeedback({ show: false, isCorrect: false, message: '' });
@@ -75,7 +74,6 @@ export default function MemoryGame() {
           }, 2000);
         }
       } else {
-        // No match - flip back after delay
         setTimeout(() => setFlipped([]), 800);
       }
     }
@@ -97,14 +95,12 @@ export default function MemoryGame() {
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">Memory Cards</h2>
-          <p className="text-lg text-muted-foreground mt-2">
-            Flip two cards at a time and find all matching pairs. The fewer moves, the better!
-          </p>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t.memoryTitle}</h2>
+          <p className="text-lg text-muted-foreground mt-2">{t.memoryDescLong}</p>
         </div>
         <Button size="lg" onClick={startNewRound} className="text-lg px-8 py-6 gap-3">
           <Play className="w-6 h-6" />
-          Start Playing
+          {t.startPlaying}
         </Button>
       </div>
     );
@@ -115,8 +111,8 @@ export default function MemoryGame() {
   return (
     <div className="space-y-4">
       <GameHeader
-        title="Memory Cards"
-        description="Find all matching pairs"
+        title={t.memoryTitle}
+        description={t.memorySubDesc}
         level={difficulty.level}
         streak={difficulty.streak}
         totalCorrect={difficulty.totalCorrect}
@@ -125,8 +121,8 @@ export default function MemoryGame() {
       />
 
       <p className="text-lg text-muted-foreground">
-        Moves: <span className="font-semibold text-foreground">{moves}</span> · 
-        Pairs found: <span className="font-semibold text-foreground">{matched.length}</span>/{cards.length / 2}
+        {t.moves}: <span className="font-semibold text-foreground">{moves}</span> ·{' '}
+        {t.pairsFound}: <span className="font-semibold text-foreground">{matched.length}</span>/{cards.length / 2}
       </p>
 
       <div
@@ -146,10 +142,10 @@ export default function MemoryGame() {
               disabled={isMatched}
               className={`aspect-square rounded-xl text-4xl md:text-5xl flex items-center justify-center
                 border-2 transition-all duration-300 cursor-pointer select-none
-                ${isMatched 
-                  ? 'bg-green-50 border-green-300 opacity-70' 
-                  : showFace 
-                    ? 'bg-white border-primary shadow-lg' 
+                ${isMatched
+                  ? 'bg-green-50 border-green-300 opacity-70'
+                  : showFace
+                    ? 'bg-white border-primary shadow-lg'
                     : 'bg-primary/10 border-primary/30 hover:bg-primary/20 hover:border-primary/50'
                 }`}
             >

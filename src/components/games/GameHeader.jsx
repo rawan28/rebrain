@@ -1,8 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { RotateCcw, Trophy } from 'lucide-react';
 import DifficultyBadge from './DifficultyBadge';
+import { useLang } from '@/lib/LanguageContext';
 
 export default function GameHeader({ title, description, level, streak, totalCorrect, totalAttempts, onReset }) {
+  const { t } = useLang();
+
   return (
     <div className="space-y-4 mb-6">
       <div>
@@ -12,26 +15,26 @@ export default function GameHeader({ title, description, level, streak, totalCor
 
       <div className="flex flex-wrap items-center gap-3 md:gap-4">
         <DifficultyBadge level={level} />
-        
+
         {streak > 0 && (
           <div className="flex items-center gap-1.5 text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg">
             <Trophy className="w-5 h-5" />
-            <span className="text-base font-semibold">{streak} streak!</span>
+            <span className="text-base font-semibold">{streak} {t.streak}!</span>
           </div>
         )}
 
         <div className="text-base text-muted-foreground">
-          Score: <span className="font-semibold text-foreground">{totalCorrect}</span>/{totalAttempts}
+          {t.score}: <span className="font-semibold text-foreground">{totalCorrect}</span>/{totalAttempts}
         </div>
 
         <Button
           variant="outline"
           size="lg"
           onClick={onReset}
-          className="ml-auto text-base gap-2"
+          className="ms-auto text-base gap-2"
         >
           <RotateCcw className="w-5 h-5" />
-          Start Over
+          {t.startOver}
         </Button>
       </div>
     </div>
