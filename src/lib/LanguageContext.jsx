@@ -3,10 +3,10 @@ import { createContext, useContext, useState } from 'react';
 export const translations = {
   he: {
     dir: 'rtl',
-    appName: 'מיינדפיט',
+    appName: 'ReBrain',
     appSubtitle: 'שמור על מוחך פעיל',
     dailyBrainTraining: 'אימון מוח יומי',
-    welcomeTitle: 'ברוכים הבאים למיינדפיט',
+    welcomeTitle: 'ברוכים הבאים ל-ReBrain',
     welcomeDesc: 'בחר תרגיל כדי להתחיל. כל משחק מסתגל לרמתך — ככל שאתה מצליח יותר, כך האתגר גדל!',
     encouragement: 'קצת תרגול כל יום עושה פלאים',
     // Nav
@@ -77,10 +77,10 @@ export const translations = {
   },
   ar: {
     dir: 'rtl',
-    appName: 'مايندفت',
+    appName: 'ReBrain',
     appSubtitle: 'حافظ على نشاط عقلك',
     dailyBrainTraining: 'تمرين دماغي يومي',
-    welcomeTitle: 'مرحباً بك في مايندفت',
+    welcomeTitle: 'مرحباً بك في ReBrain',
     welcomeDesc: 'اختر تمريناً للبدء. كل لعبة تتكيف مع مستواك — كلما أحسنت، زادت الصعوبة!',
     encouragement: 'قليل من التمرين كل يوم يصنع المعجزات',
     // Nav
