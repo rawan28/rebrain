@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine } from 'lucide-react';
+import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Hash } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 
@@ -14,6 +14,7 @@ export default function Layout() {
     { path: '/numbers', label: t.navNumbers, icon: Calculator },
     { path: '/flags', label: t.navFlags, icon: Flag },
     { path: '/word', label: t.navWord, icon: PenLine },
+    { path: '/sudoku', label: t.sudokuTitle, icon: Hash },
     { path: '/progress', label: t.navProgress, icon: BarChart2 },
   ];
 

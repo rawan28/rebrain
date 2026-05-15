@@ -14,6 +14,7 @@ import NumberQuiz from '@/pages/NumberQuiz';
 import Progress from '@/pages/Progress';
 import FlagQuiz from '@/pages/FlagQuiz';
 import WordComplete from '@/pages/WordComplete';
+import Sudoku from '@/pages/Sudoku.jsx';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -48,6 +49,7 @@ const AuthenticatedApp = () => {
         <Route path="/numbers" element={<NumberQuiz />} />
         <Route path="/flags" element={<FlagQuiz />} />
         <Route path="/word" element={<WordComplete />} />
+        <Route path="/sudoku" element={<Sudoku />} />
         <Route path="/progress" element={<Progress />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Hash, ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 
@@ -57,6 +57,14 @@ export default function Home() {
       icon: PenLine,
       color: 'bg-pink-50 text-pink-600 border-pink-100',
       iconBg: 'bg-pink-100',
+    },
+    {
+      path: '/sudoku',
+      title: t.sudokuTitle,
+      description: t.sudokuDesc,
+      icon: Hash,
+      color: 'bg-teal-50 text-teal-600 border-teal-100',
+      iconBg: 'bg-teal-100',
     },
   ];
 
