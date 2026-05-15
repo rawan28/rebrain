@@ -1,0 +1,140 @@
+import { useState, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { Play } from 'lucide-react';
+import useDifficulty from '@/lib/useDifficulty';
+import { getRandomQuestion } from '@/lib/flagsData';
+import { useLang } from '@/lib/LanguageContext';
+import { saveSession } from '@/lib/progressStore';
+import GameHeader from '@/components/games/GameHeader';
+import FeedbackOverlay from '@/components/games/FeedbackOverlay';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+
+export default function FlagQuiz() {
+  const { t, lang } = useLang();
+  const difficulty = useDifficulty(1, 10);
+  const [question, setQuestion] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [feedback, setFeedback] = useState({ show: false, isCorrect: false, message: '' });
+  const [showNext, setShowNext] = useState(false);
+  const [usedFlags, setUsedFlags] = useState([]);
+
+  const newQuestion = useCallback(() => {
+    const q = getRandomQuestion(lang, usedFlags);
+    setQuestion(q);
+    setSelected(null);
+    setShowNext(false);
+    setUsedFlags(prev => {
+      const next = [...prev, q.flag];
+      return next.length > 30 ? next.slice(-30) : next;
+    });
+  }, [lang, usedFlags]);
+
+  const handleStart = () => newQuestion();
+
+  const handleSelect = (option) => {
+    if (selected !== null) return;
+    setSelected(option);
+    const isCorrect = option === question.answer;
+    difficulty.recordAnswer(isCorrect);
+    saveSession('flags', {
+      level: difficulty.level,
+      streak: isCorrect ? difficulty.streak + 1 : 0,
+      totalCorrect: difficulty.totalCorrect + (isCorrect ? 1 : 0),
+      totalAttempts: difficulty.totalAttempts + 1,
+    });
+
+    setFeedback({
+      show: true,
+      isCorrect,
+      message: isCorrect ? t.greatThinking : `${t.theAnswerWas} ${question.answer}`,
+    });
+
+    setTimeout(() => {
+      setFeedback({ show: false, isCorrect: false, message: '' });
+      setShowNext(true);
+    }, 1800);
+  };
+
+  const handleNext = () => newQuestion();
+  const handleReset = () => { difficulty.reset(); setQuestion(null); setUsedFlags([]); };
+
+  if (!question) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t.flagTitle}</h2>
+          <p className="text-lg text-muted-foreground mt-2">{t.flagDescLong}</p>
+        </div>
+        <Button size="lg" onClick={handleStart} className="text-lg px-8 py-6 gap-3">
+          <Play className="w-6 h-6" />
+          {t.startPlaying}
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <GameHeader
+        title={t.flagTitle}
+        description={t.flagSubDesc}
+        level={difficulty.level}
+        streak={difficulty.streak}
+        totalCorrect={difficulty.totalCorrect}
+        totalAttempts={difficulty.totalAttempts}
+        onReset={handleReset}
+      />
+
+      <Card className="p-6 md:p-10 flex flex-col items-center gap-6">
+        <p className="text-xl md:text-2xl font-semibold text-foreground">{t.whichCountry}</p>
+        <motion.div
+          key={question.flag}
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+          className="text-8xl md:text-9xl select-none"
+          role="img"
+          aria-label={question.answer}
+        >
+          {question.flag}
+        </motion.div>
+
+        <div className="grid grid-cols-1 gap-3 w-full max-w-sm">
+          {question.options.map((option, i) => {
+            const isSelected = selected === option;
+            const isCorrectAnswer = option === question.answer;
+            const showResult = selected !== null;
+
+            let cls = 'border-border hover:border-primary/60 hover:bg-primary/5';
+            if (showResult && isCorrectAnswer) cls = 'border-green-400 bg-green-50';
+            else if (showResult && isSelected && !isCorrectAnswer) cls = 'border-red-400 bg-red-50';
+
+            return (
+              <motion.button
+                key={i}
+                whileTap={{ scale: selected === null ? 0.97 : 1 }}
+                onClick={() => handleSelect(option)}
+                disabled={selected !== null}
+                className={`rounded-xl py-4 px-6 text-lg md:text-xl font-semibold border-2 transition-all text-center
+                  ${cls} ${selected === null ? 'cursor-pointer' : 'cursor-default'}`}
+              >
+                {option}
+              </motion.button>
+            );
+          })}
+        </div>
+      </Card>
+
+      {showNext && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          <Button size="lg" onClick={handleNext} className="text-lg px-8 py-6">
+            {t.nextQuestion}
+          </Button>
+        </motion.div>
+      )}
+
+      <FeedbackOverlay {...feedback} />
+    </div>
+  );
+}

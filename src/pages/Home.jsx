@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 
@@ -41,6 +41,14 @@ export default function Home() {
       icon: Calculator,
       color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
       iconBg: 'bg-emerald-100',
+    },
+    {
+      path: '/flags',
+      title: t.flagTitle,
+      description: t.flagDesc,
+      icon: Flag,
+      color: 'bg-orange-50 text-orange-600 border-orange-100',
+      iconBg: 'bg-orange-100',
     },
   ];
 
