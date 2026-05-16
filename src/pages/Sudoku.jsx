@@ -112,39 +112,45 @@ export default function Sudoku() {
       )}
 
       {/* Grid */}
-      <div className="border-2 border-foreground rounded-lg overflow-hidden">
-        {board.map((row, ri) => (
-          <div key={ri} className={`flex ${ri === 2 || ri === 5 ? 'border-b-2 border-foreground' : ''}`}>
-            {row.map((cell, ci) => {
-              const isSelected = selected?.row === ri && selected?.col === ci;
-              const isFixed = fixed[ri][ci];
-              const isError = errors[`${ri}-${ci}`];
-              const sameBox = selected && Math.floor(selected.row / 3) === Math.floor(ri / 3) && Math.floor(selected.col / 3) === Math.floor(ci / 3);
-              const sameLine = selected && (selected.row === ri || selected.col === ci);
-              const sameNum = selected && cell !== 0 && board[selected.row][selected.col] === cell;
+      <div className="grid grid-cols-3 gap-[3px] bg-foreground p-[3px] rounded-lg">
+        {[0,1,2].map(boxRow => (
+          [0,1,2].map(boxCol => (
+            <div key={`${boxRow}-${boxCol}`} className="grid grid-cols-3 gap-[1px] bg-foreground/30">
+              {[0,1,2].map(cellRow => (
+                [0,1,2].map(cellCol => {
+                  const ri = boxRow * 3 + cellRow;
+                  const ci = boxCol * 3 + cellCol;
+                  const cell = board[ri][ci];
+                  const isSelected = selected?.row === ri && selected?.col === ci;
+                  const isFixed = fixed[ri][ci];
+                  const isError = errors[`${ri}-${ci}`];
+                  const sameBox = selected && Math.floor(selected.row / 3) === Math.floor(ri / 3) && Math.floor(selected.col / 3) === Math.floor(ci / 3);
+                  const sameLine = selected && (selected.row === ri || selected.col === ci);
+                  const sameNum = selected && cell !== 0 && board[selected.row][selected.col] === cell;
 
-              return (
-                <button
-                  key={ci}
-                  onClick={() => handleCellClick(ri, ci)}
-                  className={`
-                    w-9 h-9 md:w-11 md:h-11 flex items-center justify-center text-base md:text-lg font-semibold border border-border/50 transition-colors
-                    ${ci === 2 || ci === 5 ? 'border-r-2 border-r-foreground' : ''}
-                    ${isSelected ? 'bg-teal-500 text-white' : ''}
-                    ${!isSelected && isError ? 'bg-red-100 text-red-600' : ''}
-                    ${!isSelected && !isError && isFixed ? 'text-foreground bg-slate-100' : ''}
-                    ${!isSelected && !isError && !isFixed ? 'text-teal-700' : ''}
-                    ${!isSelected && (sameBox || sameLine) ? 'bg-teal-50' : ''}
-                    ${!isSelected && sameNum && cell !== 0 ? 'bg-teal-100' : ''}
-                    ${!isFixed && !isSelected ? 'hover:bg-teal-100 cursor-pointer' : ''}
-                    ${isFixed ? 'cursor-default' : ''}
-                  `}
-                >
-                  {cell !== 0 ? cell : ''}
-                </button>
-              );
-            })}
-          </div>
+                  return (
+                    <button
+                      key={`${ri}-${ci}`}
+                      onClick={() => handleCellClick(ri, ci)}
+                      className={`
+                        w-9 h-9 md:w-11 md:h-11 flex items-center justify-center text-base md:text-lg font-semibold transition-colors
+                        ${isSelected ? 'bg-teal-500 text-white' : ''}
+                        ${!isSelected && isError ? 'bg-red-100 text-red-600' : ''}
+                        ${!isSelected && !isError && isFixed ? 'text-foreground bg-slate-100' : ''}
+                        ${!isSelected && !isError && !isFixed ? 'text-teal-700 bg-white' : ''}
+                        ${!isSelected && (sameBox || sameLine) ? 'bg-teal-50' : ''}
+                        ${!isSelected && sameNum && cell !== 0 ? 'bg-teal-100' : ''}
+                        ${!isFixed && !isSelected ? 'hover:bg-teal-100 cursor-pointer' : ''}
+                        ${isFixed ? 'cursor-default' : ''}
+                      `}
+                    >
+                      {cell !== 0 ? cell : ''}
+                    </button>
+                  );
+                })
+              ))}
+            </div>
+          ))
         ))}
       </div>
 
