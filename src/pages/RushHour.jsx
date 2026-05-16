@@ -166,11 +166,11 @@ export default function RushHour() {
       )}
 
       {/* Game Grid */}
-      <div className="relative" style={{ width: GRID_SIZE * CELL_SIZE + 4, height: GRID_SIZE * CELL_SIZE + 4 }}>
-        {/* Road background */}
+      <div className="relative" style={{ width: GRID_SIZE * CELL_SIZE + 4 + 48, height: GRID_SIZE * CELL_SIZE + 4 }}>
+        {/* Road background - only the grid area */}
         <div
-          className="absolute inset-0 rounded-xl overflow-hidden border-2 border-slate-500 shadow-xl"
-          style={{ background: '#4a5568' }}
+          className="absolute rounded-xl overflow-hidden border-2 border-slate-500 shadow-xl"
+          style={{ background: '#4a5568', left: 0, top: 0, width: GRID_SIZE * CELL_SIZE + 4, height: GRID_SIZE * CELL_SIZE + 4 }}
         >
           {/* Road texture - grid lines like asphalt markings */}
           {Array.from({ length: GRID_SIZE }).map((_, row) =>
@@ -202,12 +202,53 @@ export default function RushHour() {
           />
         </div>
 
-        {/* Exit arrow */}
+        {/* Exit lane opening - gap in the right wall */}
+        {/* Right wall top segment */}
         <div
-          className="absolute text-red-400 font-bold text-2xl flex items-center drop-shadow"
-          style={{ right: -32, top: 2 * CELL_SIZE + CELL_SIZE / 2 - 14 }}
+          style={{
+            position: 'absolute',
+            right: 48,
+            top: 2,
+            width: 4,
+            height: 2 * CELL_SIZE,
+            background: '#374151',
+            borderRadius: '2px 0 0 0',
+          }}
+        />
+        {/* Right wall bottom segment */}
+        <div
+          style={{
+            position: 'absolute',
+            right: 48,
+            top: 3 * CELL_SIZE + 2,
+            width: 4,
+            height: 3 * CELL_SIZE,
+            background: '#374151',
+            borderRadius: '0 0 0 2px',
+          }}
+        />
+
+        {/* Exit lane - open road to the right */}
+        <div
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 2 * CELL_SIZE + 2,
+            width: 52,
+            height: CELL_SIZE,
+            background: '#4a5568',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 4,
+          }}
         >
-          →
+          {/* Dashed center line */}
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{ width: 8, height: 3, background: 'rgba(255,220,0,0.7)', borderRadius: 2 }} />
+          ))}
+          {/* Arrow */}
+          <div style={{ color: '#f87171', fontSize: 22, fontWeight: 'bold', lineHeight: 1, marginLeft: 2 }}>→</div>
         </div>
 
         {/* Vehicles as SVG cars */}
