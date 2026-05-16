@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Delete } from 'lucide-react';
+import { Play, Delete, Settings2 } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import useDifficulty from '@/lib/useDifficulty';
 import { generateQuestion } from '@/lib/wordData';
@@ -8,6 +8,7 @@ import { saveSession } from '@/lib/progressStore';
 import GameHeader from '@/components/games/GameHeader';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import CustomWordsManager from '@/components/word/CustomWordsManager';
 
 export default function WordComplete() {
   const { t, lang } = useLang();
@@ -17,9 +18,36 @@ export default function WordComplete() {
   const [submitted, setSubmitted] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [showNext, setShowNext] = useState(false);
+  const [customWords, setCustomWords] = useState([]);
+  const [showManager, setShowManager] = useState(false);
 
   const startNew = useCallback(() => {
-    const q = generateQuestion(lang, difficulty.level);
+    let q;
+    if (customWords.length > 0 && Math.random() < 0.6) {
+      const cw = customWords[Math.floor(Math.random() * customWords.length)];
+      const letters = [...cw.word];
+      const wordLen = letters.length;
+      const hiddenCount = Math.max(1, Math.min(Math.floor(wordLen / 2), wordLen - 1));
+      const indices = [];
+      while (indices.length < hiddenCount) {
+        const idx = Math.floor(Math.random() * wordLen);
+        if (!indices.includes(idx)) indices.push(idx);
+      }
+      indices.sort((a, b) => a - b);
+      const masked = letters.map((ch, i) => (indices.includes(i) ? '_' : ch));
+      const correctLetters = indices.map(i => letters[i]);
+      const allLetters = lang === 'he'
+        ? 'אבגדהוזחטיכלמנסעפצקרשת'.split('')
+        : 'ابتثجحخدذرزسشصضطظعغفقكلمنهوي'.split('');
+      const distractors = allLetters
+        .filter(l => !correctLetters.includes(l))
+        .sort(() => Math.random() - 0.5)
+        .slice(0, Math.max(4, 6 - hiddenCount));
+      const options = [...new Set([...correctLetters, ...distractors])].sort(() => Math.random() - 0.5);
+      q = { word: cw.word, hint: cw.hint || cw.word, letters, masked, hiddenIndices: indices, options };
+    } else {
+      q = generateQuestion(lang, difficulty.level);
+    }
     setQuestion(q);
     setFilled({});
     setSubmitted(false);
@@ -66,6 +94,9 @@ export default function WordComplete() {
   const handleNext = () => startNew();
   const handleReset = () => { difficulty.reset(); setQuestion(null); };
 
+  const managerLabels = { he: 'מילים שלי', ar: 'كلماتي' };
+  const managerLabel = managerLabels[lang] || 'מילים שלי';
+
   if (!question) {
     return (
       <div className="space-y-6">
@@ -73,10 +104,29 @@ export default function WordComplete() {
           <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t.wordTitle}</h2>
           <p className="text-lg text-muted-foreground mt-2">{t.wordDescLong}</p>
         </div>
-        <Button size="lg" onClick={handleStart} className="text-lg px-8 py-6 gap-3">
-          <Play className="w-6 h-6" />
-          {t.startPlaying}
-        </Button>
+        <div className="flex flex-wrap gap-3">
+          <Button size="lg" onClick={handleStart} className="text-lg px-8 py-6 gap-3">
+            <Play className="w-6 h-6" />
+            {t.startPlaying}
+          </Button>
+          <Button size="lg" variant="outline" onClick={() => setShowManager(v => !v)} className="text-lg px-6 py-6 gap-2">
+            <Settings2 className="w-5 h-5" />
+            {managerLabel}
+            {customWords.length > 0 && (
+              <span className="bg-primary text-primary-foreground rounded-full text-sm w-6 h-6 flex items-center justify-center">
+                {customWords.length}
+              </span>
+            )}
+          </Button>
+        </div>
+        {showManager && (
+          <CustomWordsManager
+            customWords={customWords}
+            onAdd={w => setCustomWords(prev => [...prev, w])}
+            onRemove={i => setCustomWords(prev => prev.filter((_, idx) => idx !== i))}
+            onClose={() => setShowManager(false)}
+          />
+        )}
       </div>
     );
   }
