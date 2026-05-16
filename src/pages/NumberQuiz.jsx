@@ -6,7 +6,8 @@ import GameHeader from '@/components/games/GameHeader';
 import FeedbackOverlay from '@/components/games/FeedbackOverlay';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Play, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Play, ArrowRight, ArrowLeft, BarChart2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useLang } from '@/lib/LanguageContext';
 import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
@@ -64,10 +65,18 @@ export default function NumberQuiz() {
           <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t.numbersTitle}</h2>
           <p className="text-lg text-muted-foreground mt-2">{t.numbersDescLong}</p>
         </div>
-        <Button size="lg" onClick={handleStart} className="text-lg px-8 py-6 gap-3">
-          <Play className="w-6 h-6" />
-          {t.startPlaying}
-        </Button>
+        <div className="flex gap-3 flex-wrap">
+          <Button size="lg" onClick={handleStart} className="text-lg px-8 py-6 gap-3">
+            <Play className="w-6 h-6" />
+            {t.startPlaying}
+          </Button>
+          <Link to="/numbers-dashboard">
+            <Button size="lg" variant="outline" className="text-lg px-8 py-6 gap-3">
+              <BarChart2 className="w-6 h-6" />
+              {t.dir === 'rtl' ? 'לוח בקרה' : 'Dashboard'}
+            </Button>
+          </Link>
+        </div>
       </div>
     );
   }

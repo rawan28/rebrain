@@ -17,6 +17,7 @@ import WordComplete from '@/pages/WordComplete';
 import Sudoku from '@/pages/Sudoku.jsx';
 import TriviaQuiz from '@/pages/TriviaQuiz';
 import ShapeWordGame from '@/pages/ShapeWordGame';
+import NumberQuizDashboard from '@/pages/NumberQuizDashboard';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -54,6 +55,7 @@ const AuthenticatedApp = () => {
         <Route path="/sudoku" element={<Sudoku />} />
         <Route path="/trivia" element={<TriviaQuiz />} />
         <Route path="/shape-word" element={<ShapeWordGame />} />
+        <Route path="/numbers-dashboard" element={<NumberQuizDashboard />} />
         <Route path="/progress" element={<Progress />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
