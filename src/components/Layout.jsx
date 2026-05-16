@@ -4,6 +4,7 @@ import { useLang } from '@/lib/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import CoinDisplay from './CoinDisplay';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 
 export default function Layout() {
   const location = useLocation();
@@ -12,6 +13,21 @@ export default function Layout() {
   const isRoot = location.pathname === '/';
   const isRtl = t.dir === 'rtl';
   const BackIcon = isRtl ? ChevronRight : ChevronLeft;
+
+  // Persist scroll positions per route
+  const scrollPositions = useRef({});
+  const prevPath = useRef(location.pathname);
+
+  useEffect(() => {
+    const prev = prevPath.current;
+    const current = location.pathname;
+    if (prev !== current) {
+      scrollPositions.current[prev] = window.scrollY;
+      const saved = scrollPositions.current[current] ?? 0;
+      requestAnimationFrame(() => window.scrollTo(0, saved));
+      prevPath.current = current;
+    }
+  }, [location.pathname]);
 
   const navItems = [
     { path: '/', label: t.navHome, icon: Home },

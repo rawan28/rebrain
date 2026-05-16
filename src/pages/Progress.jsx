@@ -1,6 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useLang } from '@/lib/LanguageContext';
 import { loadProgress } from '@/lib/progressStore';
+import usePullToRefresh from '@/lib/usePullToRefresh';
+import PullToRefreshIndicator from '@/components/PullToRefreshIndicator';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { TrendingUp, Brain, Puzzle, Calculator, Trophy, Target, Zap } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -36,7 +38,9 @@ function EmptyState({ label }) {
 
 export default function Progress() {
   const { t } = useLang();
-  const raw = useMemo(() => loadProgress(), []);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const { pullY, refreshing, progress } = usePullToRefresh(() => new Promise(r => setTimeout(() => { setRefreshKey(k => k + 1); r(); }, 800)));
+  const raw = useMemo(() => loadProgress(), [refreshKey]);
 
   // Merge all games into a unified timeline by session index
   const mergedData = useMemo(() => {
@@ -111,6 +115,7 @@ export default function Progress() {
 
   return (
     <div className="space-y-6">
+      <PullToRefreshIndicator pullY={pullY} progress={progress} refreshing={refreshing} />
       <div>
         <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t.progressTitle}</h2>
         <p className="text-lg text-muted-foreground mt-1">{t.progressDesc}</p>

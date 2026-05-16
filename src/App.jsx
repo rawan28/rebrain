@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Layout from '@/components/Layout';
 import { LanguageProvider } from '@/lib/LanguageContext';
+import ThemeProvider from '@/lib/ThemeProvider';
 import Home from '@/pages/Home';
 import MemoryGame from '@/pages/MemoryGame';
 import LogicPuzzle from '@/pages/LogicPuzzle';
@@ -74,10 +75,12 @@ function App() {
     <QueryClientProvider client={queryClientInstance}>
       <Router>
         <AuthProvider>
-          <LanguageProvider>
-            <AuthenticatedApp />
-            <Toaster />
-          </LanguageProvider>
+          <ThemeProvider>
+            <LanguageProvider>
+              <AuthenticatedApp />
+              <Toaster />
+            </LanguageProvider>
+          </ThemeProvider>
         </AuthProvider>
       </Router>
     </QueryClientProvider>

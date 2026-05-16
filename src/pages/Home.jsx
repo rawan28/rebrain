@@ -3,6 +3,8 @@ import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/ca
 import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Hash, Lightbulb, Shapes, Car, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
+import usePullToRefresh from '@/lib/usePullToRefresh';
+import PullToRefreshIndicator from '@/components/PullToRefreshIndicator';
 
 const container = {
   hidden: {},
@@ -16,6 +18,7 @@ const item = {
 
 export default function Home() {
   const { t } = useLang();
+  const { pullY, refreshing, progress } = usePullToRefresh(() => new Promise(r => setTimeout(r, 800)));
 
   const exercises = [
     {
@@ -96,6 +99,7 @@ export default function Home() {
 
   return (
     <div className="space-y-8">
+      <PullToRefreshIndicator pullY={pullY} progress={progress} refreshing={refreshing} />
       {/* Welcome Section */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}

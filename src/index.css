@@ -95,6 +95,11 @@
     overscroll-behavior-y: none;
   }
 
+  header, footer, nav, button, a, [role="button"] {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
