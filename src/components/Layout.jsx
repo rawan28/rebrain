@@ -45,6 +45,15 @@ export default function Layout() {
         </div>
       </main>
 
+      {/* Disclaimer */}
+      <div className="bg-muted/60 border-t border-border px-4 py-2 text-center">
+        <p className="text-xs text-muted-foreground">
+          {t.dir === 'rtl'
+            ? 'אפליקציה זו מיועדת לשימוש אישי בלבד. השימוש באפליקציה הוא על אחריות המשתמש בלבד.'
+            : 'This app is tailor made for personal use. Using the app is upon the responsibility of the user only.'}
+        </p>
+      </div>
+
       {/* Bottom Navigation */}
       <nav className="bg-card border-t border-border px-2 py-2 md:py-3 sticky bottom-0 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
         <div className="max-w-5xl mx-auto flex justify-around">
