@@ -19,6 +19,7 @@ import TriviaQuiz from '@/pages/TriviaQuiz';
 import ShapeWordGame from '@/pages/ShapeWordGame';
 import RushHour from '@/pages/RushHour';
 import NumberQuizDashboard from '@/pages/NumberQuizDashboard';
+import Settings from '@/pages/Settings';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -59,6 +60,7 @@ const AuthenticatedApp = () => {
         <Route path="/rush-hour" element={<RushHour />} />
         <Route path="/numbers-dashboard" element={<NumberQuizDashboard />} />
         <Route path="/progress" element={<Progress />} />
+        <Route path="/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
