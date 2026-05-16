@@ -17,6 +17,7 @@ import WordComplete from '@/pages/WordComplete';
 import Sudoku from '@/pages/Sudoku.jsx';
 import TriviaQuiz from '@/pages/TriviaQuiz';
 import ShapeWordGame from '@/pages/ShapeWordGame';
+import RushHour from '@/pages/RushHour';
 import NumberQuizDashboard from '@/pages/NumberQuizDashboard';
 
 const AuthenticatedApp = () => {
@@ -55,6 +56,7 @@ const AuthenticatedApp = () => {
         <Route path="/sudoku" element={<Sudoku />} />
         <Route path="/trivia" element={<TriviaQuiz />} />
         <Route path="/shape-word" element={<ShapeWordGame />} />
+        <Route path="/rush-hour" element={<RushHour />} />
         <Route path="/numbers-dashboard" element={<NumberQuizDashboard />} />
         <Route path="/progress" element={<Progress />} />
       </Route>

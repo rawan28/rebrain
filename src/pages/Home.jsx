@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Hash, Lightbulb, Shapes, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Hash, Lightbulb, Shapes, Car, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 
@@ -81,6 +81,14 @@ export default function Home() {
       icon: Shapes,
       color: 'bg-indigo-50 text-indigo-600 border-indigo-100',
       iconBg: 'bg-indigo-100',
+    },
+    {
+      path: '/rush-hour',
+      title: t.rushHourTitle || 'חילוץ מכונית',
+      description: t.rushHourDesc || 'הוצא את המכונית האדומה מהפקק!',
+      icon: Car,
+      color: 'bg-orange-50 text-orange-600 border-orange-100',
+      iconBg: 'bg-orange-100',
     },
   ];
 
