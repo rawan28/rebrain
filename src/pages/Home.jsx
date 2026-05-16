@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Hash, Lightbulb, Shapes, ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Hash, Lightbulb, Shapes, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 
@@ -138,16 +138,7 @@ export default function Home() {
         })}
       </motion.div>
 
-      {/* Encouragement */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="flex items-center justify-center gap-2 text-muted-foreground py-4"
-      >
-        <Heart className="w-5 h-5 text-red-400" />
-        <p className="text-base">{t.encouragement}</p>
-      </motion.div>
+
     </div>
   );
 }
