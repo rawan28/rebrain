@@ -43,6 +43,8 @@ export default function Layout() {
     { path: '/progress', label: t.navProgress, icon: BarChart2 },
   ];
 
+  const isInGame = !isRoot && location.pathname !== '/progress' && location.pathname !== '/settings';
+
   return (
     <div className="min-h-screen bg-background flex flex-col" dir={t.dir} lang={lang}>
       {/* Header with safe-area top */}
@@ -51,15 +53,26 @@ export default function Layout() {
         style={{ paddingTop: `max(1rem, calc(1rem + env(safe-area-inset-top)))` }}
       >
         <div className="max-w-5xl mx-auto flex items-center gap-3">
-          {/* Back button - only on non-root pages */}
+          {/* Back button - only on non-root pages (desktop) */}
           {!isRoot && (
             <button
               onClick={() => navigate(-1)}
-              className="p-2 rounded-xl hover:bg-muted transition-colors select-none text-muted-foreground hover:text-foreground"
+              className="hidden md:flex p-2 rounded-xl hover:bg-muted transition-colors select-none text-muted-foreground hover:text-foreground"
               aria-label="Back"
             >
               <BackIcon className="w-6 h-6" />
             </button>
+          )}
+
+          {/* Mobile: Home button when in a game */}
+          {isInGame && (
+            <Link
+              to="/"
+              className="flex md:hidden p-2 rounded-xl hover:bg-muted transition-colors select-none text-muted-foreground hover:text-foreground"
+              aria-label="Home"
+            >
+              <Home className="w-6 h-6" />
+            </Link>
           )}
 
           <div className="bg-primary/10 p-2.5 rounded-xl">
@@ -75,7 +88,7 @@ export default function Layout() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 px-4 py-6 md:py-8 pb-36">
+      <main className="flex-1 px-4 py-6 md:py-8 md:pb-36">
         <div className="max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
@@ -92,7 +105,7 @@ export default function Layout() {
       </main>
 
       {/* Disclaimer */}
-      <div className="bg-muted/60 border-t border-border px-4 py-2 text-center mb-20">
+      <div className="bg-muted/60 border-t border-border px-4 py-2 text-center md:mb-20">
         <p className="text-xs text-muted-foreground">
           {isRtl
             ? 'האפליקציה נוצרה למטרות אישיות. כל שימוש בה הוא באחריות המשתמש בלבד.'
@@ -101,9 +114,9 @@ export default function Layout() {
         <p className="text-xs text-muted-foreground mt-0.5">© Rawan Awadieh 2026</p>
       </div>
 
-      {/* Bottom Navigation - fixed */}
+      {/* Bottom Navigation - desktop only */}
       <nav
-        className="bg-card border-t border-border px-2 py-2 md:py-3 fixed bottom-0 left-0 right-0 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.08)] safe-bottom"
+        className="hidden md:block bg-card border-t border-border px-2 py-2 md:py-3 fixed bottom-0 left-0 right-0 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.08)] safe-bottom"
       >
         <div className="max-w-5xl mx-auto flex justify-around overflow-x-auto">
           {navItems.map(({ path, label, icon: Icon }) => {
