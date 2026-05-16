@@ -9,7 +9,23 @@ import { useLang } from '@/lib/LanguageContext';
 import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
 
-const ALL_EMOJIS = ['🌸', '🌻', '🍎', '🐶', '🐱', '🦋', '🌈', '⭐', '🎵', '🏠', '🚗', '🎨', '🌙', '🍕', '☀️'];
+const ALL_IMAGES = [
+  { id: 'flower', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/397d9f288_generated_image.png' },
+  { id: 'sunflower', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/28f594e20_generated_image.png' },
+  { id: 'apple', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/4a1abc3fe_generated_image.png' },
+  { id: 'dog', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/27e2f78a6_generated_image.png' },
+  { id: 'cat', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/18c9e2e22_generated_image.png' },
+  { id: 'butterfly', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/a3b04e5e1_generated_image.png' },
+  { id: 'rainbow', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/7a2425f9b_generated_image.png' },
+  { id: 'star', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/971c8dab4_generated_image.png' },
+  { id: 'music', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/71bd56d43_generated_image.png' },
+  { id: 'house', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/fa760a1a6_generated_image.png' },
+  { id: 'car', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/c73c7fe89_generated_image.png' },
+  { id: 'art', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/ff2e5af9a_generated_image.png' },
+  { id: 'moon', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/65f94bf1e_generated_image.png' },
+  { id: 'pizza', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/a602d1ba0_generated_image.png' },
+  { id: 'sun', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/ee9cbf49a_generated_image.png' },
+];
 
 function getGridForLevel(level) {
   const pairs = Math.min(3 + Math.floor((level - 1) / 2), 8);
@@ -37,10 +53,11 @@ export default function MemoryGame() {
 
   const startNewRound = useCallback(() => {
     const pairs = getGridForLevel(difficulty.level);
-    const emojis = shuffleArray(ALL_EMOJIS).slice(0, pairs);
-    const deck = shuffleArray([...emojis, ...emojis]).map((emoji, i) => ({
+    const images = shuffleArray(ALL_IMAGES).slice(0, pairs);
+    const deck = shuffleArray([...images, ...images]).map((image, i) => ({
       id: i,
-      emoji,
+      imageId: image.id,
+      url: image.url,
     }));
     setCards(deck);
     setFlipped([]);
@@ -54,8 +71,8 @@ export default function MemoryGame() {
       const [first, second] = flipped;
       setMoves(prev => prev + 1);
 
-      if (cards[first].emoji === cards[second].emoji) {
-        const newMatched = [...matched, cards[first].emoji];
+      if (cards[first].imageId === cards[second].imageId) {
+        const newMatched = [...matched, cards[first].imageId];
         setMatched(newMatched);
         setFlipped([]);
 
@@ -91,7 +108,7 @@ export default function MemoryGame() {
   const handleCardClick = (index) => {
     if (flipped.length >= 2) return;
     if (flipped.includes(index)) return;
-    if (matched.includes(cards[index].emoji)) return;
+    if (matched.includes(cards[index].imageId)) return;
     setFlipped(prev => [...prev, index]);
   };
 
@@ -140,7 +157,7 @@ export default function MemoryGame() {
       >
         {cards.map((card, index) => {
           const isFlipped = flipped.includes(index);
-          const isMatched = matched.includes(card.emoji);
+          const isMatched = matched.includes(card.imageId);
           const showFace = isFlipped || isMatched;
 
           return (
@@ -149,8 +166,8 @@ export default function MemoryGame() {
               whileTap={{ scale: 0.95 }}
               onClick={() => handleCardClick(index)}
               disabled={isMatched}
-              className={`aspect-square rounded-xl text-5xl md:text-6xl flex items-center justify-center
-                border-2 transition-all duration-300 cursor-pointer select-none
+              className={`aspect-square rounded-xl flex items-center justify-center
+                border-2 transition-all duration-300 cursor-pointer select-none overflow-hidden
                 ${isMatched
                   ? 'bg-green-50 border-green-300 opacity-70'
                   : showFace
@@ -159,13 +176,14 @@ export default function MemoryGame() {
                 }`}
             >
               {showFace ? (
-                <motion.span
+                <motion.img
+                  src={card.url}
+                  alt="card"
                   initial={{ rotateY: 90 }}
                   animate={{ rotateY: 0 }}
                   transition={{ duration: 0.2 }}
-                >
-                  {card.emoji}
-                </motion.span>
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <span className="text-4xl text-primary/40">?</span>
               )}
