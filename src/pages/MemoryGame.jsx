@@ -11,7 +11,7 @@ import { saveSession } from '@/lib/progressStore';
 const ALL_EMOJIS = ['🌸', '🌻', '🍎', '🐶', '🐱', '🦋', '🌈', '⭐', '🎵', '🏠', '🚗', '🎨', '🌙', '🍕', '☀️'];
 
 function getGridForLevel(level) {
-  const pairs = Math.min(2 + Math.floor((level - 1) / 2), 8);
+  const pairs = Math.min(3 + Math.floor((level - 1) / 2), 8);
   return pairs;
 }
 
@@ -113,7 +113,7 @@ export default function MemoryGame() {
     );
   }
 
-  const cols = cards.length <= 4 ? 2 : cards.length <= 6 ? 3 : 4;
+  const cols = cards.length <= 6 ? 3 : 4;
 
   return (
     <div className="space-y-4">
