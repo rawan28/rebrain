@@ -2,6 +2,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Hash, Lightbulb, Shapes } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
+import CoinDisplay from './CoinDisplay';
 
 export default function Layout() {
   const location = useLocation();
@@ -32,6 +33,7 @@ export default function Layout() {
             <h1 className="text-xl md:text-2xl font-bold text-foreground tracking-tight">{t.appName}</h1>
             <p className="text-sm md:text-base text-muted-foreground">{t.appSubtitle}</p>
           </div>
+          <CoinDisplay />
           <LanguageSwitcher />
         </div>
       </header>

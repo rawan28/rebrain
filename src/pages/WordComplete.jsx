@@ -5,6 +5,7 @@ import { useLang } from '@/lib/LanguageContext';
 import useDifficulty from '@/lib/useDifficulty';
 import { generateQuestion } from '@/lib/wordData';
 import { saveSession } from '@/lib/progressStore';
+import { awardCoin } from '@/lib/useCoin';
 import GameHeader from '@/components/games/GameHeader';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -81,6 +82,7 @@ export default function WordComplete() {
     const correct = question.hiddenIndices.every(i => filled[i] === question.letters[i]);
     setIsCorrect(correct);
     setSubmitted(true);
+    awardCoin(correct);
     difficulty.recordAnswer(correct);
     saveSession('word', {
       level: difficulty.level,

@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useLang } from '@/lib/LanguageContext';
+import { awardCoin } from '@/lib/useCoin';
 import { triviaQuestions } from '@/lib/triviaData';
 import { Button } from '@/components/ui/button';
 import { RotateCcw, Lightbulb, CheckCircle2, XCircle } from 'lucide-react';
@@ -31,7 +32,9 @@ export default function TriviaQuiz() {
   function handleAnswer(opt) {
     if (selected) return;
     setSelected(opt);
-    if (opt === questions[index].answer) {
+    const isCorrect = opt === questions[index].answer;
+    awardCoin(isCorrect);
+    if (isCorrect) {
       setScore(s => s + 1);
     }
     setTimeout(() => {

@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Play, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { saveSession } from '@/lib/progressStore';
+import { awardCoin } from '@/lib/useCoin';
 
 export default function NumberQuiz() {
   const { t } = useLang();
@@ -30,6 +31,7 @@ export default function NumberQuiz() {
     if (selected !== null) return;
     setSelected(option);
     const isCorrect = option === problem.answer;
+    awardCoin(isCorrect);
     difficulty.recordAnswer(isCorrect);
     saveSession('numbers', {
       level: difficulty.level,

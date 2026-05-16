@@ -5,6 +5,7 @@ import { useLang } from '@/lib/LanguageContext';
 import useDifficulty from '@/lib/useDifficulty';
 import { buildShapeWordDeck } from '@/lib/shapePairsData';
 import { saveSession } from '@/lib/progressStore';
+import { awardCoin } from '@/lib/useCoin';
 import GameHeader from '@/components/games/GameHeader';
 import FeedbackOverlay from '@/components/games/FeedbackOverlay';
 import { Button } from '@/components/ui/button';
@@ -71,6 +72,7 @@ export default function ShapeWordGame() {
       const newMatched = [...matched, card.pairId];
       setMatched(newMatched);
       setSelected(null);
+      awardCoin(true);
 
       const totalPairs = cards.length / 2;
       if (newMatched.length === totalPairs) {
@@ -97,6 +99,7 @@ export default function ShapeWordGame() {
       }
     } else {
       // Wrong
+      awardCoin(false);
       setWrong([selected.id, card.id]);
       setTimeout(() => {
         setWrong([]);

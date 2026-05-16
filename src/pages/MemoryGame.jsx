@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Play } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { saveSession } from '@/lib/progressStore';
+import { awardCoin } from '@/lib/useCoin';
 
 const ALL_EMOJIS = ['🌸', '🌻', '🍎', '🐶', '🐱', '🦋', '🌈', '⭐', '🎵', '🏠', '🚗', '🎨', '🌙', '🍕', '☀️'];
 
@@ -61,6 +62,7 @@ export default function MemoryGame() {
         if (newMatched.length === cards.length / 2) {
           const perfectMoves = cards.length / 2;
           const isGood = moves + 1 <= perfectMoves + 2;
+          awardCoin(isGood);
           difficulty.recordAnswer(isGood);
           saveSession('memory', {
             level: difficulty.level,

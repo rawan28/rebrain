@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Play, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { saveSession } from '@/lib/progressStore';
+import { awardCoin } from '@/lib/useCoin';
 
 export default function LogicPuzzle() {
   const { t } = useLang();
@@ -38,6 +39,7 @@ export default function LogicPuzzle() {
     if (selected !== null) return;
     setSelected(option);
     const isCorrect = option === puzzle.answer;
+    awardCoin(isCorrect);
     difficulty.recordAnswer(isCorrect);
     saveSession('logic', {
       level: difficulty.level,

@@ -5,6 +5,7 @@ import useDifficulty from '@/lib/useDifficulty';
 import { getRandomQuestion, getFlagUrl } from '@/lib/flagsData';
 import { useLang } from '@/lib/LanguageContext';
 import { saveSession } from '@/lib/progressStore';
+import { awardCoin } from '@/lib/useCoin';
 import GameHeader from '@/components/games/GameHeader';
 import FeedbackOverlay from '@/components/games/FeedbackOverlay';
 import { Button } from '@/components/ui/button';
@@ -36,6 +37,7 @@ export default function FlagQuiz() {
     if (selected !== null) return;
     setSelected(option);
     const isCorrect = option === question.answer;
+    awardCoin(isCorrect);
     difficulty.recordAnswer(isCorrect);
     saveSession('flags', {
       level: difficulty.level,
