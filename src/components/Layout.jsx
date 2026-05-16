@@ -49,8 +49,8 @@ export default function Layout() {
       <div className="bg-muted/60 border-t border-border px-4 py-2 text-center">
         <p className="text-xs text-muted-foreground">
           {t.dir === 'rtl'
-            ? 'אפליקציה זו מיועדת לשימוש אישי בלבד. השימוש באפליקציה הוא על אחריות המשתמש בלבד.'
-            : 'This app is tailor made for personal use. Using the app is upon the responsibility of the user only.'}
+            ? 'האפליקציה נוצרה למטרות אישיות. כל שימוש בה הוא באחריות המשתמש בלבד.'
+            : 'This app was created for personal purposes. Any use of it is solely at the user\'s own responsibility.'}
         </p>
         <p className="text-xs text-muted-foreground mt-0.5">© Rawan Awadieh 2026</p>
       </div>
