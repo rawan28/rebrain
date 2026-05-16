@@ -52,6 +52,7 @@ export default function Layout() {
             ? 'אפליקציה זו מיועדת לשימוש אישי בלבד. השימוש באפליקציה הוא על אחריות המשתמש בלבד.'
             : 'This app is tailor made for personal use. Using the app is upon the responsibility of the user only.'}
         </p>
+        <p className="text-xs text-muted-foreground mt-0.5">© Rawan Awadieh 2026</p>
       </div>
 
       {/* Bottom Navigation */}
