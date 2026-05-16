@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Hash, Lightbulb, ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Hash, Lightbulb, Shapes, ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 
@@ -73,6 +73,14 @@ export default function Home() {
       icon: Lightbulb,
       color: 'bg-yellow-50 text-yellow-600 border-yellow-100',
       iconBg: 'bg-yellow-100',
+    },
+    {
+      path: '/shape-word',
+      title: t.shapeWordTitle,
+      description: t.shapeWordDesc,
+      icon: Shapes,
+      color: 'bg-indigo-50 text-indigo-600 border-indigo-100',
+      iconBg: 'bg-indigo-100',
     },
   ];
 

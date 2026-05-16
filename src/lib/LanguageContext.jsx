@@ -78,6 +78,8 @@ export const translations = {
     sudokuDesc: 'מלא את הרשת עם המספרים 1-9. אתגר לוגי קלאסי!',
     triviaTitle: 'טריוויה כללית',
     triviaDesc: 'בחן את הידע הכללי שלך בשאלות מגוונות!',
+    shapeWordTitle: 'צורה ומילה',
+    shapeWordDesc: 'התאם כל צורה למילה שלה. מצוין לאימון זיכרון חזותי-מילולי!',
   },
   ar: {
     dir: 'rtl',
@@ -156,6 +158,8 @@ export const translations = {
     sudokuDesc: 'أكمل الشبكة بالأرقام من 1-9. تحدٍّ منطقي كلاسيكي!',
     triviaTitle: 'معلومات عامة',
     triviaDesc: 'اختبر معلوماتك العامة بأسئلة متنوعة!',
+    shapeWordTitle: 'شكل وكلمة',
+    shapeWordDesc: 'طابق كل شكل مع كلمته. رائع لتدريب الذاكرة البصرية والكلامية!',
   },
 };
 
