@@ -146,7 +146,7 @@ export default function ShapeWordGame() {
       </p>
 
       <div
-        className="grid gap-3 md:gap-4 max-w-md mx-auto"
+        className="grid gap-3 md:gap-4 max-w-lg mx-auto"
         style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
       >
         {cards.map((card) => {
@@ -176,9 +176,9 @@ export default function ShapeWordGame() {
               className={cardClass}
             >
               {card.type === 'emoji' ? (
-                <span className="text-3xl md:text-4xl">{card.content}</span>
+                <span className="text-5xl md:text-6xl">{card.content}</span>
               ) : (
-                <span className="text-sm md:text-base text-center px-1 leading-tight">{card.content}</span>
+                <span className="text-base md:text-lg text-center px-1 leading-tight font-bold">{card.content}</span>
               )}
             </motion.button>
           );

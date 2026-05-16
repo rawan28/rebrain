@@ -135,7 +135,7 @@ export default function MemoryGame() {
       </p>
 
       <div
-        className="grid gap-3 md:gap-4 max-w-md mx-auto"
+        className="grid gap-3 md:gap-4 max-w-lg mx-auto"
         style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
       >
         {cards.map((card, index) => {
@@ -149,7 +149,7 @@ export default function MemoryGame() {
               whileTap={{ scale: 0.95 }}
               onClick={() => handleCardClick(index)}
               disabled={isMatched}
-              className={`aspect-square rounded-xl text-4xl md:text-5xl flex items-center justify-center
+              className={`aspect-square rounded-xl text-5xl md:text-6xl flex items-center justify-center
                 border-2 transition-all duration-300 cursor-pointer select-none
                 ${isMatched
                   ? 'bg-green-50 border-green-300 opacity-70'
@@ -167,7 +167,7 @@ export default function MemoryGame() {
                   {card.emoji}
                 </motion.span>
               ) : (
-                <span className="text-3xl text-primary/40">?</span>
+                <span className="text-4xl text-primary/40">?</span>
               )}
             </motion.button>
           );
