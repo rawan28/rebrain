@@ -1,9 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useLang } from '@/lib/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { RotateCcw, Car, Trophy } from 'lucide-react';
 import { LEVELS } from '@/lib/rushHourLevels';
-import RushHourCar from '@/components/games/RushHourCar';
 
 const GRID_SIZE = 6;
 const CELL_SIZE = 56;
@@ -94,22 +93,34 @@ export default function RushHour() {
     }
   };
 
-  const handleVehicleClick = (vIdx) => {
-    if (won) return;
-    const v = vehicles[vIdx];
-    const grid = buildGrid(vehicles);
+  // Swipe handling
+  const swipeStart = useRef(null);
 
+  const handlePointerDown = (e, vIdx) => {
+    if (won) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    swipeStart.current = { x: e.clientX, y: e.clientY, vIdx };
+  };
+
+  const handlePointerUp = (e, vIdx) => {
+    if (!swipeStart.current || swipeStart.current.vIdx !== vIdx) return;
+    const dx = e.clientX - swipeStart.current.x;
+    const dy = e.clientY - swipeStart.current.y;
+    swipeStart.current = null;
+
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+    if (Math.max(absDx, absDy) < 8) return; // too small — ignore
+
+    const v = vehicles[vIdx];
     if (v.horizontal) {
-      // try moving right first if space, else left
-      const canRight = v.col + v.length < GRID_SIZE && grid[v.row][v.col + v.length] === -1;
-      const canLeft = v.col > 0 && grid[v.row][v.col - 1] === -1;
-      if (canRight) moveVehicle(vIdx, 1);
-      else if (canLeft) moveVehicle(vIdx, -1);
+      if (absDx < absDy) return; // not a horizontal swipe
+      const steps = Math.round(dx / CELL_SIZE) || (dx > 0 ? 1 : -1);
+      for (let i = 0; i < Math.abs(steps); i++) moveVehicle(vIdx, steps > 0 ? 1 : -1);
     } else {
-      const canDown = v.row + v.length < GRID_SIZE && grid[v.row + v.length][v.col] === -1;
-      const canUp = v.row > 0 && grid[v.row - 1][v.col] === -1;
-      if (canDown) moveVehicle(vIdx, 1);
-      else if (canUp) moveVehicle(vIdx, -1);
+      if (absDy < absDx) return; // not a vertical swipe
+      const steps = Math.round(dy / CELL_SIZE) || (dy > 0 ? 1 : -1);
+      for (let i = 0; i < Math.abs(steps); i++) moveVehicle(vIdx, steps > 0 ? 1 : -1);
     }
   };
 
@@ -166,203 +177,159 @@ export default function RushHour() {
       )}
 
       {/* Game Grid */}
-      <div className="relative" style={{ width: GRID_SIZE * CELL_SIZE + 4 + 48, height: GRID_SIZE * CELL_SIZE + 4 }}>
-        {/* Road background - only the grid area */}
-        <div
-          className="absolute rounded-xl overflow-hidden border-2 border-slate-500 shadow-xl"
-          style={{ background: '#4a5568', left: 0, top: 0, width: GRID_SIZE * CELL_SIZE + 4, height: GRID_SIZE * CELL_SIZE + 4 }}
-        >
-          {/* Road texture - grid lines like asphalt markings */}
-          {Array.from({ length: GRID_SIZE }).map((_, row) =>
-            Array.from({ length: GRID_SIZE }).map((__, col) => (
-              <div
-                key={`cell-${row}-${col}`}
-                style={{
-                  position: 'absolute',
-                  left: col * CELL_SIZE + 2,
-                  top: row * CELL_SIZE + 2,
-                  width: CELL_SIZE,
-                  height: CELL_SIZE,
-                  borderRight: col < GRID_SIZE - 1 ? '1px dashed rgba(255,255,255,0.12)' : 'none',
-                  borderBottom: row < GRID_SIZE - 1 ? '1px dashed rgba(255,255,255,0.12)' : 'none',
-                }}
-              />
-            ))
-          )}
-          {/* Exit lane highlight (row 2) */}
+      {(() => {
+        const WALL = 10; // wall thickness px
+        const GRID_PX = GRID_SIZE * CELL_SIZE;
+        const EXIT_ROW = 2;
+
+        return (
           <div
-            style={{
-              position: 'absolute',
-              left: 0,
-              top: 2 * CELL_SIZE + 2,
-              width: '100%',
-              height: CELL_SIZE,
-              background: 'rgba(239,68,68,0.08)',
-            }}
-          />
-        </div>
+            className="relative select-none"
+            style={{ width: GRID_PX + WALL * 2 + 48, height: GRID_PX + WALL * 2 }}
+          >
+            {/* === WALLS === */}
+            {/* Top wall */}
+            <div style={{ position: 'absolute', left: 0, top: 0, width: GRID_PX + WALL, height: WALL, background: '#1e293b', borderRadius: '6px 6px 0 0', boxShadow: '0 2px 6px rgba(0,0,0,0.5)' }} />
+            {/* Bottom wall */}
+            <div style={{ position: 'absolute', left: 0, top: GRID_PX + WALL, width: GRID_PX + WALL, height: WALL, background: '#1e293b', borderRadius: '0 0 6px 6px', boxShadow: '0 -2px 6px rgba(0,0,0,0.5)' }} />
+            {/* Left wall */}
+            <div style={{ position: 'absolute', left: 0, top: WALL, width: WALL, height: GRID_PX, background: '#1e293b', boxShadow: '2px 0 6px rgba(0,0,0,0.5)' }} />
+            {/* Right wall — top segment (above exit) */}
+            <div style={{ position: 'absolute', left: GRID_PX + WALL, top: WALL, width: WALL, height: EXIT_ROW * CELL_SIZE, background: '#1e293b', boxShadow: '-2px 0 6px rgba(0,0,0,0.5)' }} />
+            {/* Right wall — bottom segment (below exit) */}
+            <div style={{ position: 'absolute', left: GRID_PX + WALL, top: (EXIT_ROW + 1) * CELL_SIZE + WALL, width: WALL, height: (GRID_SIZE - EXIT_ROW - 1) * CELL_SIZE, background: '#1e293b', boxShadow: '-2px 0 6px rgba(0,0,0,0.5)' }} />
 
-        {/* Exit lane opening - gap in the right wall */}
-        {/* Right wall top segment */}
-        <div
-          style={{
-            position: 'absolute',
-            right: 48,
-            top: 2,
-            width: 4,
-            height: 2 * CELL_SIZE,
-            background: '#374151',
-            borderRadius: '2px 0 0 0',
-          }}
-        />
-        {/* Right wall bottom segment */}
-        <div
-          style={{
-            position: 'absolute',
-            right: 48,
-            top: 3 * CELL_SIZE + 2,
-            width: 4,
-            height: 3 * CELL_SIZE,
-            background: '#374151',
-            borderRadius: '0 0 0 2px',
-          }}
-        />
+            {/* Corner bolts decoration */}
+            {[[4,4],[GRID_PX+WALL-4,4],[4,GRID_PX+WALL-4],[GRID_PX+WALL-4,GRID_PX+WALL-4]].map(([cx,cy],i) => (
+              <div key={i} style={{ position:'absolute', left:cx-3, top:cy-3, width:6, height:6, borderRadius:'50%', background:'#94a3b8', boxShadow:'inset 0 1px 2px rgba(0,0,0,0.5)' }} />
+            ))}
 
-        {/* Exit lane - open road to the right */}
-        <div
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: 2 * CELL_SIZE + 2,
-            width: 52,
-            height: CELL_SIZE,
-            background: '#4a5568',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 4,
-          }}
-        >
-          {/* Dashed center line */}
-          {[0, 1, 2].map(i => (
-            <div key={i} style={{ width: 8, height: 3, background: 'rgba(255,220,0,0.7)', borderRadius: 2 }} />
-          ))}
-          {/* Arrow */}
-          <div style={{ color: '#f87171', fontSize: 22, fontWeight: 'bold', lineHeight: 1, marginLeft: 2 }}>→</div>
-        </div>
-
-        {/* Vehicles as SVG cars */}
-        {vehicles.map((v, i) => {
-          const isPlayer = i === 0;
-          const carWidth = v.horizontal ? v.length * CELL_SIZE - 6 : CELL_SIZE - 6;
-          const carHeight = v.horizontal ? CELL_SIZE - 6 : v.length * CELL_SIZE - 6;
-          const left = v.col * CELL_SIZE + 5;
-          const top = v.row * CELL_SIZE + 5;
-          const color = VEHICLE_FILL_COLORS[i % VEHICLE_FILL_COLORS.length];
-
-          return (
-            <button
-              key={i}
-              onClick={() => handleVehicleClick(i)}
-              style={{
-                position: 'absolute',
-                left,
-                top,
-                width: carWidth,
-                height: carHeight,
-                background: 'none',
-                border: 'none',
-                padding: 0,
-                cursor: 'pointer',
-                filter: isPlayer ? 'drop-shadow(0 0 6px rgba(239,68,68,0.7))' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
-                transition: 'left 0.15s ease, top 0.15s ease',
-                zIndex: isPlayer ? 10 : 5,
-              }}
-              title={isPlayer ? 'המכונית האדומה' : ''}
+            {/* Road surface */}
+            <div
+              className="absolute overflow-hidden"
+              style={{ left: WALL, top: WALL, width: GRID_PX, height: GRID_PX, background: '#4a5568' }}
             >
-              <svg
-                viewBox={v.horizontal ? "0 0 100 44" : "0 0 44 100"}
-                width={carWidth}
-                height={carHeight}
-                xmlns="http://www.w3.org/2000/svg"
-                style={{ display: 'block' }}
-              >
-                {v.horizontal ? (
-                  <>
-                    {/* Body */}
-                    <rect x="2" y="12" width="96" height="24" rx="6" fill={color} />
-                    {/* Roof / Cabin */}
-                    <path d="M24 12 L32 3 L68 3 L76 12 Z" fill={color} />
-                    {/* Front windshield */}
-                    <path d="M68 4 L74 11 L58 11 L58 4 Z" fill="rgba(180,230,255,0.75)" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
-                    {/* Rear windshield */}
-                    <path d="M32 4 L26 11 L42 11 L42 4 Z" fill="rgba(180,230,255,0.75)" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
-                    {/* Side window */}
-                    <rect x="44" y="4" width="12" height="7" rx="1.5" fill="rgba(180,230,255,0.75)" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
-                    {/* Shine on roof */}
-                    <path d="M34 4 L64 4 L62 8 L36 8 Z" fill="rgba(255,255,255,0.2)" />
-                    {/* Body shine */}
-                    <rect x="10" y="14" width="50" height="3" rx="1.5" fill="rgba(255,255,255,0.2)" />
-                    {/* Front bumper */}
-                    <rect x="90" y="18" width="8" height="12" rx="3" fill="rgba(255,255,255,0.25)" />
-                    {/* Rear bumper */}
-                    <rect x="2" y="18" width="8" height="12" rx="3" fill="rgba(0,0,0,0.2)" />
-                    {/* Headlights */}
-                    <rect x="91" y="19" width="6" height="5" rx="1.5" fill={isPlayer ? '#FFE566' : '#ffffff'} opacity="0.95" />
-                    {/* Tail lights */}
-                    <rect x="3" y="19" width="6" height="5" rx="1.5" fill={isPlayer ? '#ff3333' : '#ffaaaa'} opacity="0.9" />
-                    {/* Wheels */}
-                    <ellipse cx="22" cy="37" rx="9" ry="6" fill="#1a1a2e" />
-                    <ellipse cx="22" cy="37" rx="5.5" ry="3.5" fill="#6b7280" />
-                    <ellipse cx="22" cy="37" rx="2" ry="1.5" fill="#9ca3af" />
-                    <ellipse cx="78" cy="37" rx="9" ry="6" fill="#1a1a2e" />
-                    <ellipse cx="78" cy="37" rx="5.5" ry="3.5" fill="#6b7280" />
-                    <ellipse cx="78" cy="37" rx="2" ry="1.5" fill="#9ca3af" />
-                    {/* Door line */}
-                    <line x1="50" y1="12" x2="50" y2="36" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
-                  </>
-                ) : (
-                  <>
-                    {/* Vertical car (facing down) */}
-                    {/* Body */}
-                    <rect x="4" y="2" width="36" height="96" rx="6" fill={color} />
-                    {/* Cabin */}
-                    <path d="M4 30 L12 22 L32 22 L40 30 Z" fill={color} />
-                    {/* Front windshield (top) */}
-                    <path d="M12 22 L10 30 L22 30 Z" fill="rgba(180,230,255,0.75)" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
-                    <path d="M32 22 L34 30 L22 30 Z" fill="rgba(180,230,255,0.75)" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
-                    {/* Side windows mid */}
-                    <rect x="10" y="23" width="10" height="6" rx="1.5" fill="rgba(180,230,255,0.75)" />
-                    <rect x="24" y="23" width="10" height="6" rx="1.5" fill="rgba(180,230,255,0.75)" />
-                    {/* Body shine */}
-                    <rect x="16" y="35" width="12" height="28" rx="2" fill="rgba(255,255,255,0.15)" />
-                    {/* Headlights (top) */}
-                    <rect x="10" y="3" width="24" height="5" rx="2" fill="#FFE566" opacity="0.9" />
-                    {/* Tail lights (bottom) */}
-                    <rect x="10" y="92" width="24" height="5" rx="2" fill="#ffaaaa" opacity="0.9" />
-                    {/* Wheels */}
-                    <ellipse cx="5" cy="22" rx="5" ry="9" fill="#1a1a2e" />
-                    <ellipse cx="5" cy="22" rx="3" ry="5.5" fill="#6b7280" />
-                    <ellipse cx="39" cy="22" rx="5" ry="9" fill="#1a1a2e" />
-                    <ellipse cx="39" cy="22" rx="3" ry="5.5" fill="#6b7280" />
-                    <ellipse cx="5" cy="78" rx="5" ry="9" fill="#1a1a2e" />
-                    <ellipse cx="5" cy="78" rx="3" ry="5.5" fill="#6b7280" />
-                    <ellipse cx="39" cy="78" rx="5" ry="9" fill="#1a1a2e" />
-                    <ellipse cx="39" cy="78" rx="3" ry="5.5" fill="#6b7280" />
-                    {/* Door line */}
-                    <line x1="4" y1="50" x2="40" y2="50" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
-                  </>
-                )}
-              </svg>
-            </button>
-          );
-        })}
-      </div>
+              {/* Grid dashes */}
+              {Array.from({ length: GRID_SIZE }).map((_, row) =>
+                Array.from({ length: GRID_SIZE }).map((__, col) => (
+                  <div key={`${row}-${col}`} style={{
+                    position: 'absolute',
+                    left: col * CELL_SIZE,
+                    top: row * CELL_SIZE,
+                    width: CELL_SIZE,
+                    height: CELL_SIZE,
+                    borderRight: col < GRID_SIZE - 1 ? '1px dashed rgba(255,255,255,0.1)' : 'none',
+                    borderBottom: row < GRID_SIZE - 1 ? '1px dashed rgba(255,255,255,0.1)' : 'none',
+                  }} />
+                ))
+              )}
+              {/* Exit row highlight */}
+              <div style={{ position:'absolute', left:0, top: EXIT_ROW * CELL_SIZE, width:'100%', height: CELL_SIZE, background:'rgba(239,68,68,0.1)' }} />
+            </div>
+
+            {/* Exit lane */}
+            <div style={{
+              position: 'absolute',
+              left: GRID_PX + WALL * 2,
+              top: EXIT_ROW * CELL_SIZE + WALL,
+              width: 48,
+              height: CELL_SIZE,
+              background: '#4a5568',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 3,
+            }}>
+              {[0,1,2].map(i => <div key={i} style={{ width:6, height:3, background:'rgba(255,220,0,0.7)', borderRadius:2 }} />)}
+              <div style={{ color:'#f87171', fontSize:20, fontWeight:'bold', lineHeight:1 }}>→</div>
+            </div>
+
+            {/* Vehicles */}
+            {vehicles.map((v, i) => {
+              const isPlayer = i === 0;
+              const carWidth = v.horizontal ? v.length * CELL_SIZE - 6 : CELL_SIZE - 6;
+              const carHeight = v.horizontal ? CELL_SIZE - 6 : v.length * CELL_SIZE - 6;
+              const left = WALL + v.col * CELL_SIZE + 3;
+              const top = WALL + v.row * CELL_SIZE + 3;
+              const color = VEHICLE_FILL_COLORS[i % VEHICLE_FILL_COLORS.length];
+
+              return (
+                <div
+                  key={i}
+                  onPointerDown={e => handlePointerDown(e, i)}
+                  onPointerUp={e => handlePointerUp(e, i)}
+                  style={{
+                    position: 'absolute',
+                    left,
+                    top,
+                    width: carWidth,
+                    height: carHeight,
+                    cursor: v.horizontal ? 'ew-resize' : 'ns-resize',
+                    filter: isPlayer ? 'drop-shadow(0 0 6px rgba(239,68,68,0.7))' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
+                    transition: 'left 0.12s ease, top 0.12s ease',
+                    zIndex: isPlayer ? 10 : 5,
+                    touchAction: 'none',
+                  }}
+                >
+                  <svg
+                    viewBox={v.horizontal ? "0 0 100 44" : "0 0 44 100"}
+                    width={carWidth}
+                    height={carHeight}
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{ display: 'block' }}
+                  >
+                    {v.horizontal ? (
+                      <>
+                        <rect x="2" y="12" width="96" height="24" rx="6" fill={color} />
+                        <path d="M24 12 L32 3 L68 3 L76 12 Z" fill={color} />
+                        <path d="M68 4 L74 11 L58 11 L58 4 Z" fill="rgba(180,230,255,0.75)" />
+                        <path d="M32 4 L26 11 L42 11 L42 4 Z" fill="rgba(180,230,255,0.75)" />
+                        <rect x="44" y="4" width="12" height="7" rx="1.5" fill="rgba(180,230,255,0.75)" />
+                        <rect x="10" y="14" width="50" height="3" rx="1.5" fill="rgba(255,255,255,0.2)" />
+                        <rect x="90" y="18" width="8" height="12" rx="3" fill="rgba(255,255,255,0.25)" />
+                        <rect x="2" y="18" width="8" height="12" rx="3" fill="rgba(0,0,0,0.2)" />
+                        <rect x="91" y="19" width="6" height="5" rx="1.5" fill={isPlayer ? '#FFE566' : '#ffffff'} opacity="0.95" />
+                        <rect x="3" y="19" width="6" height="5" rx="1.5" fill={isPlayer ? '#ff3333' : '#ffaaaa'} opacity="0.9" />
+                        <ellipse cx="22" cy="37" rx="9" ry="6" fill="#1a1a2e" />
+                        <ellipse cx="22" cy="37" rx="5.5" ry="3.5" fill="#6b7280" />
+                        <ellipse cx="78" cy="37" rx="9" ry="6" fill="#1a1a2e" />
+                        <ellipse cx="78" cy="37" rx="5.5" ry="3.5" fill="#6b7280" />
+                        <line x1="50" y1="12" x2="50" y2="36" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
+                      </>
+                    ) : (
+                      <>
+                        <rect x="4" y="2" width="36" height="96" rx="6" fill={color} />
+                        <path d="M4 30 L12 22 L32 22 L40 30 Z" fill={color} />
+                        <path d="M12 22 L10 30 L22 30 Z" fill="rgba(180,230,255,0.75)" />
+                        <path d="M32 22 L34 30 L22 30 Z" fill="rgba(180,230,255,0.75)" />
+                        <rect x="10" y="23" width="10" height="6" rx="1.5" fill="rgba(180,230,255,0.75)" />
+                        <rect x="24" y="23" width="10" height="6" rx="1.5" fill="rgba(180,230,255,0.75)" />
+                        <rect x="16" y="35" width="12" height="28" rx="2" fill="rgba(255,255,255,0.15)" />
+                        <rect x="10" y="3" width="24" height="5" rx="2" fill="#FFE566" opacity="0.9" />
+                        <rect x="10" y="92" width="24" height="5" rx="2" fill="#ffaaaa" opacity="0.9" />
+                        <ellipse cx="5" cy="22" rx="5" ry="9" fill="#1a1a2e" />
+                        <ellipse cx="5" cy="22" rx="3" ry="5.5" fill="#6b7280" />
+                        <ellipse cx="39" cy="22" rx="5" ry="9" fill="#1a1a2e" />
+                        <ellipse cx="39" cy="22" rx="3" ry="5.5" fill="#6b7280" />
+                        <ellipse cx="5" cy="78" rx="5" ry="9" fill="#1a1a2e" />
+                        <ellipse cx="5" cy="78" rx="3" ry="5.5" fill="#6b7280" />
+                        <ellipse cx="39" cy="78" rx="5" ry="9" fill="#1a1a2e" />
+                        <ellipse cx="39" cy="78" rx="3" ry="5.5" fill="#6b7280" />
+                        <line x1="4" y1="50" x2="40" y2="50" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
+                      </>
+                    )}
+                  </svg>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })()}
 
       {/* Level selector */}
       <div className="flex flex-col items-center gap-2 mt-1">
         <p className="text-sm text-muted-foreground text-center">
-          {t.rushHourHint || 'לחץ על הרכב להזזתו — הוצא את המכונית האדומה לצד ימין'}
+          {t.rushHourHint || 'החלק את הרכבים כדי לפנות דרך — הוצא את המכונית האדומה לצד ימין'}
         </p>
         <div className="flex gap-2 flex-wrap justify-center">
           {LEVELS.map((_, i) => (
