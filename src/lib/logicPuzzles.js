@@ -128,34 +128,6 @@ function generateAnalogy(level) {
   };
 }
 
-// Letter/symbol sequences
-function generateLetterSequence(level) {
-  const sequences = [
-    { seq: ['A', 'C', 'E', 'G'], answer: 'I', wrong: ['H', 'J', 'K'] },
-    { seq: ['Z', 'X', 'V', 'T'], answer: 'R', wrong: ['S', 'P', 'Q'] },
-    { seq: ['A', 'B', 'D', 'G'], answer: 'K', wrong: ['H', 'I', 'L'] },
-    { seq: ['B', 'D', 'F', 'H'], answer: 'J', wrong: ['I', 'K', 'L'] },
-    { seq: ['A', 'Z', 'B', 'Y', 'C'], answer: 'X', wrong: ['W', 'D', 'V'] },
-    { seq: ['M', 'N', 'P', 'S'], answer: 'W', wrong: ['T', 'U', 'X'] },
-    { seq: ['A', 'E', 'I', 'O'], answer: 'U', wrong: ['Y', 'P', 'C'] },
-    { seq: ['C', 'F', 'I', 'L'], answer: 'O', wrong: ['M', 'N', 'P'] },
-    { seq: ['Z', 'Y', 'X', 'W'], answer: 'V', wrong: ['U', 'T', 'S'] },
-    { seq: ['A', 'A', 'B', 'C', 'E'], answer: 'H', wrong: ['F', 'G', 'I'] }, // Fibonacci letters
-  ];
-
-  const item = sequences[Math.floor(Math.random() * sequences.length)];
-  const cutLen = Math.max(3, Math.min(item.seq.length, 3 + Math.floor(level / 4)));
-  const seq = item.seq.slice(0, cutLen);
-  const options = shuffle([item.answer, ...item.wrong.slice(0, 3)]);
-  return {
-    type: 'letter_sequence',
-    question: 'letterSequence',
-    sequence: seq,
-    answer: item.answer,
-    options,
-  };
-}
-
 // Matrix / shape reasoning (2×2 grid)
 function generateMatrixReasoning() {
   const matrices = [
@@ -250,7 +222,7 @@ function generateNumberAnalogy(level) {
 export function generatePuzzle(level) {
   // All generators pool, weighted by level
   const basic = [generateShapePattern, generateNumberPattern, generateOddOneOut];
-  const psychometric = [generateAnalogy, generateLetterSequence, generateMatrixReasoning, generateNumberAnalogy];
+  const psychometric = [generateAnalogy, generateMatrixReasoning, generateNumberAnalogy];
 
   // At low levels use basic only; at higher levels mix in psychometric
   let pool;

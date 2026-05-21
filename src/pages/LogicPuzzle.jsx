@@ -25,7 +25,6 @@ export default function LogicPuzzle() {
     if (puz.type === 'number_pattern') return t.whatNumberNext;
     if (puz.type === 'odd_one_out') return t.whatDoesntBelong;
     if (puz.type === 'analogy') return t.analogyQuestion || 'השלם את האנלוגיה: A : B כמו C : ?';
-    if (puz.type === 'letter_sequence') return t.letterSequenceQuestion || 'מהי האות הבאה בסדרה?';
     if (puz.type === 'matrix') return t.matrixQuestion || 'מה חסר במטריצה?';
     if (puz.type === 'number_analogy') return t.numberAnalogyQuestion || 'השלם: A : B כמו C : ?';
     return puz.question;
