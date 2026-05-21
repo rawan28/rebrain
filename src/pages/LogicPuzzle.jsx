@@ -24,6 +24,10 @@ export default function LogicPuzzle() {
     if (puz.type === 'pattern') return t.whatComesNext;
     if (puz.type === 'number_pattern') return t.whatNumberNext;
     if (puz.type === 'odd_one_out') return t.whatDoesntBelong;
+    if (puz.type === 'analogy') return t.analogyQuestion || 'השלם את האנלוגיה: A : B כמו C : ?';
+    if (puz.type === 'letter_sequence') return t.letterSequenceQuestion || 'מהי האות הבאה בסדרה?';
+    if (puz.type === 'matrix') return t.matrixQuestion || 'מה חסר במטריצה?';
+    if (puz.type === 'number_analogy') return t.numberAnalogyQuestion || 'השלם: A : B כמו C : ?';
     return puz.question;
   }, [t]);
 
@@ -96,24 +100,58 @@ export default function LogicPuzzle() {
         <h3 className="text-xl md:text-2xl font-semibold text-foreground">{getLocalizedQuestion(puzzle)}</h3>
 
         {/* Sequence display */}
-        <div className="flex flex-wrap items-center gap-2 md:gap-3">
-          {puzzle.sequence.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.1 }}
-              className="bg-muted rounded-xl w-14 h-14 md:w-16 md:h-16 flex items-center justify-center text-2xl md:text-3xl font-bold border-2 border-border"
-            >
-              {item}
+        {puzzle.type === 'analogy' || puzzle.type === 'number_analogy' ? (
+          // A : B :: C : ?
+          <div className="flex flex-wrap items-center gap-2 md:gap-3">
+            <motion.div initial={{ opacity:0, scale:0.8 }} animate={{ opacity:1, scale:1 }} transition={{ delay:0 }}
+              className="bg-muted rounded-xl w-14 h-14 md:w-16 md:h-16 flex items-center justify-center text-2xl md:text-3xl font-bold border-2 border-border">
+              {puzzle.sequence[0]}
             </motion.div>
-          ))}
-          {puzzle.type !== 'odd_one_out' && (
-            <div className="bg-primary/10 border-2 border-dashed border-primary/40 rounded-xl w-14 h-14 md:w-16 md:h-16 flex items-center justify-center text-2xl text-primary font-bold">
-              ?
-            </div>
-          )}
-        </div>
+            <span className="text-2xl font-bold text-muted-foreground">:</span>
+            <motion.div initial={{ opacity:0, scale:0.8 }} animate={{ opacity:1, scale:1 }} transition={{ delay:0.1 }}
+              className="bg-muted rounded-xl w-14 h-14 md:w-16 md:h-16 flex items-center justify-center text-2xl md:text-3xl font-bold border-2 border-border">
+              {puzzle.sequence[1]}
+            </motion.div>
+            <span className="text-2xl font-bold text-muted-foreground mx-1">::</span>
+            <motion.div initial={{ opacity:0, scale:0.8 }} animate={{ opacity:1, scale:1 }} transition={{ delay:0.2 }}
+              className="bg-muted rounded-xl w-14 h-14 md:w-16 md:h-16 flex items-center justify-center text-2xl md:text-3xl font-bold border-2 border-border">
+              {puzzle.sequence[2]}
+            </motion.div>
+            <span className="text-2xl font-bold text-muted-foreground">:</span>
+            <div className="bg-primary/10 border-2 border-dashed border-primary/40 rounded-xl w-14 h-14 md:w-16 md:h-16 flex items-center justify-center text-2xl text-primary font-bold">?</div>
+          </div>
+        ) : puzzle.type === 'matrix' ? (
+          // 2×2 grid with last cell as ?
+          <div className="grid grid-cols-2 gap-2 w-fit">
+            {[0,1,2].map(i => (
+              <motion.div key={i} initial={{ opacity:0, scale:0.8 }} animate={{ opacity:1, scale:1 }} transition={{ delay: i * 0.1 }}
+                className="bg-muted rounded-xl w-16 h-16 md:w-20 md:h-20 flex items-center justify-center text-3xl md:text-4xl border-2 border-border">
+                {puzzle.sequence[i]}
+              </motion.div>
+            ))}
+            <div className="bg-primary/10 border-2 border-dashed border-primary/40 rounded-xl w-16 h-16 md:w-20 md:h-20 flex items-center justify-center text-2xl text-primary font-bold">?</div>
+          </div>
+        ) : (
+          // Default: horizontal sequence
+          <div className="flex flex-wrap items-center gap-2 md:gap-3">
+            {puzzle.sequence.map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-muted rounded-xl w-14 h-14 md:w-16 md:h-16 flex items-center justify-center text-2xl md:text-3xl font-bold border-2 border-border"
+              >
+                {item}
+              </motion.div>
+            ))}
+            {puzzle.type !== 'odd_one_out' && (
+              <div className="bg-primary/10 border-2 border-dashed border-primary/40 rounded-xl w-14 h-14 md:w-16 md:h-16 flex items-center justify-center text-2xl text-primary font-bold">
+                ?
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Options */}
         <div className="grid grid-cols-2 gap-3 md:gap-4 max-w-md">
