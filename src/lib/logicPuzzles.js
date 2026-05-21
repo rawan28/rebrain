@@ -100,34 +100,6 @@ function generateOddOneOut(level) {
   };
 }
 
-// Word analogies: A is to B as C is to ?
-function generateAnalogy(level) {
-  const analogies = [
-    { a: '🐕', b: '🐾', c: '🐈', answer: '🐾', wrong: ['🦴', '🐟', '🐭'] },
-    { a: '🌞', b: '☀️', c: '🌙', answer: '🌙', wrong: ['⭐', '☁️', '🌊'] },
-    { a: '🍎', b: '🌳', c: '🌹', answer: '🌿', wrong: ['🍓', '🌺', '🍋'] },
-    { a: '👑', b: '🤴', c: '💍', answer: '👸', wrong: ['💎', '🏆', '🎀'] },
-    { a: '📚', b: '📖', c: '🗂️', answer: '📄', wrong: ['✏️', '🖊️', '📝'] },
-    { a: '🌊', b: '🏄', c: '⛰️', answer: '🧗', wrong: ['🚣', '🏊', '🤿'] },
-    { a: '🎹', b: '🎵', c: '🖌️', answer: '🎨', wrong: ['🎸', '🥁', '🎺'] },
-    { a: '🐣', b: '🐔', c: '🌱', answer: '🌳', wrong: ['🌾', '🌵', '🌸'] },
-    { a: '🔑', b: '🔓', c: '💡', answer: '🌟', wrong: ['🔒', '🚪', '🔦'] },
-    { a: '🚗', b: '🏎️', c: '🚲', answer: '🚴', wrong: ['🛵', '🏍️', '🛺'] },
-    { a: '📱', b: '📲', c: '💻', answer: '⌨️', wrong: ['🖥️', '🖱️', '🖨️'] },
-    { a: '🧊', b: '💧', c: '🪨', answer: '⬛', wrong: ['🌊', '🫧', '🧱'] },
-  ];
-
-  const item = analogies[Math.floor(Math.random() * analogies.length)];
-  const options = shuffle([item.answer, ...item.wrong.slice(0, 3)]);
-  return {
-    type: 'analogy',
-    question: 'analogy',
-    sequence: [item.a, item.b, item.c],
-    answer: item.answer,
-    options,
-  };
-}
-
 // Matrix / shape reasoning (2×2 grid)
 function generateMatrixReasoning() {
   const matrices = [
@@ -222,7 +194,7 @@ function generateNumberAnalogy(level) {
 export function generatePuzzle(level) {
   // All generators pool, weighted by level
   const basic = [generateShapePattern, generateNumberPattern, generateOddOneOut];
-  const psychometric = [generateAnalogy, generateMatrixReasoning, generateNumberAnalogy];
+  const psychometric = [generateMatrixReasoning, generateNumberAnalogy];
 
   // At low levels use basic only; at higher levels mix in psychometric
   let pool;
