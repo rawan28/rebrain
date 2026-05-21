@@ -27,6 +27,9 @@ export default function LogicPuzzle() {
     if (puz.type === 'analogy') return t.analogyQuestion || 'השלם את האנלוגיה: A : B כמו C : ?';
     if (puz.type === 'matrix') return t.matrixQuestion || 'מה חסר במטריצה?';
     if (puz.type === 'number_analogy') return t.numberAnalogyQuestion || 'השלם: A : B כמו C : ?';
+    if (puz.type === 'spatial_iq') return t.spatialIQQuestion || 'מה הגיוני שיבוא בהמשך?';
+    if (puz.type === 'visual_iq') return t.visualIQQuestion || 'איזה מהבאים שונה מהשאר?';
+    if (puz.type === 'number_series_iq') return t.numberSeriesIQQuestion || 'מהו המספר הבא בסדרה?';
     return puz.question;
   }, [t]);
 
@@ -99,7 +102,7 @@ export default function LogicPuzzle() {
         <h3 className="text-xl md:text-2xl font-semibold text-foreground">{getLocalizedQuestion(puzzle)}</h3>
 
         {/* Sequence display */}
-        {puzzle.type === 'analogy' || puzzle.type === 'number_analogy' ? (
+        {puzzle.type === 'number_analogy' ? (
           // A : B :: C : ?
           <div className="flex flex-wrap items-center gap-2 md:gap-3">
             <motion.div initial={{ opacity:0, scale:0.8 }} animate={{ opacity:1, scale:1 }} transition={{ delay:0 }}
@@ -130,8 +133,23 @@ export default function LogicPuzzle() {
             ))}
             <div className="bg-primary/10 border-2 border-dashed border-primary/40 rounded-xl w-16 h-16 md:w-20 md:h-20 flex items-center justify-center text-2xl text-primary font-bold">?</div>
           </div>
+        ) : puzzle.type === 'visual_iq' ? (
+          // Visual odd-one-out: show all items in a row
+          <div className="flex flex-wrap items-center gap-2 md:gap-3">
+            {puzzle.sequence.map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-muted rounded-xl w-14 h-14 md:w-16 md:h-16 flex items-center justify-center text-3xl md:text-4xl border-2 border-border"
+              >
+                {item}
+              </motion.div>
+            ))}
+          </div>
         ) : (
-          // Default: horizontal sequence
+          // Default: horizontal sequence with ? at end
           <div className="flex flex-wrap items-center gap-2 md:gap-3">
             {puzzle.sequence.map((item, i) => (
               <motion.div
@@ -163,13 +181,16 @@ export default function LogicPuzzle() {
             if (showResult && isCorrectAnswer) borderClass = 'border-green-400 bg-green-50';
             else if (showResult && isSelected && !isCorrectAnswer) borderClass = 'border-red-400 bg-red-50';
 
+            const isLong = option.length > 4;
+
             return (
               <motion.button
                 key={i}
                 whileTap={{ scale: selected === null ? 0.95 : 1 }}
                 onClick={() => handleSelect(option)}
                 disabled={selected !== null}
-                className={`rounded-xl py-4 px-4 text-2xl md:text-3xl font-bold border-2 transition-all
+                className={`rounded-xl py-3 px-3 border-2 transition-all min-h-[56px] flex items-center justify-center
+                  ${isLong ? 'text-base md:text-lg leading-snug' : 'text-2xl md:text-3xl font-bold'}
                   ${borderClass} ${selected === null ? 'cursor-pointer' : 'cursor-default'}`}
               >
                 {option}

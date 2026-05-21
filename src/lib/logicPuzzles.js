@@ -164,6 +164,86 @@ function generateMatrixReasoning() {
   };
 }
 
+// IQ: Spatial/visual rotation — which shape completes the pattern
+function generateSpatialIQ() {
+  const sets = [
+    { seq: ['🔺', '🔺🔺', '🔺🔺🔺'], answer: '🔺🔺🔺🔺', wrong: ['🔺🔺🔺🔺🔺', '🔻🔻🔻🔻', '🔺🔻🔺🔻'] },
+    { seq: ['⬜', '⬜⬜', '⬜⬜⬜'], answer: '⬜⬜⬜⬜', wrong: ['⬛⬛⬛⬛', '⬜⬜⬜⬜⬜', '🟦🟦🟦🟦'] },
+    { seq: ['🌑', '🌒', '🌓'], answer: '🌔', wrong: ['🌕', '🌙', '🌗'] },
+    { seq: ['🌱', '🌿', '🌳'], answer: '🌲', wrong: ['🍀', '🌴', '🌾'] },
+    { seq: ['🐣', '🐥', '🐔'], answer: '🦅', wrong: ['🐦', '🦜', '🦢'] },
+    { seq: ['1️⃣', '1️⃣2️⃣', '1️⃣2️⃣3️⃣'], answer: '1️⃣2️⃣3️⃣4️⃣', wrong: ['4️⃣3️⃣2️⃣1️⃣', '1️⃣2️⃣3️⃣5️⃣', '2️⃣3️⃣4️⃣5️⃣'] },
+    { seq: ['🔴', '🔴🟡', '🔴🟡🟢'], answer: '🔴🟡🟢🔵', wrong: ['🟡🟢🔵🟣', '🔴🟡🟢🟠', '🔵🟢🟡🔴'] },
+  ];
+  const item = sets[Math.floor(Math.random() * sets.length)];
+  const options = shuffle([item.answer, ...item.wrong.slice(0, 3)]);
+  return {
+    type: 'spatial_iq',
+    question: 'spatialIQ',
+    sequence: item.seq,
+    answer: item.answer,
+    options,
+  };
+}
+
+// IQ: Which figure is different (visual odd-one-out with shapes)
+function generateVisualIQ() {
+  const sets = [
+    { items: ['🔵', '🔵', '🔵', '🔴'], answer: '🔴' },
+    { items: ['🟦', '🟦', '🟥', '🟦'], answer: '🟥' },
+    { items: ['⭐', '⭐', '⭐', '🌟'], answer: '🌟' },
+    { items: ['🐶', '🐶', '🐱', '🐶'], answer: '🐱' },
+    { items: ['🍎', '🍎', '🍊', '🍎'], answer: '🍊' },
+    { items: ['🔺', '🔺', '🔺', '🔻'], answer: '🔻' },
+    { items: ['🏠', '🏠', '🏢', '🏠'], answer: '🏢' },
+    { items: ['🎵', '🎵', '🎶', '🎵'], answer: '🎶' },
+    { items: ['🌍', '🌎', '🌍', '🌍'], answer: '🌎' },
+    { items: ['🚗', '🚗', '🚌', '🚗'], answer: '🚌' },
+  ];
+  const item = sets[Math.floor(Math.random() * sets.length)];
+  const shuffled = shuffle([...item.items]);
+  // wrong options: other items from the set that aren't the answer
+  const wrong = shuffle(['🟩', '🟫', '🔷', '🔸', '💠', '🔹'].filter(x => x !== item.answer)).slice(0, 3);
+  const options = shuffle([item.answer, ...wrong]);
+  return {
+    type: 'visual_iq',
+    question: 'visualIQ',
+    sequence: shuffled,
+    answer: item.answer,
+    options,
+  };
+}
+
+// IQ: Number series with mixed operations
+function generateNumberSeriesIQ(level) {
+  const series = [
+    { seq: [2, 4, 8, 16], answer: 32, rule: '×2' },
+    { seq: [1, 4, 9, 16], answer: 25, rule: 'n²' },
+    { seq: [1, 1, 2, 3, 5], answer: 8, rule: 'fib' },
+    { seq: [3, 6, 12, 24], answer: 48, rule: '×2' },
+    { seq: [100, 81, 64, 49], answer: 36, rule: 'n²↓' },
+    { seq: [5, 10, 20, 40], answer: 80, rule: '×2' },
+    { seq: [1, 2, 4, 7, 11], answer: 16, rule: '+1+2+3…' },
+    { seq: [2, 3, 5, 8, 13], answer: 21, rule: 'fib-like' },
+    { seq: [10, 9, 7, 4], answer: 0, rule: '-1-2-3…' },
+    { seq: [3, 9, 27, 81], answer: 243, rule: '×3' },
+  ];
+
+  const available = level <= 3 ? series.slice(0, 5) : series;
+  const item = available[Math.floor(Math.random() * available.length)];
+  const ans = item.answer;
+  const wrong = [ans + 1, ans - 1, ans * 2].filter(v => v !== ans && v >= 0);
+  while (wrong.length < 3) wrong.push(ans + wrong.length + 3);
+  const options = shuffle([String(ans), ...wrong.slice(0, 3).map(String)]);
+  return {
+    type: 'number_series_iq',
+    question: 'numberSeriesIQ',
+    sequence: item.seq.map(String),
+    answer: String(ans),
+    options,
+  };
+}
+
 // Number analogy: A:B :: C:?
 function generateNumberAnalogy(level) {
   const pairs = [
@@ -195,15 +275,16 @@ export function generatePuzzle(level) {
   // All generators pool, weighted by level
   const basic = [generateShapePattern, generateNumberPattern, generateOddOneOut];
   const psychometric = [generateMatrixReasoning, generateNumberAnalogy];
+  const iq = [generateSpatialIQ, generateVisualIQ, () => generateNumberSeriesIQ(level)];
 
-  // At low levels use basic only; at higher levels mix in psychometric
+  // At low levels use basic only; at higher levels mix in psychometric and IQ
   let pool;
   if (level <= 2) {
     pool = basic;
   } else if (level <= 5) {
-    pool = [...basic, ...psychometric];
+    pool = [...basic, ...psychometric, ...iq];
   } else {
-    pool = [...basic, ...psychometric, ...psychometric]; // weight psychometric higher
+    pool = [...basic, ...psychometric, ...iq, ...iq]; // weight IQ higher at advanced levels
   }
 
   const gen = pool[Math.floor(Math.random() * pool.length)];
