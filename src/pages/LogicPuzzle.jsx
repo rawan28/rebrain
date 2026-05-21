@@ -10,6 +10,7 @@ import { Play, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
+import RavenMatrix from '@/components/games/RavenMatrix';
 
 export default function LogicPuzzle() {
   const { t } = useLang();
@@ -27,6 +28,7 @@ export default function LogicPuzzle() {
     if (puz.type === 'analogy') return t.analogyQuestion || 'השלם את האנלוגיה: A : B כמו C : ?';
     if (puz.type === 'matrix') return t.matrixQuestion || 'מה חסר במטריצה?';
     if (puz.type === 'number_analogy') return t.numberAnalogyQuestion || 'השלם: A : B כמו C : ?';
+    if (puz.type === 'raven_matrix') return t.ravenQuestion || 'איזה תמונה משלימה את המטריצה?';
     if (puz.type === 'spatial_iq') return t.spatialIQQuestion || 'מה הגיוני שיבוא בהמשך?';
     if (puz.type === 'visual_iq') return t.visualIQQuestion || 'איזה מהבאים שונה מהשאר?';
     if (puz.type === 'number_series_iq') return t.numberSeriesIQQuestion || 'מהו המספר הבא בסדרה?';
@@ -44,7 +46,9 @@ export default function LogicPuzzle() {
   const handleSelect = (option) => {
     if (selected !== null) return;
     setSelected(option);
-    const isCorrect = option === puzzle.answer;
+    const isCorrect = puzzle.type === 'raven_matrix'
+      ? option === puzzle.answerIndex
+      : option === puzzle.answer;
     awardCoin(isCorrect);
     difficulty.recordAnswer(isCorrect);
     saveSession('logic', {
@@ -57,7 +61,11 @@ export default function LogicPuzzle() {
     setFeedback({
       show: true,
       isCorrect,
-      message: isCorrect ? t.greatThinking : `${t.theAnswerWas} ${puzzle.answer}`,
+      message: isCorrect
+        ? t.greatThinking
+        : puzzle.type === 'raven_matrix'
+          ? `${t.theAnswerWas || 'התשובה הנכונה היא'} #${puzzle.answerIndex + 1}`
+          : `${t.theAnswerWas} ${puzzle.answer}`,
     });
 
     setTimeout(() => {
@@ -101,8 +109,14 @@ export default function LogicPuzzle() {
       <Card className="p-6 md:p-8 space-y-6">
         <h3 className="text-xl md:text-2xl font-semibold text-foreground">{getLocalizedQuestion(puzzle)}</h3>
 
-        {/* Sequence display */}
-        {puzzle.type === 'number_analogy' ? (
+        {/* Raven's Matrix — full self-contained UI */}
+        {puzzle.type === 'raven_matrix' ? (
+          <RavenMatrix
+            puzzle={puzzle}
+            selected={selected}
+            onSelect={handleSelect}
+          />
+        ) : puzzle.type === 'number_analogy' ? (
           // A : B :: C : ?
           <div className="flex flex-wrap items-center gap-2 md:gap-3">
             <motion.div initial={{ opacity:0, scale:0.8 }} animate={{ opacity:1, scale:1 }} transition={{ delay:0 }}
@@ -170,8 +184,8 @@ export default function LogicPuzzle() {
           </div>
         )}
 
-        {/* Options */}
-        <div className="grid grid-cols-2 gap-3 md:gap-4 max-w-md">
+        {/* Options — hidden for raven_matrix (handled inside RavenMatrix component) */}
+        {puzzle.type !== 'raven_matrix' && <div className="grid grid-cols-2 gap-3 md:gap-4 max-w-md">
           {puzzle.options.map((option, i) => {
             const isSelected = selected === option;
             const isCorrectAnswer = option === puzzle.answer;
@@ -197,7 +211,7 @@ export default function LogicPuzzle() {
               </motion.button>
             );
           })}
-        </div>
+        </div>}
       </Card>
 
       {showNext && (
