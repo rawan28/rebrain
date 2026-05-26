@@ -10,21 +10,32 @@ import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
 
 const ALL_IMAGES = [
-  { id: 'flower', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/397d9f288_generated_image.png' },
-  { id: 'sunflower', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/28f594e20_generated_image.png' },
-  { id: 'apple', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/4a1abc3fe_generated_image.png' },
-  { id: 'dog', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/27e2f78a6_generated_image.png' },
-  { id: 'cat', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/18c9e2e22_generated_image.png' },
-  { id: 'butterfly', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/a3b04e5e1_generated_image.png' },
-  { id: 'rainbow', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/7a2425f9b_generated_image.png' },
-  { id: 'star', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/971c8dab4_generated_image.png' },
-  { id: 'music', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/71bd56d43_generated_image.png' },
-  { id: 'house', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/fa760a1a6_generated_image.png' },
-  { id: 'car', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/c73c7fe89_generated_image.png' },
-  { id: 'art', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/ff2e5af9a_generated_image.png' },
-  { id: 'moon', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/65f94bf1e_generated_image.png' },
-  { id: 'pizza', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/a602d1ba0_generated_image.png' },
-  { id: 'sun', url: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/ee9cbf49a_generated_image.png' },
+  { id: 'key',        emoji: '🔑' },
+  { id: 'sunglasses', emoji: '🕶️' },
+  { id: 'bag',        emoji: '👜' },
+  { id: 'money',      emoji: '💰' },
+  { id: 'bed',        emoji: '🛏️' },
+  { id: 'hat',        emoji: '🎩' },
+  { id: 'food',       emoji: '🍽️' },
+  { id: 'pan',        emoji: '🍳' },
+  { id: 'board',      emoji: '📋' },
+  { id: 'child',      emoji: '🧒' },
+  { id: 'book',       emoji: '📚' },
+  { id: 'newspaper',  emoji: '📰' },
+  { id: 'headphones', emoji: '🎧' },
+  { id: 'coffee',     emoji: '☕' },
+  { id: 'candle',     emoji: '🕯️' },
+  { id: 'tree',       emoji: '🌳' },
+  { id: 'flower',     emoji: '🌸' },
+  { id: 'chair',      emoji: '🪑' },
+  { id: 'sea',        emoji: '🌊' },
+  { id: 'pool',       emoji: '🏊' },
+  { id: 'plane',      emoji: '✈️' },
+  { id: 'table',      emoji: '🪞' },
+  { id: 'car',        emoji: '🚗' },
+  { id: 'letter',     emoji: '✉️' },
+  { id: 'bird',       emoji: '🐦' },
+  { id: 'dog',        emoji: '🐶' },
 ];
 
 function getGridForLevel(level) {
@@ -57,7 +68,7 @@ export default function MemoryGame() {
     const deck = shuffleArray([...images, ...images]).map((image, i) => ({
       id: i,
       imageId: image.id,
-      url: image.url,
+      emoji: image.emoji,
     }));
     setCards(deck);
     setFlipped([]);
@@ -176,14 +187,14 @@ export default function MemoryGame() {
                 }`}
             >
               {showFace ? (
-                <motion.img
-                  src={card.url}
-                  alt="card"
+                <motion.span
                   initial={{ rotateY: 90 }}
                   animate={{ rotateY: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="w-full h-full object-cover"
-                />
+                  className="text-4xl md:text-5xl select-none"
+                >
+                  {card.emoji}
+                </motion.span>
               ) : (
                 <span className="text-4xl text-primary/40">?</span>
               )}
