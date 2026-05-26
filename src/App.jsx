@@ -15,7 +15,6 @@ import NumberQuiz from '@/pages/NumberQuiz';
 import Progress from '@/pages/Progress';
 import FlagQuiz from '@/pages/FlagQuiz';
 import WordComplete from '@/pages/WordComplete';
-import Sudoku from '@/pages/Sudoku.jsx';
 import TriviaQuiz from '@/pages/TriviaQuiz';
 import ShapeWordGame from '@/pages/ShapeWordGame';
 import RushHour from '@/pages/RushHour';
@@ -55,7 +54,6 @@ const AuthenticatedApp = () => {
         <Route path="/numbers" element={<NumberQuiz />} />
         <Route path="/flags" element={<FlagQuiz />} />
         <Route path="/word" element={<WordComplete />} />
-        <Route path="/sudoku" element={<Sudoku />} />
         <Route path="/trivia" element={<TriviaQuiz />} />
         <Route path="/shape-word" element={<ShapeWordGame />} />
         <Route path="/rush-hour" element={<RushHour />} />

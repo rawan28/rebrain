@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Hash, Lightbulb, Shapes, Car, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Car, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import CoinDisplay from './CoinDisplay';
@@ -36,7 +36,6 @@ export default function Layout() {
     { path: '/numbers', label: t.navNumbers, icon: Calculator },
     { path: '/flags', label: t.navFlags, icon: Flag },
     { path: '/word', label: t.navWord, icon: PenLine },
-    { path: '/sudoku', label: t.sudokuTitle, icon: Hash },
     { path: '/trivia', label: t.triviaTitle, icon: Lightbulb },
     { path: '/shape-word', label: t.shapeWordTitle, icon: Shapes },
     { path: '/rush-hour', label: t.rushHourTitle || 'חילוץ', icon: Car },
