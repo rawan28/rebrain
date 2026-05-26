@@ -20,6 +20,7 @@ import ShapeWordGame from '@/pages/ShapeWordGame';
 import RushHour from '@/pages/RushHour';
 import NumberQuizDashboard from '@/pages/NumberQuizDashboard';
 import Settings from '@/pages/Settings';
+import FruitAlgebra from '@/pages/FruitAlgebra';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -60,6 +61,7 @@ const AuthenticatedApp = () => {
         <Route path="/numbers-dashboard" element={<NumberQuizDashboard />} />
         <Route path="/progress" element={<Progress />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/fruit-algebra" element={<FruitAlgebra />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

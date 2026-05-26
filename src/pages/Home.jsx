@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Hash, Lightbulb, Shapes, Car, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Hash, Lightbulb, Shapes, Car, ArrowLeft, ArrowRight, Sparkles, Apple } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
@@ -92,6 +92,14 @@ export default function Home() {
       icon: Car,
       color: 'bg-orange-50 text-orange-600 border-orange-100',
       iconBg: 'bg-orange-100',
+    },
+    {
+      path: '/fruit-algebra',
+      title: t.fruitAlgebraTitle || 'אלגברת פירות 🍓',
+      description: t.fruitAlgebraDesc || 'גלה את ערך כל פרי ופתור את החידה!',
+      icon: Apple,
+      color: 'bg-red-50 text-red-600 border-red-100',
+      iconBg: 'bg-red-100',
     },
   ];
 
