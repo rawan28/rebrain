@@ -22,6 +22,14 @@ export default function Home() {
 
   const exercises = [
     {
+      path: '/fruit-algebra',
+      title: t.fruitAlgebraTitle || 'אלגברת פירות 🍓',
+      description: t.fruitAlgebraDesc || 'גלה את ערך כל פרי ופתור את החידה!',
+      icon: Apple,
+      color: 'bg-red-50 text-red-600 border-red-100',
+      iconBg: 'bg-red-100',
+    },
+    {
       path: '/memory',
       title: t.memoryTitle,
       description: t.memoryDesc,
@@ -92,14 +100,6 @@ export default function Home() {
       icon: Car,
       color: 'bg-orange-50 text-orange-600 border-orange-100',
       iconBg: 'bg-orange-100',
-    },
-    {
-      path: '/fruit-algebra',
-      title: t.fruitAlgebraTitle || 'אלגברת פירות 🍓',
-      description: t.fruitAlgebraDesc || 'גלה את ערך כל פרי ופתור את החידה!',
-      icon: Apple,
-      color: 'bg-red-50 text-red-600 border-red-100',
-      iconBg: 'bg-red-100',
     },
   ];
 
