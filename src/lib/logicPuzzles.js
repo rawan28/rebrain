@@ -244,9 +244,6 @@ function generateNumberSeriesIQ(level) {
   };
 }
 
-// Raven matrix — delegated to ravenMatrices.js
-import { generateRavenPuzzle } from './ravenMatrices.js';
-
 // Number analogy: A:B :: C:?
 function generateNumberAnalogy(level) {
   const pairs = [
@@ -278,7 +275,7 @@ export function generatePuzzle(level) {
   // All generators pool, weighted by level
   const basic = [generateShapePattern, generateNumberPattern, generateOddOneOut];
   const psychometric = [generateMatrixReasoning, generateNumberAnalogy];
-  const iq = [generateSpatialIQ, generateVisualIQ, () => generateNumberSeriesIQ(level), () => generateRavenPuzzle(level)];
+  const iq = [generateSpatialIQ, generateVisualIQ, () => generateNumberSeriesIQ(level)];
 
   // At low levels use basic only; at higher levels mix in psychometric and IQ
   let pool;
