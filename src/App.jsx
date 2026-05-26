@@ -22,6 +22,7 @@ import NumberQuizDashboard from '@/pages/NumberQuizDashboard';
 import Settings from '@/pages/Settings';
 import FruitAlgebra from '@/pages/FruitAlgebra';
 
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 

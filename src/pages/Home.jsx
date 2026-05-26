@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Hash, Lightbulb, Shapes, Car, ArrowLeft, ArrowRight, Sparkles, Apple } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Car, ArrowLeft, ArrowRight, Sparkles, Apple } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
@@ -69,14 +69,7 @@ export default function Home() {
       color: 'bg-pink-50 text-pink-600 border-pink-100',
       iconBg: 'bg-pink-100',
     },
-    {
-      path: '/sudoku',
-      title: t.sudokuTitle,
-      description: t.sudokuDesc,
-      icon: Hash,
-      color: 'bg-teal-50 text-teal-600 border-teal-100',
-      iconBg: 'bg-teal-100',
-    },
+
     {
       path: '/trivia',
       title: t.triviaTitle,
