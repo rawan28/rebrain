@@ -17,7 +17,6 @@ import FlagQuiz from '@/pages/FlagQuiz';
 import WordComplete from '@/pages/WordComplete';
 import TriviaQuiz from '@/pages/TriviaQuiz';
 import ShapeWordGame from '@/pages/ShapeWordGame';
-import RushHour from '@/pages/RushHour';
 import NumberQuizDashboard from '@/pages/NumberQuizDashboard';
 import Settings from '@/pages/Settings';
 import FruitAlgebra from '@/pages/FruitAlgebra';
@@ -61,7 +60,6 @@ const AuthenticatedApp = () => {
         <Route path="/word" element={<WordComplete />} />
         <Route path="/trivia" element={<TriviaQuiz />} />
         <Route path="/shape-word" element={<ShapeWordGame />} />
-        <Route path="/rush-hour" element={<RushHour />} />
         <Route path="/numbers-dashboard" element={<NumberQuizDashboard />} />
         <Route path="/progress" element={<Progress />} />
         <Route path="/settings" element={<Settings />} />
