@@ -273,66 +273,78 @@ export default function ConnectDots() {
       )}
 
       <div
-        className="grid select-none touch-none mx-auto bg-muted/20 rounded-xl p-1"
+        className="relative select-none touch-none mx-auto bg-muted/20 rounded-xl p-1"
         style={{
-          gridTemplateColumns: `repeat(${level.size}, 1fr)`,
           maxWidth: `${level.size * 56}px`,
           width: '100%',
+          aspectRatio: '1 / 1',
         }}
         onPointerMove={handlePointerMove}
       >
-        {Array.from({ length: level.size }).flatMap((_, r) =>
-          Array.from({ length: level.size }).map((__, c) => {
-            const info = getCellPathInfo(r, c);
-            const dot = findDot(r, c);
-            const isDotCell = dot !== null;
-            const neighbors = info ? getPathNeighbors(r, c, info.pathArr) : {};
-            const opacity = info?.isDrag ? 0.5 : 0.8;
-
+        <svg
+          viewBox={`0 0 ${level.size} ${level.size}`}
+          className="absolute inset-1 w-[calc(100%-8px)] h-[calc(100%-8px)] pointer-events-none"
+          preserveAspectRatio="none"
+        >
+          {/* Completed paths */}
+          {Object.entries(paths).map(([color, path]) => {
+            if (path.length < 2) return null;
+            const pts = path.map(p => `${p.c + 0.5},${p.r + 0.5}`).join(' ');
             return (
-              <div
-                key={`${r}-${c}`}
-                data-cell
-                data-r={r}
-                data-c={c}
-                onPointerDown={() => handleCellDown(r, c)}
-                className="aspect-square relative flex items-center justify-center cursor-pointer"
-              >
-                <div className="absolute inset-0.5 rounded-md bg-muted/10" />
-
-                {info && (
-                  <>
-                    {neighbors.up && (
-                      <div className="absolute left-1/2 -translate-x-1/2 top-0 pointer-events-none"
-                        style={{ height: '50%', width: '28%', backgroundColor: info.color, opacity }} />
-                    )}
-                    {neighbors.down && (
-                      <div className="absolute left-1/2 -translate-x-1/2 bottom-0 pointer-events-none"
-                        style={{ height: '50%', width: '28%', backgroundColor: info.color, opacity }} />
-                    )}
-                    {neighbors.left && (
-                      <div className="absolute top-1/2 -translate-y-1/2 left-0 pointer-events-none"
-                        style={{ width: '50%', height: '28%', backgroundColor: info.color, opacity }} />
-                    )}
-                    {neighbors.right && (
-                      <div className="absolute top-1/2 -translate-y-1/2 right-0 pointer-events-none"
-                        style={{ width: '50%', height: '28%', backgroundColor: info.color, opacity }} />
-                    )}
-                    {!isDotCell && (
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
-                        style={{ backgroundColor: info.color, width: '32%', height: '32%', opacity }} />
-                    )}
-                  </>
-                )}
-
-                {isDotCell && (
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-md pointer-events-none z-10"
-                    style={{ backgroundColor: dot.color, width: '52%', height: '52%' }} />
-                )}
-              </div>
+              <polyline
+                key={color}
+                points={pts}
+                fill="none"
+                stroke={color}
+                strokeWidth={0.28}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity={0.85}
+              />
             );
-          })
-        )}
+          })}
+          {/* Active drag path */}
+          {dragColor && dragPath.length >= 2 && (
+            <polyline
+              points={dragPath.map(p => `${p.c + 0.5},${p.r + 0.5}`).join(' ')}
+              fill="none"
+              stroke={dragColor}
+              strokeWidth={0.28}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity={0.6}
+            />
+          )}
+          {/* Dots */}
+          {level.pairs.map((pair) => [
+            <circle key={`a-${pair.color}`} cx={pair.a.c + 0.5} cy={pair.a.r + 0.5} r={0.22}
+              fill={pair.color} stroke="white" strokeWidth={0.06} />,
+            <circle key={`b-${pair.color}`} cx={pair.b.c + 0.5} cy={pair.b.r + 0.5} r={0.22}
+              fill={pair.color} stroke="white" strokeWidth={0.06} />,
+          ])}
+        </svg>
+
+        {/* Interactive cell layer */}
+        <div
+          className="absolute inset-1 grid"
+          style={{ gridTemplateColumns: `repeat(${level.size}, 1fr)` }}
+        >
+          {Array.from({ length: level.size }).flatMap((_, r) =>
+            Array.from({ length: level.size }).map((__, c) => {
+              const dot = findDot(r, c);
+              return (
+                <div
+                  key={`${r}-${c}`}
+                  data-cell
+                  data-r={r}
+                  data-c={c}
+                  onPointerDown={() => handleCellDown(r, c)}
+                  className="aspect-square cursor-pointer"
+                />
+              );
+            })
+          )}
+        </div>
       </div>
 
       <p className="text-center text-sm text-muted-foreground px-4">
