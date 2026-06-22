@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Car, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Car, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
@@ -101,6 +101,14 @@ export default function Home() {
       icon: CalendarRange,
       color: 'bg-cyan-50 text-cyan-600 border-cyan-100',
       iconBg: 'bg-cyan-100',
+    },
+    {
+      path: '/reminder',
+      title: t.reminderTitle,
+      description: t.reminderCardDesc,
+      icon: BellRing,
+      color: 'bg-rose-50 text-rose-600 border-rose-100',
+      iconBg: 'bg-rose-100',
     },
   ];
 

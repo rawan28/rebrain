@@ -1,0 +1,34 @@
+{
+  "name": "ReminderSubscription",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "hour": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 23
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "lang": {
+      "type": "string",
+      "enum": [
+        "he",
+        "ar"
+      ],
+      "default": "he"
+    },
+    "last_sent_date": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "email",
+    "hour"
+  ]
+}
