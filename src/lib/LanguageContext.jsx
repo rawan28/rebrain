@@ -83,6 +83,11 @@ export const translations = {
     rushHourTitle: 'חילוץ מכונית',
     rushHourDesc: 'הוצא את המכונית האדומה מהפקק! הזז רכבים אופקית ואנכית.',
     rushHourHint: 'לחץ על רכב להזזתו — הוצא את המכונית האדומה לצד ימין',
+    navWeekly: 'דוח שבועי',
+    weeklyReportTitle: 'דוח התקדמות שבועי',
+    weeklyReportDesc: 'רמת הקושי שלך בכל משחק בשבוע האחרון',
+    weeklyNoData: 'אין פעילות בשבוע האחרון — שחק כדי לראות שיפור!',
+    weeklyCardDesc: 'רמת הקושי שלך לאורך השבוע האחרון',
   },
   ar: {
     dir: 'rtl',
@@ -166,6 +171,11 @@ export const translations = {
     rushHourTitle: 'إنقاذ السيارة',
     rushHourDesc: 'أخرج السيارة الحمراء من الازدحام! حرّك السيارات أفقياً وعمودياً.',
     rushHourHint: 'انقر على سيارة لتحريكها — أخرج السيارة الحمراء إلى اليمين',
+    navWeekly: 'تقرير أسبوعي',
+    weeklyReportTitle: 'تقرير التقدم الأسبوعي',
+    weeklyReportDesc: 'مستوى الصعوبة لكل لعبة في الأسبوع الماضي',
+    weeklyNoData: 'لا نشاط في الأسبوع الماضي — العب لرؤية التحسن!',
+    weeklyCardDesc: 'مستوى الصعوبة لديك خلال الأسبوع الماضي',
   },
 };
 

@@ -21,6 +21,7 @@ import RushHour from '@/pages/RushHour';
 import NumberQuizDashboard from '@/pages/NumberQuizDashboard';
 import Settings from '@/pages/Settings';
 import FruitAlgebra from '@/pages/FruitAlgebra';
+import WeeklyReport from '@/pages/WeeklyReport';
 
 
 const AuthenticatedApp = () => {
@@ -63,6 +64,7 @@ const AuthenticatedApp = () => {
         <Route path="/progress" element={<Progress />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/fruit-algebra" element={<FruitAlgebra />} />
+        <Route path="/weekly-report" element={<WeeklyReport />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
