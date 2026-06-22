@@ -92,7 +92,7 @@ function shuffleArray(arr) {
 
 export default function MemoryGame() {
   const { t } = useLang();
-  const difficulty = useDifficulty(1, 10);
+  const difficulty = useDifficulty(1, 15);
   const [cards, setCards] = useState([]);
   const [flipped, setFlipped] = useState([]);
   const [matched, setMatched] = useState([]);
