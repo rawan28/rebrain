@@ -147,9 +147,10 @@ export default function Home() {
           return (
             <motion.div key={exercise.path} variants={item}>
               <Link to={exercise.path} className="block group">
-                <Card className={`border-2 transition-all duration-200 hover:shadow-lg hover:scale-[1.01] ${exercise.color}`}>
-                  <CardHeader className="flex flex-row items-center gap-4 md:gap-5 p-5 md:p-6">
-                    <div className={`p-3 md:p-4 rounded-xl ${exercise.iconBg} shrink-0`}>
+                <Card className={`border-2 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:-translate-y-0.5 relative overflow-hidden ${exercise.color}`}>
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/40 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <CardHeader className="flex flex-row items-center gap-4 md:gap-5 p-5 md:p-6 relative z-10">
+                    <div className={`p-3 md:p-4 rounded-2xl ${exercise.iconBg} shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
                       <Icon className="w-8 h-8 md:w-10 md:h-10" />
                     </div>
                     <div className="flex-1 min-w-0">

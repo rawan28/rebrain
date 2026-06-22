@@ -4,8 +4,9 @@ import useDifficulty from '@/lib/useDifficulty';
 import GameHeader from '@/components/games/GameHeader';
 import FeedbackOverlay from '@/components/games/FeedbackOverlay';
 import { Button } from '@/components/ui/button';
-import { Play } from 'lucide-react';
+import { Play, Grid3X3 } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
+import GameStartScreen from '@/components/games/GameStartScreen';
 import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
 
@@ -168,16 +169,14 @@ export default function MemoryGame() {
 
   if (!gameStarted) {
     return (
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t.memoryTitle}</h2>
-          <p className="text-lg text-muted-foreground mt-2">{t.memoryDescLong}</p>
-        </div>
-        <Button size="lg" onClick={startNewRound} className="text-lg px-8 py-6 gap-3">
-          <Play className="w-6 h-6" />
-          {t.startPlaying}
-        </Button>
-      </div>
+      <GameStartScreen
+        title={t.memoryTitle}
+        description={t.memoryDescLong}
+        icon={Grid3X3}
+        gradient="from-blue-400 to-indigo-500"
+        onStart={startNewRound}
+        startLabel={t.startPlaying}
+      />
     );
   }
 
@@ -201,7 +200,7 @@ export default function MemoryGame() {
       </p>
 
       <div
-        className="grid gap-3 md:gap-4 max-w-lg mx-auto"
+        className="grid gap-3 md:gap-4 max-w-lg mx-auto [perspective:1000px]"
         style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
       >
         {cards.map((card, index) => {
@@ -212,30 +211,34 @@ export default function MemoryGame() {
           return (
             <motion.button
               key={card.id}
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.92 }}
               onClick={() => handleCardClick(index)}
               disabled={isMatched}
-              className={`aspect-square rounded-xl flex items-center justify-center
-                border-2 transition-all duration-300 cursor-pointer select-none overflow-hidden
-                ${isMatched
-                  ? 'bg-green-50 border-green-300 opacity-70'
-                  : showFace
-                    ? 'bg-white border-primary shadow-lg'
-                    : 'bg-primary/10 border-primary/30 hover:bg-primary/20 hover:border-primary/50'
-                }`}
+              className={`aspect-square relative rounded-2xl cursor-pointer select-none
+                transition-all duration-300 [transform-style:preserve-3d]
+                ${isMatched ? '[transform:rotateY(180deg)]' : showFace ? '[transform:rotateY(180deg)]' : ''}`}
             >
-              {showFace ? (
+              {/* Card back */}
+              <div className="absolute inset-0 rounded-2xl [backface-visibility:hidden] flex items-center justify-center
+                bg-gradient-to-br from-primary to-indigo-600 border-2 border-primary/50 shadow-md
+                hover:shadow-lg hover:scale-[1.03] transition-all">
+                <span className="text-3xl md:text-4xl text-white/30 font-bold">?</span>
+              </div>
+              {/* Card front */}
+              <div className={`absolute inset-0 rounded-2xl [backface-visibility:hidden] [transform:rotateY(180deg)]
+                flex items-center justify-center border-2 shadow-lg
+                ${isMatched
+                  ? 'bg-gradient-to-br from-green-50 to-emerald-100 border-green-300'
+                  : 'bg-white border-primary'}`}>
                 <motion.span
-                  initial={{ rotateY: 90 }}
-                  animate={{ rotateY: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="text-4xl md:text-5xl select-none"
+                  initial={{ scale: 0.5 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                  className={`text-4xl md:text-5xl select-none ${isMatched ? 'opacity-80' : ''}`}
                 >
                   {card.emoji}
                 </motion.span>
-              ) : (
-                <span className="text-4xl text-primary/40">?</span>
-              )}
+              </div>
             </motion.button>
           );
         })}

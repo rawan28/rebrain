@@ -6,9 +6,10 @@ import GameHeader from '@/components/games/GameHeader';
 import FeedbackOverlay from '@/components/games/FeedbackOverlay';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Play, ArrowRight, ArrowLeft, BarChart2 } from 'lucide-react';
+import { Play, ArrowRight, ArrowLeft, BarChart2, Calculator } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLang } from '@/lib/LanguageContext';
+import GameStartScreen from '@/components/games/GameStartScreen';
 import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
 
@@ -60,24 +61,21 @@ export default function NumberQuiz() {
 
   if (!problem) {
     return (
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t.numbersTitle}</h2>
-          <p className="text-lg text-muted-foreground mt-2">{t.numbersDescLong}</p>
-        </div>
-        <div className="flex gap-3 flex-wrap">
-          <Button size="lg" onClick={handleStart} className="text-lg px-8 py-6 gap-3">
-            <Play className="w-6 h-6" />
-            {t.startPlaying}
+      <GameStartScreen
+        title={t.numbersTitle}
+        description={t.numbersDescLong}
+        icon={Calculator}
+        gradient="from-emerald-400 to-teal-500"
+        onStart={handleStart}
+        startLabel={t.startPlaying}
+      >
+        <Link to="/numbers-dashboard">
+          <Button size="lg" variant="outline" className="text-lg px-8 py-6 gap-3">
+            <BarChart2 className="w-6 h-6" />
+            {t.dir === 'rtl' ? 'לוח בקרה' : 'Dashboard'}
           </Button>
-          <Link to="/numbers-dashboard">
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6 gap-3">
-              <BarChart2 className="w-6 h-6" />
-              {t.dir === 'rtl' ? 'לוח בקרה' : 'Dashboard'}
-            </Button>
-          </Link>
-        </div>
-      </div>
+        </Link>
+      </GameStartScreen>
     );
   }
 
@@ -93,13 +91,13 @@ export default function NumberQuiz() {
         onReset={handleReset}
       />
 
-      <Card className="p-6 md:p-8 space-y-8">
-        <div className="text-center">
+      <Card className="p-6 md:p-8 space-y-8 bg-gradient-to-br from-card to-muted/30">
+        <div className="text-center py-4">
           <motion.p
             key={problem.question}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-bold text-foreground tracking-wide"
+            className="text-4xl md:text-6xl font-bold text-foreground tracking-wide"
           >
             {problem.question}
           </motion.p>
@@ -111,17 +109,18 @@ export default function NumberQuiz() {
             const isCorrectAnswer = option === problem.answer;
             const showResult = selected !== null;
 
-            let classes = 'border-border hover:border-primary hover:bg-primary/5';
+            let classes = 'border-border hover:border-primary hover:bg-primary/5 bg-card';
             if (showResult && isCorrectAnswer) classes = 'border-green-400 bg-green-50';
             else if (showResult && isSelected && !isCorrectAnswer) classes = 'border-red-400 bg-red-50';
 
             return (
               <motion.button
                 key={i}
-                whileTap={{ scale: selected === null ? 0.95 : 1 }}
+                whileTap={{ scale: selected === null ? 0.93 : 1 }}
+                whileHover={{ scale: selected === null ? 1.04 : 1 }}
                 onClick={() => handleSelect(option)}
                 disabled={selected !== null}
-                className={`rounded-xl py-5 text-2xl md:text-3xl font-bold border-2 transition-all
+                className={`rounded-2xl py-5 text-2xl md:text-3xl font-bold border-2 transition-all shadow-sm hover:shadow-md
                   ${classes} ${selected === null ? 'cursor-pointer' : 'cursor-default'}`}
               >
                 {option}

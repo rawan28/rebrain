@@ -1,9 +1,10 @@
 import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Play } from 'lucide-react';
+import { Play, Flag } from 'lucide-react';
 import useDifficulty from '@/lib/useDifficulty';
 import { getRandomQuestion, getFlagUrl } from '@/lib/flagsData';
 import { useLang } from '@/lib/LanguageContext';
+import GameStartScreen from '@/components/games/GameStartScreen';
 import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
 import GameHeader from '@/components/games/GameHeader';
@@ -63,16 +64,14 @@ export default function FlagQuiz() {
 
   if (!question) {
     return (
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t.flagTitle}</h2>
-          <p className="text-lg text-muted-foreground mt-2">{t.flagDescLong}</p>
-        </div>
-        <Button size="lg" onClick={handleStart} className="text-lg px-8 py-6 gap-3">
-          <Play className="w-6 h-6" />
-          {t.startPlaying}
-        </Button>
-      </div>
+      <GameStartScreen
+        title={t.flagTitle}
+        description={t.flagDescLong}
+        icon={Flag}
+        gradient="from-orange-400 to-amber-500"
+        onStart={handleStart}
+        startLabel={t.startPlaying}
+      />
     );
   }
 
@@ -88,7 +87,7 @@ export default function FlagQuiz() {
         onReset={handleReset}
       />
 
-      <Card className="p-6 md:p-10 flex flex-col items-center gap-6">
+      <Card className="p-6 md:p-10 flex flex-col items-center gap-6 bg-gradient-to-br from-card to-muted/30">
         <p className="text-xl md:text-2xl font-semibold text-foreground">{t.whichCountry}</p>
         <motion.img
           key={question.flag}
@@ -113,10 +112,11 @@ export default function FlagQuiz() {
             return (
               <motion.button
                 key={i}
-                whileTap={{ scale: selected === null ? 0.97 : 1 }}
+                whileTap={{ scale: selected === null ? 0.96 : 1 }}
+                whileHover={{ scale: selected === null ? 1.02 : 1 }}
                 onClick={() => handleSelect(option)}
                 disabled={selected !== null}
-                className={`rounded-xl py-4 px-6 text-lg md:text-xl font-semibold border-2 transition-all text-center
+                className={`rounded-2xl py-4 px-6 text-lg md:text-xl font-semibold border-2 transition-all text-center shadow-sm hover:shadow-md
                   ${cls} ${selected === null ? 'cursor-pointer' : 'cursor-default'}`}
               >
                 {option}

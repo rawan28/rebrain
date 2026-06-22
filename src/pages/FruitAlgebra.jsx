@@ -5,8 +5,9 @@ import GameHeader from '@/components/games/GameHeader';
 import FeedbackOverlay from '@/components/games/FeedbackOverlay';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Play, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Play, ArrowRight, ArrowLeft, Apple } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
+import GameStartScreen from '@/components/games/GameStartScreen';
 import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
 
@@ -111,20 +112,14 @@ export default function FruitAlgebra() {
 
   if (!puzzle) {
     return (
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-            {t.fruitAlgebraTitle || 'אלגברת פירות 🍓'}
-          </h2>
-          <p className="text-lg text-muted-foreground mt-2">
-            {t.fruitAlgebraDesc || 'גלה את ערך כל פרי ופתור את החידה האחרונה!'}
-          </p>
-        </div>
-        <Button size="lg" onClick={handleStart} className="text-lg px-8 py-6 gap-3">
-          <Play className="w-6 h-6" />
-          {t.startPlaying || 'התחל לשחק'}
-        </Button>
-      </div>
+      <GameStartScreen
+        title={t.fruitAlgebraTitle || 'אלגברת פירות 🍓'}
+        description={t.fruitAlgebraDesc || 'גלה את ערך כל פרי ופתור את החידה האחרונה!'}
+        icon={Apple}
+        gradient="from-red-400 to-rose-500"
+        onStart={handleStart}
+        startLabel={t.startPlaying || 'התחל לשחק'}
+      />
     );
   }
 

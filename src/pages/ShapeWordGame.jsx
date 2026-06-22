@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Play } from 'lucide-react';
+import { Play, Shapes } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import useDifficulty from '@/lib/useDifficulty';
 import { buildShapeWordDeck } from '@/lib/shapePairsData';
+import GameStartScreen from '@/components/games/GameStartScreen';
 import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
 import GameHeader from '@/components/games/GameHeader';
@@ -112,16 +113,14 @@ export default function ShapeWordGame() {
 
   if (!gameStarted) {
     return (
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">{l.title}</h2>
-          <p className="text-lg text-muted-foreground mt-2">{l.descLong}</p>
-        </div>
-        <Button size="lg" onClick={startNewRound} className="text-lg px-8 py-6 gap-3">
-          <Play className="w-6 h-6" />
-          {t.startPlaying}
-        </Button>
-      </div>
+      <GameStartScreen
+        title={l.title}
+        description={l.descLong}
+        icon={Shapes}
+        gradient="from-indigo-400 to-blue-500"
+        onStart={startNewRound}
+        startLabel={t.startPlaying}
+      />
     );
   }
 

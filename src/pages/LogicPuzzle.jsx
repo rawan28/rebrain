@@ -6,8 +6,9 @@ import GameHeader from '@/components/games/GameHeader';
 import FeedbackOverlay from '@/components/games/FeedbackOverlay';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Play, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Play, ArrowRight, ArrowLeft, Puzzle } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
+import GameStartScreen from '@/components/games/GameStartScreen';
 import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
 
@@ -73,16 +74,14 @@ export default function LogicPuzzle() {
 
   if (!puzzle) {
     return (
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t.logicTitle}</h2>
-          <p className="text-lg text-muted-foreground mt-2">{t.logicDescLong}</p>
-        </div>
-        <Button size="lg" onClick={handleStart} className="text-lg px-8 py-6 gap-3">
-          <Play className="w-6 h-6" />
-          {t.startPlaying}
-        </Button>
-      </div>
+      <GameStartScreen
+        title={t.logicTitle}
+        description={t.logicDescLong}
+        icon={Puzzle}
+        gradient="from-purple-400 to-violet-500"
+        onStart={handleStart}
+        startLabel={t.startPlaying}
+      />
     );
   }
 
@@ -98,7 +97,7 @@ export default function LogicPuzzle() {
         onReset={handleReset}
       />
 
-      <Card className="p-6 md:p-8 space-y-6">
+      <Card className="p-6 md:p-8 space-y-6 bg-gradient-to-br from-card to-muted/30">
         <h3 className="text-xl md:text-2xl font-semibold text-foreground">{getLocalizedQuestion(puzzle)}</h3>
 
         {/* Sequence display */}
@@ -186,10 +185,11 @@ export default function LogicPuzzle() {
             return (
               <motion.button
                 key={i}
-                whileTap={{ scale: selected === null ? 0.95 : 1 }}
+                whileTap={{ scale: selected === null ? 0.94 : 1 }}
+                whileHover={{ scale: selected === null ? 1.03 : 1 }}
                 onClick={() => handleSelect(option)}
                 disabled={selected !== null}
-                className={`rounded-xl py-3 px-3 border-2 transition-all min-h-[56px] flex items-center justify-center
+                className={`rounded-2xl py-3 px-3 border-2 transition-all min-h-[56px] flex items-center justify-center shadow-sm hover:shadow-md
                   ${isLong ? 'text-base md:text-lg leading-snug' : 'text-2xl md:text-3xl font-bold'}
                   ${borderClass} ${selected === null ? 'cursor-pointer' : 'cursor-default'}`}
               >
