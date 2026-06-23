@@ -1,4 +1,5 @@
-// Coins store — persists gold coins to localStorage
+// Coins store — persists coins to backend DB + localStorage cache
+import { base44 } from '@/api/base44Client';
 
 const COINS_KEY = 'rebrain_coins';
 
@@ -11,16 +12,51 @@ export function getCoins() {
   }
 }
 
+function setLocalCoins(n) {
+  try {
+    localStorage.setItem(COINS_KEY, String(Math.max(0, n)));
+  } catch {
+    // ignore
+  }
+}
+
+async function syncCoinsToBackend(coins) {
+  try {
+    const records = await base44.entities.UserCoins.filter({ created_by_id: (await base44.auth.me()).id });
+    if (records.length > 0) {
+      await base44.entities.UserCoins.update(records[0].id, { coins });
+    } else {
+      await base44.entities.UserCoins.create({ coins });
+    }
+  } catch {
+    // Silently fail — local cache still works
+  }
+}
+
+export async function syncCoinsFromBackend() {
+  try {
+    const me = await base44.auth.me();
+    const records = await base44.entities.UserCoins.filter({ created_by_id: me.id });
+    if (records.length > 0) {
+      setLocalCoins(records[0].coins);
+      return records[0].coins;
+    }
+  } catch {
+    // ignore
+  }
+  return getCoins();
+}
+
 export function addCoin() {
-  const current = getCoins();
-  const next = current + 1;
-  localStorage.setItem(COINS_KEY, String(next));
+  const next = getCoins() + 1;
+  setLocalCoins(next);
+  syncCoinsToBackend(next);
   return next;
 }
 
 export function removeCoin() {
-  const current = getCoins();
-  const next = Math.max(0, current - 1);
-  localStorage.setItem(COINS_KEY, String(next));
+  const next = Math.max(0, getCoins() - 1);
+  setLocalCoins(next);
+  syncCoinsToBackend(next);
   return next;
 }

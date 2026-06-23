@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useLang } from '@/lib/LanguageContext';
-import { loadProgress } from '@/lib/progressStore';
+import { loadProgress, syncProgressFromBackend } from '@/lib/progressStore';
 import usePullToRefresh from '@/lib/usePullToRefresh';
 import PullToRefreshIndicator from '@/components/PullToRefreshIndicator';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
@@ -39,7 +39,15 @@ function EmptyState({ label }) {
 export default function Progress() {
   const { t } = useLang();
   const [refreshKey, setRefreshKey] = useState(0);
-  const { pullY, refreshing, progress } = usePullToRefresh(() => new Promise(r => setTimeout(() => { setRefreshKey(k => k + 1); r(); }, 800)));
+  const { pullY, refreshing, progress } = usePullToRefresh(() =>
+    syncProgressFromBackend().then(() => setRefreshKey(k => k + 1))
+  );
+
+  // Sync from backend on first load
+  useEffect(() => {
+    syncProgressFromBackend().then(() => setRefreshKey(k => k + 1));
+  }, []);
+
   const raw = useMemo(() => loadProgress(), [refreshKey]);
 
   // Merge all games into a unified timeline by session index

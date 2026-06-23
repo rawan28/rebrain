@@ -1,0 +1,34 @@
+{
+  "name": "UserProgress",
+  "type": "object",
+  "properties": {
+    "game": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string"
+    },
+    "level": {
+      "type": "integer"
+    },
+    "streak": {
+      "type": "integer"
+    },
+    "totalCorrect": {
+      "type": "integer"
+    },
+    "totalAttempts": {
+      "type": "integer"
+    },
+    "accuracy": {
+      "type": "integer"
+    },
+    "responseTimeMs": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "game",
+    "date"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "UserCoins",
+  "type": "object",
+  "properties": {
+    "coins": {
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "required": [
+    "coins"
+  ]
+}

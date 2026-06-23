@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getCoins } from '@/lib/coinsStore';
+import { getCoins, syncCoinsFromBackend } from '@/lib/coinsStore';
 
 // Global event system so any component can trigger a coin update
 const listeners = new Set();
@@ -18,6 +18,8 @@ export default function CoinDisplay() {
 
   useEffect(() => {
     listeners.add(refresh);
+    // Sync from backend on mount to restore coins across devices
+    syncCoinsFromBackend().then(c => setCoins(c));
     return () => listeners.delete(refresh);
   }, [refresh]);
 
