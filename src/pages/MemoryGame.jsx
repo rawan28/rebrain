@@ -78,8 +78,8 @@ const ALL_IMAGES = [
 ];
 
 function getGridForLevel(level) {
-  // levels 1-15 → 3 to 12 pairs, stepping up every 2 levels
-  return Math.min(3 + Math.floor((level - 1) / 2), 12);
+  // levels 1-15 → 3 to 8 pairs (6–16 cards), stepping up every 2 levels
+  return Math.min(3 + Math.floor((level - 1) / 2), 8);
 }
 
 function shuffleArray(arr) {
@@ -190,7 +190,7 @@ export default function MemoryGame() {
     );
   }
 
-  const cols = cards.length <= 6 ? 3 : cards.length <= 16 ? 4 : 6;
+  const cols = cards.length <= 6 ? 3 : 4;
 
   return (
     <div className="space-y-4">
@@ -205,10 +205,15 @@ export default function MemoryGame() {
         onReset={handleReset}
       />
 
-      <p className="text-lg text-muted-foreground">
-        {t.moves}: <span className="font-semibold text-foreground">{moves}</span> ·{' '}
-        {t.pairsFound}: <span className="font-semibold text-foreground">{matched.length}</span>/{cards.length / 2}
-      </p>
+      <div className="flex items-center gap-3 flex-wrap">
+        <p className="text-lg text-muted-foreground">
+          {t.moves}: <span className="font-semibold text-foreground">{moves}</span> ·{' '}
+          {t.pairsFound}: <span className="font-semibold text-foreground">{matched.length}</span>/{cards.length / 2}
+        </p>
+        <span className="text-sm bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 font-medium">
+          {t.dir === 'rtl' ? `${cards.length / 2} זוגות` : `${cards.length / 2} pairs`}
+        </span>
+      </div>
 
       <div
         className="grid gap-3 md:gap-4 max-w-lg mx-auto [perspective:1000px]"
