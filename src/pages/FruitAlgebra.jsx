@@ -135,74 +135,99 @@ export default function FruitAlgebra() {
         onReset={handleReset}
       />
 
-      <Card className="p-5 md:p-8 space-y-5">
-        {/* Clue rows */}
-        <div className="space-y-3">
-          {puzzle.clues.map((clue, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.15 }}
-              className="flex items-center gap-2 flex-wrap"
-            >
-              {clue.left.map((part, j) => (
-                <span key={j} className={part === '+' || part === '×' || part === '-'
-                  ? 'text-orange-500 font-bold text-2xl md:text-3xl'
-                  : 'text-3xl md:text-4xl'}>
-                  {part}
-                </span>
-              ))}
-              <span className="text-orange-500 font-bold text-2xl md:text-3xl">=</span>
-              <span className="text-orange-500 font-bold text-2xl md:text-3xl">{clue.right}</span>
-            </motion.div>
-          ))}
+      {/* How-to instruction banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -6 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex gap-3 items-start"
+      >
+        <span className="text-2xl mt-0.5">💡</span>
+        <p className="text-base text-amber-800 leading-snug">
+          {t.fruitAlgebraHowTo || 'לכל פרי יש ערך מספרי סודי. השתמש ברמזים כדי לגלות אותו, ואז פתור את השאלה!'}
+        </p>
+      </motion.div>
+
+      <Card className="p-5 md:p-8 space-y-6">
+        {/* Clues section */}
+        <div className="space-y-1">
+          <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+            {t.fruitAlgebraClues || '🔍 רמזים — כל שורה נכונה'}
+          </p>
+          <div className="space-y-4">
+            {puzzle.clues.map((clue, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.15 }}
+                className="bg-muted/40 rounded-xl px-4 py-3 flex items-center gap-2 flex-wrap"
+              >
+                {clue.left.map((part, j) => (
+                  <span key={j} className={part === '+' || part === '×' || part === '-'
+                    ? 'text-orange-500 font-bold text-2xl md:text-3xl'
+                    : 'text-3xl md:text-4xl'}>
+                    {part}
+                  </span>
+                ))}
+                <span className="text-orange-500 font-bold text-2xl md:text-3xl">=</span>
+                <span className="text-2xl md:text-3xl font-bold text-foreground">{clue.right}</span>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* Divider */}
-        <div className="border-t-2 border-dashed border-border" />
+        <div className="border-t-2 border-dashed border-primary/30" />
 
-        {/* Question row */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="flex items-center gap-2 flex-wrap"
-        >
-          {puzzle.question.map((part, j) => (
-            <span key={j} className={part === '+' || part === '×' || part === '-'
-              ? 'text-orange-500 font-bold text-2xl md:text-3xl'
-              : 'text-3xl md:text-4xl'}>
-              {part}
-            </span>
-          ))}
-          <span className="text-orange-500 font-bold text-2xl md:text-3xl">=</span>
-          <div className="bg-primary/10 border-2 border-dashed border-primary/40 rounded-xl w-14 h-14 flex items-center justify-center text-2xl text-primary font-bold">?</div>
-        </motion.div>
+        {/* Question section */}
+        <div className="space-y-4">
+          <p className="text-sm font-semibold text-primary uppercase tracking-wide">
+            {t.fruitAlgebraQuestion || '❓ כמה שווה זה?'}
+          </p>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="bg-primary/5 border-2 border-primary/20 rounded-xl px-4 py-3 flex items-center gap-2 flex-wrap"
+          >
+            {puzzle.question.map((part, j) => (
+              <span key={j} className={part === '+' || part === '×' || part === '-'
+                ? 'text-orange-500 font-bold text-2xl md:text-3xl'
+                : 'text-3xl md:text-4xl'}>
+                {part}
+              </span>
+            ))}
+            <span className="text-orange-500 font-bold text-2xl md:text-3xl">=</span>
+            <div className="bg-primary/10 border-2 border-dashed border-primary/40 rounded-xl w-14 h-14 flex items-center justify-center text-2xl text-primary font-bold">?</div>
+          </motion.div>
 
-        {/* Options */}
-        <div className="grid grid-cols-2 gap-3 md:gap-4 max-w-xs">
-          {puzzle.options.map((option, i) => {
-            const isSelected = selected === option;
-            const isCorrectAnswer = option === puzzle.answer;
-            const showResult = selected !== null;
+          {/* Answer label */}
+          <p className="text-base text-muted-foreground">{t.fruitAlgebraPickAnswer || 'בחר את התשובה הנכונה:'}</p>
 
-            let borderClass = 'border-border hover:border-primary/50 hover:bg-primary/5';
-            if (showResult && isCorrectAnswer) borderClass = 'border-green-400 bg-green-50';
-            else if (showResult && isSelected && !isCorrectAnswer) borderClass = 'border-red-400 bg-red-50';
+          {/* Options */}
+          <div className="grid grid-cols-2 gap-3 md:gap-4">
+            {puzzle.options.map((option, i) => {
+              const isSelected = selected === option;
+              const isCorrectAnswer = option === puzzle.answer;
+              const showResult = selected !== null;
 
-            return (
-              <motion.button
-                key={i}
-                whileTap={{ scale: selected === null ? 0.95 : 1 }}
-                onClick={() => handleSelect(option)}
-                disabled={selected !== null}
-                className={`rounded-xl py-3 px-3 border-2 transition-all min-h-[56px] flex items-center justify-center text-2xl md:text-3xl font-bold ${borderClass} ${selected === null ? 'cursor-pointer' : 'cursor-default'}`}
-              >
-                {option}
-              </motion.button>
-            );
-          })}
+              let borderClass = 'border-border hover:border-primary/50 hover:bg-primary/5';
+              if (showResult && isCorrectAnswer) borderClass = 'border-green-400 bg-green-50';
+              else if (showResult && isSelected && !isCorrectAnswer) borderClass = 'border-red-400 bg-red-50';
+
+              return (
+                <motion.button
+                  key={i}
+                  whileTap={{ scale: selected === null ? 0.95 : 1 }}
+                  onClick={() => handleSelect(option)}
+                  disabled={selected !== null}
+                  className={`rounded-xl py-4 px-3 border-2 transition-all min-h-[64px] flex items-center justify-center text-2xl md:text-3xl font-bold ${borderClass} ${selected === null ? 'cursor-pointer' : 'cursor-default'}`}
+                >
+                  {option}
+                </motion.button>
+              );
+            })}
+          </div>
         </div>
       </Card>
 
