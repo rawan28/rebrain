@@ -78,8 +78,8 @@ const ALL_IMAGES = [
 ];
 
 function getGridForLevel(level) {
-  const pairs = Math.min(3 + Math.floor((level - 1) / 2), 8);
-  return pairs;
+  // levels 1-15 → 3 to 12 pairs, stepping up every 2 levels
+  return Math.min(3 + Math.floor((level - 1) / 2), 12);
 }
 
 function shuffleArray(arr) {
@@ -188,7 +188,7 @@ export default function MemoryGame() {
     );
   }
 
-  const cols = cards.length <= 6 ? 3 : 4;
+  const cols = cards.length <= 6 ? 3 : cards.length <= 16 ? 4 : 6;
 
   return (
     <div className="space-y-4">
