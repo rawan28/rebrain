@@ -132,6 +132,7 @@ export default function ShapeWordGame() {
       <GameHeader
         title={l.title}
         description={l.subDesc}
+        hint={lang === 'he' ? 'לחץ על צורה ואז על המילה המתאימה לה — מצא את כל הזוגות!' : 'انقر على شكل ثم على كلمته المناسبة — ابحث عن كل الأزواج!'}
         level={difficulty.level}
         streak={difficulty.streak}
         totalCorrect={difficulty.totalCorrect}

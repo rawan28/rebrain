@@ -80,6 +80,7 @@ export default function FlagQuiz() {
       <GameHeader
         title={t.flagTitle}
         description={t.flagSubDesc}
+        hint={t.dir === 'rtl' ? 'הסתכל על הדגל ובחר את שם המדינה הנכון מתוך 3 אפשרויות.' : 'Look at the flag and choose the correct country name from 3 options.'}
         level={difficulty.level}
         streak={difficulty.streak}
         totalCorrect={difficulty.totalCorrect}

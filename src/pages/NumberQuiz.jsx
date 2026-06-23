@@ -84,6 +84,7 @@ export default function NumberQuiz() {
       <GameHeader
         title={t.numbersTitle}
         description={t.numbersSubDesc}
+        hint={t.dir === 'rtl' ? 'ראה את השאלה המתמטית ובחר את התשובה הנכונה מתוך 4 אפשרויות.' : 'Read the math question and choose the correct answer from 4 options.'}
         level={difficulty.level}
         streak={difficulty.streak}
         totalCorrect={difficulty.totalCorrect}

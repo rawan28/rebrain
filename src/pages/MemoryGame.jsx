@@ -195,6 +195,7 @@ export default function MemoryGame() {
       <GameHeader
         title={t.memoryTitle}
         description={t.memorySubDesc}
+        hint={t.dir === 'rtl' ? 'לחץ על שני קלפים — אם הם תואמים הם יישארו פתוחים. מצא את כל הזוגות!' : 'Tap two cards — if they match they stay open. Find all the pairs!'}
         level={difficulty.level}
         streak={difficulty.streak}
         totalCorrect={difficulty.totalCorrect}

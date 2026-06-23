@@ -90,6 +90,7 @@ export default function LogicPuzzle() {
       <GameHeader
         title={t.logicTitle}
         description={t.logicSubDesc}
+        hint={t.dir === 'rtl' ? 'הסתכל על הסדרה או הדפוס ובחר מה בא אחר כך — או מה לא שייך.' : 'Look at the sequence or pattern and pick what comes next — or what doesn\'t belong.'}
         level={difficulty.level}
         streak={difficulty.streak}
         totalCorrect={difficulty.totalCorrect}

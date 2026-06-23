@@ -98,6 +98,9 @@ export default function TriviaQuiz() {
           <RotateCcw className="w-4 h-4" /> {t.startOver}
         </Button>
       </div>
+      <p className="text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-xl px-4 py-2">
+        💡 {lang === 'he' ? 'קרא את השאלה ובחר תשובה אחת נכונה מתוך 4 אפשרויות.' : 'اقرأ السؤال واختر الإجابة الصحيحة من بين 4 خيارات.'}
+      </p>
 
       {/* Progress */}
       <div className="flex items-center gap-3">

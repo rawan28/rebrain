@@ -1,12 +1,14 @@
 import { Button } from '@/components/ui/button';
-import { RotateCcw, Trophy, Target } from 'lucide-react';
+import { RotateCcw, Trophy, Target, HelpCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import DifficultyBadge from './DifficultyBadge';
 import { useLang } from '@/lib/LanguageContext';
 
-export default function GameHeader({ title, description, level, streak, totalCorrect, totalAttempts, onReset }) {
+export default function GameHeader({ title, description, hint, level, streak, totalCorrect, totalAttempts, onReset }) {
   const { t } = useLang();
   const accuracy = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
+  const [hintOpen, setHintOpen] = useState(false);
 
   return (
     <div className="space-y-4 mb-6">
@@ -14,6 +16,27 @@ export default function GameHeader({ title, description, level, streak, totalCor
         <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">{title}</h2>
         <p className="text-base md:text-lg text-muted-foreground mt-1">{description}</p>
       </div>
+
+      {hint && (
+        <div>
+          <button
+            onClick={() => setHintOpen(v => !v)}
+            className="flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+          >
+            <HelpCircle className="w-4 h-4" />
+            {t.dir === 'rtl' ? 'איך משחקים?' : 'How to play?'}
+          </button>
+          {hintOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-2 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-sm text-blue-800 leading-relaxed"
+            >
+              💡 {hint}
+            </motion.div>
+          )}
+        </div>
+      )}
 
       <div className="flex flex-wrap items-center gap-2.5">
         <DifficultyBadge level={level} />

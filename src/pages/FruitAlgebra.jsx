@@ -128,6 +128,7 @@ export default function FruitAlgebra() {
       <GameHeader
         title={t.fruitAlgebraTitle || 'אלגברת פירות 🍓'}
         description={t.fruitAlgebraSubDesc || 'מה ערך כל פרי?'}
+        hint={t.dir === 'rtl' ? 'לכל פרי יש ערך מספרי. השתמש ברמזים כדי לגלות אותו, ואז פתור את השאלה.' : 'Each fruit has a secret number. Use the clues to figure it out, then solve the question.'}
         level={difficulty.level}
         streak={difficulty.streak}
         totalCorrect={difficulty.totalCorrect}

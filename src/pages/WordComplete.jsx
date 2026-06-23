@@ -165,6 +165,7 @@ export default function WordComplete() {
       <GameHeader
         title={t.wordTitle}
         description={t.wordSubDesc}
+        hint={t.dir === 'rtl' ? 'לחץ על האותיות כדי להשלים את המילה החסרה, ואז לחץ "בדוק".' : 'Tap letters to fill in the missing ones, then press Check.'}
         level={difficulty.level}
         streak={difficulty.streak}
         totalCorrect={difficulty.totalCorrect}
