@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import useDifficulty from '@/lib/useDifficulty';
 import GameHeader from '@/components/games/GameHeader';
@@ -74,7 +74,7 @@ const ALL_IMAGES = [
   { id: 'volcano2',   emoji: '🏔️' },
   { id: 'cave',       emoji: '🕌' },
   { id: 'waterfall',  emoji: '🏞️' },
-  { id: 'igloo',      emoji: '🏔️' },
+  { id: 'igloo',      emoji: '🛖' },
 ];
 
 function getGridForLevel(level) {
@@ -100,6 +100,14 @@ export default function MemoryGame() {
   const [gameStarted, setGameStarted] = useState(false);
   const [feedback, setFeedback] = useState({ show: false, isCorrect: false, message: '' });
   const [moves, setMoves] = useState(0);
+  const timeoutsRef = useRef([]);
+
+  const clearAllTimeouts = useCallback(() => {
+    timeoutsRef.current.forEach(clearTimeout);
+    timeoutsRef.current = [];
+  }, []);
+
+  useEffect(() => () => clearAllTimeouts(), [clearAllTimeouts]);
 
   const startNewRound = useCallback(() => {
     const pairs = getGridForLevel(difficulty.level);
@@ -144,13 +152,13 @@ export default function MemoryGame() {
               ? `${t.excellent} ${t.completedIn} ${moves + 1} ${t.movesWord}.`
               : `${moves + 1} ${t.movesWord}. ${t.tryFewer}`,
           });
-          setTimeout(() => {
+          timeoutsRef.current.push(setTimeout(() => {
             setFeedback({ show: false, isCorrect: false, message: '' });
             startNewRound();
-          }, 2000);
+          }, 2000));
         }
       } else {
-        setTimeout(() => setFlipped([]), 800);
+        timeoutsRef.current.push(setTimeout(() => setFlipped([]), 800));
       }
     }
   }, [flipped]);
