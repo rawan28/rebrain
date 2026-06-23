@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Spline, RotateCcw, Trophy, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
@@ -15,36 +15,27 @@ export default function ConnectDots() {
   const [started, setStarted] = useState(false);
   const [won, setWon] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [paths, setPaths] = useState({});
+  const [dragColor, setDragColor] = useState(null);
+  const [dragPath, setDragPath] = useState([]);
 
+  // Keep refs in sync for use inside event handlers
+  const levelRef = useRef(CONNECT_DOTS_LEVELS[0]);
   const pathsRef = useRef({});
   const dragColorRef = useRef(null);
   const dragPathRef = useRef([]);
+  const boardRef = useRef(null);
   const wonRef = useRef(false);
-
-  const [paths, setPathsState] = useState({});
-  const [dragColor, setDragColorState] = useState(null);
-  const [dragPath, setDragPathState] = useState([]);
-
-  const setPaths = useCallback((updater) => {
-    const newVal = typeof updater === 'function' ? updater(pathsRef.current) : updater;
-    pathsRef.current = newVal;
-    setPathsState(newVal);
-  }, []);
-
-  const setDragColor = useCallback((val) => {
-    dragColorRef.current = val;
-    setDragColorState(val);
-  }, []);
-
-  const setDragPath = useCallback((val) => {
-    const newVal = typeof val === 'function' ? val(dragPathRef.current) : val;
-    dragPathRef.current = newVal;
-    setDragPathState(newVal);
-  }, []);
 
   const level = CONNECT_DOTS_LEVELS[levelIndex];
 
-  const startLevel = useCallback((idx) => {
+  // Sync refs
+  levelRef.current = level;
+  pathsRef.current = paths;
+  dragColorRef.current = dragColor;
+  dragPathRef.current = dragPath;
+
+  const startLevel = (idx) => {
     const i = Math.min(Math.max(idx, 0), CONNECT_DOTS_LEVELS.length - 1);
     setLevelIndex(i);
     setPaths({});
@@ -54,12 +45,25 @@ export default function ConnectDots() {
     wonRef.current = false;
     setShowCelebration(false);
     setStarted(true);
-  }, [setPaths, setDragColor, setDragPath]);
+  };
 
-  const findDot = (r, c) => {
-    for (const pair of level.pairs) {
-      if (pair.a.r === r && pair.a.c === c) return pair;
-      if (pair.b.r === r && pair.b.c === c) return pair;
+  // Get cell row/col from a point on screen
+  const getCellFromPoint = (clientX, clientY) => {
+    const board = boardRef.current;
+    if (!board) return null;
+    const rect = board.getBoundingClientRect();
+    const lv = levelRef.current;
+    const cellW = rect.width / lv.size;
+    const cellH = rect.height / lv.size;
+    const c = Math.floor((clientX - rect.left) / cellW);
+    const r = Math.floor((clientY - rect.top) / cellH);
+    if (r < 0 || r >= lv.size || c < 0 || c >= lv.size) return null;
+    return { r, c };
+  };
+
+  const findDot = (r, c, lv) => {
+    for (const pair of lv.pairs) {
+      if ((pair.a.r === r && pair.a.c === c) || (pair.b.r === r && pair.b.c === c)) return pair;
     }
     return null;
   };
@@ -71,103 +75,117 @@ export default function ConnectDots() {
     return false;
   };
 
-  const handleCellDown = (r, c) => {
-    const dot = findDot(r, c);
+  const onPointerDown = (e) => {
+    e.preventDefault();
+    const cell = getCellFromPoint(e.clientX, e.clientY);
+    if (!cell) return;
+    const { r, c } = cell;
+    const lv = levelRef.current;
+    const dot = findDot(r, c, lv);
     if (!dot) return;
+
+    dragColorRef.current = dot.color;
+    dragPathRef.current = [{ r, c }];
     setDragColor(dot.color);
+    setDragPath([{ r, c }]);
     setPaths(prev => {
       const next = { ...prev };
       delete next[dot.color];
       return next;
     });
-    setDragPath([{ r, c }]);
-    setWon(false);
     wonRef.current = false;
+    setWon(false);
   };
 
-  const handleCellEnter = (r, c) => {
+  const onPointerMove = (e) => {
     if (!dragColorRef.current) return;
+    e.preventDefault();
+    const cell = getCellFromPoint(e.clientX, e.clientY);
+    if (!cell) return;
+    const { r, c } = cell;
     const currentPath = dragPathRef.current;
     if (currentPath.length === 0) return;
     const last = currentPath[currentPath.length - 1];
     if (last.r === r && last.c === c) return;
 
+    // Only allow adjacent cells (no diagonals)
     const dr = Math.abs(r - last.r);
     const dc = Math.abs(c - last.c);
     if (dr + dc !== 1) return;
 
+    // Backtrack
     if (currentPath.length >= 2) {
       const prev = currentPath[currentPath.length - 2];
       if (prev.r === r && prev.c === c) {
-        setDragPath(currentPath.slice(0, -1));
+        const newPath = currentPath.slice(0, -1);
+        dragPathRef.current = newPath;
+        setDragPath([...newPath]);
         return;
       }
     }
 
+    // Loop detection - trim to loop point
     const idx = currentPath.findIndex(p => p.r === r && p.c === c);
     if (idx !== -1) {
-      setDragPath(currentPath.slice(0, idx + 1));
+      const newPath = currentPath.slice(0, idx + 1);
+      dragPathRef.current = newPath;
+      setDragPath([...newPath]);
       return;
     }
 
-    const dot = findDot(r, c);
+    const lv = levelRef.current;
+    const dot = findDot(r, c, lv);
 
+    // Can't enter another color's dot
     if (dot && dot.color !== dragColorRef.current) return;
 
+    // Can't enter a cell used by another completed path
     if (isCellOccupiedByOther(r, c, dragColorRef.current)) return;
 
+    // Snap to end dot to complete connection
     if (dot && dot.color === dragColorRef.current) {
-      const pair = level.pairs.find(p => p.color === dragColorRef.current);
+      const pair = lv.pairs.find(p => p.color === dragColorRef.current);
       const start = currentPath[0];
-      const startDot = (start.r === pair.a.r && start.c === pair.a.c) ? pair.a : pair.b;
-      const endDot = startDot === pair.a ? pair.b : pair.a;
+      const isStartA = start.r === pair.a.r && start.c === pair.a.c;
+      const endDot = isStartA ? pair.b : pair.a;
       if (r === endDot.r && c === endDot.c) {
         const completed = [...currentPath, { r, c }];
-        setPaths(prev => ({ ...prev, [dragColorRef.current]: completed }));
+        const color = dragColorRef.current;
+        dragColorRef.current = null;
+        dragPathRef.current = [];
         setDragColor(null);
         setDragPath([]);
+        setPaths(prev => ({ ...prev, [color]: completed }));
         return;
       }
+      // Don't allow stepping on start dot again
       if (r === start.r && c === start.c) return;
     }
 
-    setDragPath([...currentPath, { r, c }]);
+    const newPath = [...currentPath, { r, c }];
+    dragPathRef.current = newPath;
+    setDragPath(newPath);
   };
 
-  const handlePointerMove = useCallback((e) => {
+  const onPointerUp = () => {
     if (!dragColorRef.current) return;
-    const el = document.elementFromPoint(e.clientX, e.clientY);
-    if (!el) return;
-    const cellEl = el.closest('[data-cell]');
-    if (!cellEl) return;
-    const r = parseInt(cellEl.dataset.r, 10);
-    const c = parseInt(cellEl.dataset.c, 10);
-    if (isNaN(r) || isNaN(c)) return;
-    handleCellEnter(r, c);
-  }, []);
-
-  const handlePointerUp = useCallback(() => {
-    if (!dragColorRef.current) return;
-    setPaths(prev => ({ ...prev, [dragColorRef.current]: [...dragPathRef.current] }));
+    // Save partial path
+    const color = dragColorRef.current;
+    const path = [...dragPathRef.current];
+    dragColorRef.current = null;
+    dragPathRef.current = [];
     setDragColor(null);
     setDragPath([]);
-  }, [setPaths, setDragColor, setDragPath]);
+    if (path.length >= 2) {
+      setPaths(prev => ({ ...prev, [color]: path }));
+    }
+  };
 
-  useEffect(() => {
-    const upHandler = () => handlePointerUp();
-    const moveHandler = (e) => handlePointerMove(e);
-    window.addEventListener('pointerup', upHandler);
-    window.addEventListener('pointermove', moveHandler);
-    return () => {
-      window.removeEventListener('pointerup', upHandler);
-      window.removeEventListener('pointermove', moveHandler);
-    };
-  }, [handlePointerUp, handlePointerMove]);
-
+  // Check win condition
   useEffect(() => {
     if (!started || wonRef.current) return;
     const allConnected = level.pairs.every(pair => {
-      const path = pathsRef.current[pair.color];
+      const path = paths[pair.color];
       if (!path || path.length < 2) return false;
       const s = path[0];
       const e = path[path.length - 1];
@@ -180,36 +198,9 @@ export default function ConnectDots() {
       setShowCelebration(true);
       setTimeout(() => setShowCelebration(false), 2200);
       awardCoin(true);
-      saveSession('connect_dots', {
-        level: levelIndex + 1,
-        streak: 1,
-        totalCorrect: 1,
-        totalAttempts: 1,
-      });
+      saveSession('connect_dots', { level: levelIndex + 1, streak: 1, totalCorrect: 1, totalAttempts: 1 });
     }
   }, [paths, started, level, levelIndex]);
-
-  const getCellPathInfo = (r, c) => {
-    if (dragColor && dragPath.some(p => p.r === r && p.c === c)) {
-      return { color: dragColor, isDrag: true, pathArr: dragPath };
-    }
-    for (const [color, path] of Object.entries(paths)) {
-      if (path.some(p => p.r === r && p.c === c)) {
-        return { color, isDrag: false, pathArr: path };
-      }
-    }
-    return null;
-  };
-
-  const getPathNeighbors = (r, c, pathArr) => {
-    if (!pathArr || pathArr.length === 0) return {};
-    return {
-      up: pathArr.some(p => p.r === r - 1 && p.c === c),
-      down: pathArr.some(p => p.r === r + 1 && p.c === c),
-      left: pathArr.some(p => p.r === r && p.c === c - 1),
-      right: pathArr.some(p => p.r === r && p.c === c + 1),
-    };
-  };
 
   const isPairConnected = (pair) => {
     const path = paths[pair.color];
@@ -277,85 +268,59 @@ export default function ConnectDots() {
         </motion.div>
       )}
 
+      {/* Game Board */}
       <div
-        className="relative select-none touch-none mx-auto bg-muted/20 rounded-xl p-1"
-        style={{
-          maxWidth: `${level.size * 56}px`,
-          width: '100%',
-          aspectRatio: '1 / 1',
-        }}
+        className="relative select-none touch-none mx-auto bg-muted/20 rounded-xl"
+        style={{ maxWidth: `${level.size * 60}px`, width: '100%', aspectRatio: '1 / 1' }}
+        ref={boardRef}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerLeave={onPointerUp}
       >
         <svg
           viewBox={`0 0 ${level.size} ${level.size}`}
-          className="absolute inset-1 w-[calc(100%-8px)] h-[calc(100%-8px)] pointer-events-none"
-          preserveAspectRatio="none"
+          className="absolute inset-0 w-full h-full"
+          style={{ touchAction: 'none' }}
         >
+          {/* Grid lines */}
+          {Array.from({ length: level.size + 1 }).map((_, i) => (
+            <line key={`v${i}`} x1={i} y1={0} x2={i} y2={level.size} stroke="currentColor" strokeWidth={0.02} className="text-border" opacity={0.5} />
+          ))}
+          {Array.from({ length: level.size + 1 }).map((_, i) => (
+            <line key={`h${i}`} x1={0} y1={i} x2={level.size} y2={i} stroke="currentColor" strokeWidth={0.02} className="text-border" opacity={0.5} />
+          ))}
+
           {/* Completed paths */}
           {Object.entries(paths).map(([color, path]) => {
             if (path.length < 2) return null;
             const pts = path.map(p => `${p.c + 0.5},${p.r + 0.5}`).join(' ');
             return (
-              <polyline
-                key={color}
-                points={pts}
-                fill="none"
-                stroke={color}
-                strokeWidth={0.28}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                opacity={0.85}
-              />
+              <polyline key={color} points={pts} fill="none" stroke={color}
+                strokeWidth={0.35} strokeLinecap="round" strokeLinejoin="round" opacity={0.9} />
             );
           })}
+
           {/* Active drag path */}
-          {dragColor && dragPath.length >= 2 && (
+          {dragColor && dragPath.length >= 1 && (
             <polyline
               points={dragPath.map(p => `${p.c + 0.5},${p.r + 0.5}`).join(' ')}
-              fill="none"
-              stroke={dragColor}
-              strokeWidth={0.28}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity={0.6}
+              fill="none" stroke={dragColor}
+              strokeWidth={0.35} strokeLinecap="round" strokeLinejoin="round" opacity={0.7}
             />
           )}
+
           {/* Dots */}
           {level.pairs.map((pair) => [
-            <circle key={`a-${pair.color}`} cx={pair.a.c + 0.5} cy={pair.a.r + 0.5} r={0.22}
-              fill={pair.color} stroke="white" strokeWidth={0.06} />,
-            <circle key={`b-${pair.color}`} cx={pair.b.c + 0.5} cy={pair.b.r + 0.5} r={0.22}
-              fill={pair.color} stroke="white" strokeWidth={0.06} />,
+            <circle key={`a-${pair.color}`} cx={pair.a.c + 0.5} cy={pair.a.r + 0.5} r={0.3}
+              fill={pair.color} stroke="white" strokeWidth={0.07} />,
+            <circle key={`b-${pair.color}`} cx={pair.b.c + 0.5} cy={pair.b.r + 0.5} r={0.3}
+              fill={pair.color} stroke="white" strokeWidth={0.07} />,
           ])}
         </svg>
-
-        {/* Interactive cell layer */}
-        <div
-          className="absolute inset-1 grid touch-none"
-          style={{ gridTemplateColumns: `repeat(${level.size}, 1fr)` }}
-        >
-          {Array.from({ length: level.size }).flatMap((_, r) =>
-            Array.from({ length: level.size }).map((__, c) => {
-              return (
-                <div
-                  key={`${r}-${c}`}
-                  data-cell
-                  data-r={r}
-                  data-c={c}
-                  onPointerDown={(e) => {
-                    e.currentTarget.releasePointerCapture?.(e.pointerId);
-                    handleCellDown(r, c);
-                  }}
-                  className="aspect-square cursor-pointer touch-none"
-                />
-              );
-            })
-          )}
-        </div>
       </div>
 
-      <p className="text-center text-sm text-muted-foreground px-4">
-        {t.connectDotsHint}
-      </p>
+      <p className="text-center text-sm text-muted-foreground px-4">{t.connectDotsHint}</p>
 
       <div className="flex flex-wrap gap-2 justify-center pt-2">
         {CONNECT_DOTS_LEVELS.map((_, i) => (
