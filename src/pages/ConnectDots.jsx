@@ -97,101 +97,103 @@ export default function ConnectDots() {
     setWon(false);
   };
 
+  // Interpolate a straight-line walk of cells from last to (r,c) to handle fast drags
+  const interpolateCells = (last, r, c) => {
+    const cells = [];
+    let cr = last.r, cc = last.c;
+    while (cr !== r || cc !== c) {
+      if (cr !== r) cr += cr < r ? 1 : -1;
+      else cc += cc < c ? 1 : -1;
+      cells.push({ r: cr, c: cc });
+    }
+    return cells;
+  };
+
+  const tryAddCell = (r, c, currentPath) => {
+    const lv = levelRef.current;
+    if (r < 0 || r >= lv.size || c < 0 || c >= lv.size) return currentPath;
+
+    const last = currentPath[currentPath.length - 1];
+    if (last.r === r && last.c === c) return currentPath;
+
+    // Backtrack
+    if (currentPath.length >= 2) {
+      const prev = currentPath[currentPath.length - 2];
+      if (prev.r === r && prev.c === c) return currentPath.slice(0, -1);
+    }
+
+    // Loop detection - trim to loop point
+    const loopIdx = currentPath.findIndex(p => p.r === r && p.c === c);
+    if (loopIdx !== -1) return currentPath.slice(0, loopIdx + 1);
+
+    const dot = findDot(r, c, lv);
+
+    // Can't enter another color's dot
+    if (dot && dot.color !== dragColorRef.current) return currentPath;
+
+    // Can't enter a cell used by another completed path
+    if (isCellOccupiedByOther(r, c, dragColorRef.current)) return currentPath;
+
+    return [...currentPath, { r, c }];
+  };
+
   const onPointerMove = (e) => {
     if (!dragColorRef.current) return;
     e.preventDefault();
     const cell = getCellFromPoint(e.clientX, e.clientY);
     if (!cell) return;
     const { r, c } = cell;
-    const currentPath = dragPathRef.current;
+    let currentPath = dragPathRef.current;
     if (currentPath.length === 0) return;
     const last = currentPath[currentPath.length - 1];
     if (last.r === r && last.c === c) return;
 
-    // Only allow adjacent cells (no diagonals)
-    const dr = Math.abs(r - last.r);
-    const dc = Math.abs(c - last.c);
-    if (dr + dc !== 1) return;
-
-    // Backtrack
-    if (currentPath.length >= 2) {
-      const prev = currentPath[currentPath.length - 2];
-      if (prev.r === r && prev.c === c) {
-        const newPath = currentPath.slice(0, -1);
-        dragPathRef.current = newPath;
-        setDragPath([...newPath]);
-        return;
-      }
+    // Interpolate cells for fast drags (only horizontal/vertical steps)
+    const cells = interpolateCells(last, r, c);
+    for (const cell of cells) {
+      currentPath = tryAddCell(cell.r, cell.c, currentPath);
     }
 
-    // Loop detection - trim to loop point
-    const idx = currentPath.findIndex(p => p.r === r && p.c === c);
-    if (idx !== -1) {
-      const newPath = currentPath.slice(0, idx + 1);
-      dragPathRef.current = newPath;
-      setDragPath([...newPath]);
-      return;
-    }
-
+    // Check if we've reached the end dot — auto-complete
     const lv = levelRef.current;
     const dot = findDot(r, c, lv);
-
-    // Can't enter another color's dot
-    if (dot && dot.color !== dragColorRef.current) return;
-
-    // Can't enter a cell used by another completed path
-    if (isCellOccupiedByOther(r, c, dragColorRef.current)) return;
-
-    // Snap to end dot to complete connection
     if (dot && dot.color === dragColorRef.current) {
       const pair = lv.pairs.find(p => p.color === dragColorRef.current);
       const start = currentPath[0];
       const isStartA = start.r === pair.a.r && start.c === pair.a.c;
       const endDot = isStartA ? pair.b : pair.a;
-      if (r === endDot.r && c === endDot.c) {
-        const completed = [...currentPath, { r, c }];
+      const endOfPath = currentPath[currentPath.length - 1];
+      if (endOfPath.r === endDot.r && endOfPath.c === endDot.c) {
         const color = dragColorRef.current;
         dragColorRef.current = null;
         dragPathRef.current = [];
         setDragColor(null);
         setDragPath([]);
-        setPaths(prev => ({ ...prev, [color]: completed }));
+        setPaths(prev => {
+          const next = { ...prev, [color]: currentPath };
+          checkWin(next);
+          return next;
+        });
         return;
       }
-      // Don't allow stepping on start dot again
-      if (r === start.r && c === start.c) return;
     }
 
-    const newPath = [...currentPath, { r, c }];
-    dragPathRef.current = newPath;
-    setDragPath(newPath);
+    dragPathRef.current = currentPath;
+    setDragPath(currentPath);
   };
 
-  const onPointerUp = () => {
-    if (!dragColorRef.current) return;
-    // Save partial path
-    const color = dragColorRef.current;
-    const path = [...dragPathRef.current];
-    dragColorRef.current = null;
-    dragPathRef.current = [];
-    setDragColor(null);
-    setDragPath([]);
-    if (path.length >= 2) {
-      setPaths(prev => ({ ...prev, [color]: path }));
-    }
+  const isPairConnected = (pair, allPaths) => {
+    const path = (allPaths || paths)[pair.color];
+    if (!path || path.length < 2) return false;
+    const s = path[0];
+    const e = path[path.length - 1];
+    return ((s.r === pair.a.r && s.c === pair.a.c) && (e.r === pair.b.r && e.c === pair.b.c)) ||
+           ((s.r === pair.b.r && s.c === pair.b.c) && (e.r === pair.a.r && e.c === pair.a.c));
   };
 
-  // Check win condition
-  useEffect(() => {
-    if (!started || wonRef.current) return;
-    const allConnected = level.pairs.every(pair => {
-      const path = paths[pair.color];
-      if (!path || path.length < 2) return false;
-      const s = path[0];
-      const e = path[path.length - 1];
-      return ((s.r === pair.a.r && s.c === pair.a.c) && (e.r === pair.b.r && e.c === pair.b.c)) ||
-             ((s.r === pair.b.r && s.c === pair.b.c) && (e.r === pair.a.r && e.c === pair.a.c));
-    });
+  const checkWin = (newPaths) => {
+    if (wonRef.current) return;
+    const allConnected = levelRef.current.pairs.every(pair => isPairConnected(pair, newPaths));
     if (allConnected) {
       wonRef.current = true;
       setWon(true);
@@ -200,18 +202,26 @@ export default function ConnectDots() {
       awardCoin(true);
       saveSession('connect_dots', { level: levelIndex + 1, streak: 1, totalCorrect: 1, totalAttempts: 1 });
     }
-  }, [paths, started, level, levelIndex]);
-
-  const isPairConnected = (pair) => {
-    const path = paths[pair.color];
-    if (!path || path.length < 2) return false;
-    const s = path[0];
-    const e = path[path.length - 1];
-    return ((s.r === pair.a.r && s.c === pair.a.c) && (e.r === pair.b.r && e.c === pair.b.c)) ||
-           ((s.r === pair.b.r && s.c === pair.b.c) && (e.r === pair.a.r && e.c === pair.a.c));
   };
 
-  const connectedCount = level.pairs.filter(isPairConnected).length;
+  const onPointerUp = () => {
+    if (!dragColorRef.current) return;
+    const color = dragColorRef.current;
+    const path = [...dragPathRef.current];
+    dragColorRef.current = null;
+    dragPathRef.current = [];
+    setDragColor(null);
+    setDragPath([]);
+    if (path.length >= 2) {
+      setPaths(prev => {
+        const next = { ...prev, [color]: path };
+        checkWin(next);
+        return next;
+      });
+    }
+  };
+
+  const connectedCount = level.pairs.filter(p => isPairConnected(p)).length;
   const ArrowIcon = t.dir === 'rtl' ? ChevronLeft : ChevronRight;
 
   if (!started) {
