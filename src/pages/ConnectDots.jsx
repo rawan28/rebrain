@@ -11,7 +11,9 @@ import { awardCoin } from '@/lib/useCoin';
 
 export default function ConnectDots() {
   const { t } = useLang();
-  const [levelIndex, setLevelIndex] = useState(0);
+  const [levelIndex, setLevelIndex] = useState(() => {
+    try { const v = parseInt(localStorage.getItem('rebrain_level_connect_dots'), 10); return isNaN(v) ? 0 : Math.min(v, CONNECT_DOTS_LEVELS.length - 1); } catch { return 0; }
+  });
   const [started, setStarted] = useState(false);
   const [won, setWon] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
@@ -37,6 +39,7 @@ export default function ConnectDots() {
 
   const startLevel = (idx) => {
     const i = Math.min(Math.max(idx, 0), CONNECT_DOTS_LEVELS.length - 1);
+    try { localStorage.setItem('rebrain_level_connect_dots', String(i)); } catch {}
     setLevelIndex(i);
     setPaths({});
     setDragColor(null);

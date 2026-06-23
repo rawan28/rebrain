@@ -35,7 +35,7 @@ function getPairsCount(level) {
 export default function ShapeWordGame() {
   const { t, lang } = useLang();
   const l = labels[lang] || labels.he;
-  const difficulty = useDifficulty(1, 15);
+  const difficulty = useDifficulty(1, 15, 'shape_word');
 
   const [cards, setCards] = useState([]);
   const [selected, setSelected] = useState(null); // card id

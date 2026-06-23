@@ -68,7 +68,7 @@ function generateFruitPuzzle(level) {
 
 export default function FruitAlgebra() {
   const { t } = useLang();
-  const difficulty = useDifficulty(1, 15);
+  const difficulty = useDifficulty(1, 15, 'fruit_algebra');
   const [puzzle, setPuzzle] = useState(null);
   const [selected, setSelected] = useState(null);
   const [feedback, setFeedback] = useState({ show: false, isCorrect: false, message: '' });

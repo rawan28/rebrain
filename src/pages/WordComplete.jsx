@@ -13,7 +13,7 @@ import CustomWordsManager from '@/components/word/CustomWordsManager';
 
 export default function WordComplete() {
   const { t, lang } = useLang();
-  const difficulty = useDifficulty(1, 15);
+  const difficulty = useDifficulty(1, 15, 'word');
   const [question, setQuestion] = useState(null);
   const [filled, setFilled] = useState({}); // index -> letter chosen
   const [submitted, setSubmitted] = useState(false);
