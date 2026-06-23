@@ -24,8 +24,14 @@ export default function ReminderSettings() {
     (async () => {
       try {
         const user = await base44.auth.me();
-        const subs = await base44.entities.ReminderSubscription.filter({});
-        const mySub = subs.find((s) => s.created_by_id === user.id);
+        const subs = await base44.entities.ReminderSubscription.filter({ created_by_id: user.id });
+        // De-duplicate: keep first, delete the rest
+        if (subs.length > 1) {
+          for (const extra of subs.slice(1)) {
+            await base44.entities.ReminderSubscription.delete(extra.id);
+          }
+        }
+        const mySub = subs[0];
         if (mySub) {
           setSubId(mySub.id);
           setEmail(mySub.email || user.email || '');
