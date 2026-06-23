@@ -7,10 +7,28 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { TrendingUp, Brain, Puzzle, Calculator, Trophy, Target, Zap } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+const GAME_TITLE_KEYS = {
+  memory: 'memoryTitle',
+  logic: 'logicTitle',
+  numbers: 'numbersTitle',
+  flags: 'flagTitle',
+  word: 'wordTitle',
+  trivia: 'triviaTitle',
+  'shape-word': 'shapeWordTitle',
+  'fruit-algebra': 'fruitAlgebraTitle',
+  'connect-dots': 'connectDotsTitle',
+};
+
 const GAME_CONFIG = {
-  memory: { color: '#3b82f6', icon: Brain },
-  logic: { color: '#8b5cf6', icon: Puzzle },
-  numbers: { color: '#f59e0b', icon: Calculator },
+  memory:        { color: '#3b82f6', icon: Brain },
+  logic:         { color: '#8b5cf6', icon: Puzzle },
+  numbers:       { color: '#f59e0b', icon: Calculator },
+  flags:         { color: '#f97316', icon: Trophy },
+  word:          { color: '#ec4899', icon: Target },
+  trivia:        { color: '#eab308', icon: Zap },
+  'shape-word':  { color: '#6366f1', icon: Puzzle },
+  'fruit-algebra': { color: '#ef4444', icon: Calculator },
+  'connect-dots': { color: '#14b8a6', icon: Brain },
 };
 
 function StatCard({ icon: Icon, label, value, color }) {
@@ -50,71 +68,44 @@ export default function Progress() {
 
   const raw = useMemo(() => loadProgress(), [refreshKey]);
 
-  // Merge all games into a unified timeline by session index
+  const allGameKeys = Object.keys(GAME_CONFIG);
+  const activeGameKeys = useMemo(() => allGameKeys.filter(k => (raw[k]?.length ?? 0) > 0), [raw]);
+
   const mergedData = useMemo(() => {
-    const maxLen = Math.max(
-      raw.memory?.length ?? 0,
-      raw.logic?.length ?? 0,
-      raw.numbers?.length ?? 0,
-    );
+    const maxLen = Math.max(...allGameKeys.map(k => raw[k]?.length ?? 0), 0);
     if (maxLen === 0) return [];
-    return Array.from({ length: maxLen }, (_, i) => ({
-      session: i + 1,
-      memory: raw.memory?.[i]?.level ?? null,
-      logic: raw.logic?.[i]?.level ?? null,
-      numbers: raw.numbers?.[i]?.level ?? null,
-    }));
+    return Array.from({ length: maxLen }, (_, i) => {
+      const row = { session: i + 1 };
+      allGameKeys.forEach(k => { row[k] = raw[k]?.[i]?.level ?? null; });
+      return row;
+    });
   }, [raw]);
 
   const streakData = useMemo(() => {
-    const maxLen = Math.max(
-      raw.memory?.length ?? 0,
-      raw.logic?.length ?? 0,
-      raw.numbers?.length ?? 0,
-    );
+    const maxLen = Math.max(...allGameKeys.map(k => raw[k]?.length ?? 0), 0);
     if (maxLen === 0) return [];
-    return Array.from({ length: maxLen }, (_, i) => ({
-      session: i + 1,
-      memory: raw.memory?.[i]?.streak ?? null,
-      logic: raw.logic?.[i]?.streak ?? null,
-      numbers: raw.numbers?.[i]?.streak ?? null,
-    }));
+    return Array.from({ length: maxLen }, (_, i) => {
+      const row = { session: i + 1 };
+      allGameKeys.forEach(k => { row[k] = raw[k]?.[i]?.streak ?? null; });
+      return row;
+    });
   }, [raw]);
 
   const accuracyData = useMemo(() => {
-    const maxLen = Math.max(
-      raw.memory?.length ?? 0,
-      raw.logic?.length ?? 0,
-      raw.numbers?.length ?? 0,
-    );
+    const maxLen = Math.max(...allGameKeys.map(k => raw[k]?.length ?? 0), 0);
     if (maxLen === 0) return [];
-    return Array.from({ length: maxLen }, (_, i) => ({
-      session: i + 1,
-      memory: raw.memory?.[i]?.accuracy ?? null,
-      logic: raw.logic?.[i]?.accuracy ?? null,
-      numbers: raw.numbers?.[i]?.accuracy ?? null,
-    }));
+    return Array.from({ length: maxLen }, (_, i) => {
+      const row = { session: i + 1 };
+      allGameKeys.forEach(k => { row[k] = raw[k]?.[i]?.accuracy ?? null; });
+      return row;
+    });
   }, [raw]);
 
-  const totalSessions = (raw.memory?.length ?? 0) + (raw.logic?.length ?? 0) + (raw.numbers?.length ?? 0);
-  const bestStreak = Math.max(
-    ...(raw.memory?.map(s => s.streak) ?? [0]),
-    ...(raw.logic?.map(s => s.streak) ?? [0]),
-    ...(raw.numbers?.map(s => s.streak) ?? [0]),
-    0,
-  );
-  const maxLevel = Math.max(
-    ...(raw.memory?.map(s => s.level) ?? [0]),
-    ...(raw.logic?.map(s => s.level) ?? [0]),
-    ...(raw.numbers?.map(s => s.level) ?? [0]),
-    0,
-  );
+  const totalSessions = allGameKeys.reduce((sum, k) => sum + (raw[k]?.length ?? 0), 0);
+  const bestStreak = Math.max(...allGameKeys.flatMap(k => raw[k]?.map(s => s.streak) ?? []), 0);
+  const maxLevel = Math.max(...allGameKeys.flatMap(k => raw[k]?.map(s => s.level) ?? []), 0);
   const avgAccuracy = useMemo(() => {
-    const all = [
-      ...(raw.memory ?? []),
-      ...(raw.logic ?? []),
-      ...(raw.numbers ?? []),
-    ].filter(s => s.totalAttempts > 0);
+    const all = allGameKeys.flatMap(k => raw[k] ?? []).filter(s => s.totalAttempts > 0);
     if (!all.length) return 0;
     return Math.round(all.reduce((s, x) => s + x.accuracy, 0) / all.length);
   }, [raw]);
@@ -154,9 +145,9 @@ export default function Progress() {
                   labelFormatter={(v) => `${t.session} ${v}`}
                 />
                 <Legend wrapperStyle={{ fontSize: 13 }} />
-                <Line type="monotone" dataKey="memory" name={t.memoryTitle} stroke={GAME_CONFIG.memory.color} strokeWidth={2} dot={false} connectNulls />
-                <Line type="monotone" dataKey="logic" name={t.logicTitle} stroke={GAME_CONFIG.logic.color} strokeWidth={2} dot={false} connectNulls />
-                <Line type="monotone" dataKey="numbers" name={t.numbersTitle} stroke={GAME_CONFIG.numbers.color} strokeWidth={2} dot={false} connectNulls />
+                {activeGameKeys.map(k => (
+                  <Line key={k} type="monotone" dataKey={k} name={t[GAME_TITLE_KEYS[k]] || k} stroke={GAME_CONFIG[k].color} strokeWidth={2} dot={false} connectNulls />
+                ))}
               </LineChart>
             </ResponsiveContainer>
           )}
@@ -180,9 +171,9 @@ export default function Progress() {
                   labelFormatter={(v) => `${t.session} ${v}`}
                 />
                 <Legend wrapperStyle={{ fontSize: 13 }} />
-                <Bar dataKey="memory" name={t.memoryTitle} fill={GAME_CONFIG.memory.color} radius={[4,4,0,0]} />
-                <Bar dataKey="logic" name={t.logicTitle} fill={GAME_CONFIG.logic.color} radius={[4,4,0,0]} />
-                <Bar dataKey="numbers" name={t.numbersTitle} fill={GAME_CONFIG.numbers.color} radius={[4,4,0,0]} />
+                {activeGameKeys.map(k => (
+                  <Bar key={k} dataKey={k} name={t[GAME_TITLE_KEYS[k]] || k} fill={GAME_CONFIG[k].color} radius={[4,4,0,0]} />
+                ))}
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -207,9 +198,9 @@ export default function Progress() {
                   formatter={(v) => [`${v}%`]}
                 />
                 <Legend wrapperStyle={{ fontSize: 13 }} />
-                <Line type="monotone" dataKey="memory" name={t.memoryTitle} stroke={GAME_CONFIG.memory.color} strokeWidth={2} dot={false} connectNulls />
-                <Line type="monotone" dataKey="logic" name={t.logicTitle} stroke={GAME_CONFIG.logic.color} strokeWidth={2} dot={false} connectNulls />
-                <Line type="monotone" dataKey="numbers" name={t.numbersTitle} stroke={GAME_CONFIG.numbers.color} strokeWidth={2} dot={false} connectNulls />
+                {activeGameKeys.map(k => (
+                  <Line key={k} type="monotone" dataKey={k} name={t[GAME_TITLE_KEYS[k]] || k} stroke={GAME_CONFIG[k].color} strokeWidth={2} dot={false} connectNulls />
+                ))}
               </LineChart>
             </ResponsiveContainer>
           )}
