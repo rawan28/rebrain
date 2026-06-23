@@ -134,18 +134,6 @@ export default function ConnectDots() {
     setDragPath([...currentPath, { r, c }]);
   };
 
-  const handlePointerMove = (e) => {
-    if (!dragColorRef.current) return;
-    const el = document.elementFromPoint(e.clientX, e.clientY);
-    if (!el) return;
-    const cellEl = el.closest('[data-cell]');
-    if (!cellEl) return;
-    const r = parseInt(cellEl.dataset.r, 10);
-    const c = parseInt(cellEl.dataset.c, 10);
-    if (isNaN(r) || isNaN(c)) return;
-    handleCellEnter(r, c);
-  };
-
   const handlePointerUp = useCallback(() => {
     if (!dragColorRef.current) return;
     setPaths(prev => ({ ...prev, [dragColorRef.current]: [...dragPathRef.current] }));
@@ -279,7 +267,6 @@ export default function ConnectDots() {
           width: '100%',
           aspectRatio: '1 / 1',
         }}
-        onPointerMove={handlePointerMove}
       >
         <svg
           viewBox={`0 0 ${level.size} ${level.size}`}
@@ -326,20 +313,25 @@ export default function ConnectDots() {
 
         {/* Interactive cell layer */}
         <div
-          className="absolute inset-1 grid"
+          className="absolute inset-1 grid touch-none"
           style={{ gridTemplateColumns: `repeat(${level.size}, 1fr)` }}
         >
           {Array.from({ length: level.size }).flatMap((_, r) =>
             Array.from({ length: level.size }).map((__, c) => {
-              const dot = findDot(r, c);
               return (
                 <div
                   key={`${r}-${c}`}
                   data-cell
                   data-r={r}
                   data-c={c}
-                  onPointerDown={() => handleCellDown(r, c)}
-                  className="aspect-square cursor-pointer"
+                  onPointerDown={(e) => {
+                    if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
+                      e.currentTarget.releasePointerCapture(e.pointerId);
+                    }
+                    handleCellDown(r, c);
+                  }}
+                  onPointerEnter={() => handleCellEnter(r, c)}
+                  className="aspect-square cursor-pointer touch-none"
                 />
               );
             })
