@@ -224,11 +224,16 @@ export const translations = {
 const LanguageContext = createContext(null);
 
 export function LanguageProvider({ children }) {
-  const [lang, setLang] = useState('he');
+  const [lang, setLang] = useState(() => localStorage.getItem('rebrain_lang') || 'he');
   const t = translations[lang];
 
+  const setLangPersisted = (l) => {
+    localStorage.setItem('rebrain_lang', l);
+    setLang(l);
+  };
+
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider value={{ lang, setLang: setLangPersisted, t }}>
       {children}
     </LanguageContext.Provider>
   );

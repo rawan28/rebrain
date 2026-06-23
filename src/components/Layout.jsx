@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, CalendarRange, BellRing, Spline, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, CalendarRange, BellRing, Spline, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import CoinDisplay from './CoinDisplay';
@@ -58,7 +58,7 @@ export default function Layout() {
           {!isRoot && (
             <button
               onClick={() => navigate(-1)}
-              className="hidden md:flex p-2 rounded-xl hover:bg-muted transition-colors select-none text-muted-foreground hover:text-foreground"
+              className="hidden md:flex p-3 rounded-xl hover:bg-muted transition-colors select-none text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] items-center justify-center"
               aria-label="Back"
             >
               <BackIcon className="w-6 h-6" />
@@ -69,7 +69,7 @@ export default function Layout() {
           {isInGame && (
             <Link
               to="/"
-              className="flex md:hidden p-2 rounded-xl hover:bg-muted transition-colors select-none text-muted-foreground hover:text-foreground"
+              className="flex md:hidden p-3 rounded-xl hover:bg-muted transition-colors select-none text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] items-center justify-center"
               aria-label="Home"
             >
               <Home className="w-6 h-6" />
@@ -84,6 +84,13 @@ export default function Layout() {
             <p className="text-sm md:text-base text-muted-foreground">{t.appSubtitle}</p>
           </div>
           <CoinDisplay />
+          <Link
+            to="/settings"
+            className="p-3 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center"
+            aria-label={t.settingsTitle || 'הגדרות'}
+          >
+            <Settings className="w-5 h-5 md:w-6 md:h-6" />
+          </Link>
           <LanguageSwitcher />
         </div>
       </header>
@@ -106,13 +113,13 @@ export default function Layout() {
       </main>
 
       {/* Disclaimer */}
-      <div className="bg-muted/60 border-t border-border px-4 py-2 text-center md:mb-20">
-        <p className="text-xs text-muted-foreground">
+      <div className="bg-muted/60 border-t border-border px-4 py-3 text-center md:mb-20">
+        <p className="text-sm text-muted-foreground">
           {isRtl
             ? 'האפליקציה נוצרה למטרות אישיות. כל שימוש בה הוא באחריות המשתמש בלבד.'
             : "This app was created for personal purposes. Any use of it is solely at the user's own responsibility."}
         </p>
-        <p className="text-xs text-muted-foreground mt-0.5">© Rawan Awadieh 2026</p>
+        <p className="text-sm text-muted-foreground mt-0.5">© Rawan Awadieh 2026</p>
       </div>
 
       {/* Bottom Navigation - desktop only */}
@@ -126,7 +133,7 @@ export default function Layout() {
               <Link
                 key={path}
                 to={path}
-                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all min-w-[64px] select-none
+                className={`flex flex-col items-center gap-1 px-3 py-2.5 rounded-xl transition-all min-w-[64px] min-h-[56px] justify-center select-none
                   ${isActive
                     ? 'bg-primary/10 text-primary'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted'

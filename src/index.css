@@ -93,6 +93,8 @@
   body {
     @apply bg-background text-foreground font-inter;
     overscroll-behavior-y: none;
+    font-size: 1.0625rem; /* 17px base — better readability for seniors */
+    line-height: 1.6;
   }
 
   header, footer, nav, button, a, [role="button"] {
