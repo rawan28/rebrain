@@ -219,25 +219,26 @@ export default function MemoryGame() {
           return (
             <motion.button
               key={card.id}
+              animate={{ rotateY: showFace ? 180 : 0 }}
+              transition={{ duration: 0.3 }}
               whileTap={{ scale: 0.92 }}
               onClick={() => handleCardClick(index)}
               disabled={isMatched}
-              className={`aspect-square relative rounded-2xl cursor-pointer select-none
-                transition-all duration-300 [transform-style:preserve-3d]
-                ${isMatched ? '[transform:rotateY(180deg)]' : showFace ? '[transform:rotateY(180deg)]' : ''}`}
+              className="aspect-square relative rounded-2xl cursor-pointer select-none"
+              style={{ transformStyle: 'preserve-3d' }}
             >
               {/* Card back */}
-              <div className="absolute inset-0 rounded-2xl [backface-visibility:hidden] flex items-center justify-center
-                bg-gradient-to-br from-primary to-indigo-600 border-2 border-primary/50 shadow-md
-                hover:shadow-lg hover:scale-[1.03] transition-all">
+              <div className="absolute inset-0 rounded-2xl flex items-center justify-center
+                bg-gradient-to-br from-primary to-indigo-600 border-2 border-primary/50 shadow-md"
+                style={{ backfaceVisibility: 'hidden' }}>
                 <span className="text-3xl md:text-4xl text-white/30 font-bold">?</span>
               </div>
               {/* Card front */}
-              <div className={`absolute inset-0 rounded-2xl [backface-visibility:hidden] [transform:rotateY(180deg)]
-                flex items-center justify-center border-2 shadow-lg
+              <div className={`absolute inset-0 rounded-2xl flex items-center justify-center border-2 shadow-lg
                 ${isMatched
                   ? 'bg-gradient-to-br from-green-50 to-emerald-100 border-green-300'
-                  : 'bg-white border-primary'}`}>
+                  : 'bg-white border-primary'}`}
+                style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
                 <motion.span
                   initial={{ scale: 0.5 }}
                   animate={{ scale: 1 }}
