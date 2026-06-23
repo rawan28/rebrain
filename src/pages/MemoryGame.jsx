@@ -182,8 +182,10 @@ export default function MemoryGame() {
         description={t.memoryDescLong}
         icon={Grid3X3}
         gradient="from-blue-400 to-indigo-500"
-        onStart={startNewRound}
+        onStart={() => { difficulty.reset(); startNewRound(); }}
         startLabel={t.startPlaying}
+        resumeLevel={difficulty.level}
+        onResume={startNewRound}
       />
     );
   }

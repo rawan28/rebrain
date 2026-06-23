@@ -116,8 +116,10 @@ export default function FruitAlgebra() {
         description={t.fruitAlgebraDesc || 'גלה את ערך כל פרי ופתור את החידה האחרונה!'}
         icon={Apple}
         gradient="from-red-400 to-rose-500"
-        onStart={handleStart}
+        onStart={() => { difficulty.reset(); handleStart(); }}
         startLabel={t.startPlaying || 'התחל לשחק'}
+        resumeLevel={difficulty.level}
+        onResume={handleStart}
       />
     );
   }

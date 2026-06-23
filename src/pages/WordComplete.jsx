@@ -107,7 +107,13 @@ export default function WordComplete() {
           <p className="text-lg text-muted-foreground mt-2">{t.wordDescLong}</p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Button size="lg" onClick={handleStart} className="text-lg px-8 py-6 gap-3">
+          {difficulty.level > 1 && (
+            <Button size="lg" onClick={handleStart} className="text-lg px-8 py-6 gap-3">
+              <Play className="w-6 h-6" />
+              {t.dir === 'rtl' ? `המשך מרמה ${difficulty.level}` : `Continue from Level ${difficulty.level}`}
+            </Button>
+          )}
+          <Button size="lg" onClick={() => { difficulty.reset(); handleStart(); }} variant={difficulty.level > 1 ? 'outline' : 'default'} className="text-lg px-8 py-6 gap-3">
             <Play className="w-6 h-6" />
             {t.startPlaying}
           </Button>

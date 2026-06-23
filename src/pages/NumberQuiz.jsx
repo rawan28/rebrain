@@ -66,8 +66,10 @@ export default function NumberQuiz() {
         description={t.numbersDescLong}
         icon={Calculator}
         gradient="from-emerald-400 to-teal-500"
-        onStart={handleStart}
+        onStart={() => { difficulty.reset(); handleStart(); }}
         startLabel={t.startPlaying}
+        resumeLevel={difficulty.level}
+        onResume={handleStart}
       >
         <Link to="/numbers-dashboard">
           <Button size="lg" variant="outline" className="text-lg px-8 py-6 gap-3">

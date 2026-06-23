@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Play } from 'lucide-react';
+import { Play, RotateCcw } from 'lucide-react';
 
-export default function GameStartScreen({ title, description, icon: Icon, gradient, onStart, startLabel, children }) {
+export default function GameStartScreen({ title, description, icon: Icon, gradient, onStart, startLabel, resumeLevel, onResume, children }) {
   return (
     <div className="flex flex-col items-center gap-8 py-8">
       <motion.div
@@ -28,14 +28,28 @@ export default function GameStartScreen({ title, description, icon: Icon, gradie
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
+        className="flex flex-col items-center gap-3"
       >
+        {resumeLevel && resumeLevel > 1 && onResume && (
+          <Button
+            size="lg"
+            onClick={onResume}
+            className={`text-lg px-10 py-6 gap-3 shadow-lg bg-gradient-to-r ${gradient} hover:shadow-xl transition-shadow border-0`}
+          >
+            <RotateCcw className="w-6 h-6 text-white" />
+            <span className="text-white">המשך מרמה {resumeLevel}</span>
+          </Button>
+        )}
         <Button
           size="lg"
+          variant={resumeLevel && resumeLevel > 1 ? 'outline' : 'default'}
           onClick={onStart}
-          className={`text-lg px-10 py-6 gap-3 shadow-lg bg-gradient-to-r ${gradient} hover:shadow-xl transition-shadow border-0`}
+          className={resumeLevel && resumeLevel > 1
+            ? 'text-base px-8 py-5 gap-2 text-muted-foreground'
+            : `text-lg px-10 py-6 gap-3 shadow-lg bg-gradient-to-r ${gradient} hover:shadow-xl transition-shadow border-0`}
         >
-          <Play className="w-6 h-6 text-white" />
-          <span className="text-white">{startLabel}</span>
+          <Play className={`w-5 h-5 ${resumeLevel && resumeLevel > 1 ? '' : 'text-white'}`} />
+          <span className={resumeLevel && resumeLevel > 1 ? '' : 'text-white'}>{startLabel}</span>
         </Button>
       </motion.div>
     </div>

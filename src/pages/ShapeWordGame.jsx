@@ -118,8 +118,10 @@ export default function ShapeWordGame() {
         description={l.descLong}
         icon={Shapes}
         gradient="from-indigo-400 to-blue-500"
-        onStart={startNewRound}
+        onStart={() => { difficulty.reset(); startNewRound(); }}
         startLabel={t.startPlaying}
+        resumeLevel={difficulty.level}
+        onResume={startNewRound}
       />
     );
   }

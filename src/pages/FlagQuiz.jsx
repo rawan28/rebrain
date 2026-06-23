@@ -69,8 +69,10 @@ export default function FlagQuiz() {
         description={t.flagDescLong}
         icon={Flag}
         gradient="from-orange-400 to-amber-500"
-        onStart={handleStart}
+        onStart={() => { difficulty.reset(); handleStart(); }}
         startLabel={t.startPlaying}
+        resumeLevel={difficulty.level}
+        onResume={handleStart}
       />
     );
   }

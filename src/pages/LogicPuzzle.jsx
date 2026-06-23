@@ -79,8 +79,10 @@ export default function LogicPuzzle() {
         description={t.logicDescLong}
         icon={Puzzle}
         gradient="from-purple-400 to-violet-500"
-        onStart={handleStart}
+        onStart={() => { difficulty.reset(); handleStart(); }}
         startLabel={t.startPlaying}
+        resumeLevel={difficulty.level}
+        onResume={handleStart}
       />
     );
   }
