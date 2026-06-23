@@ -134,6 +134,18 @@ export default function ConnectDots() {
     setDragPath([...currentPath, { r, c }]);
   };
 
+  const handlePointerMove = useCallback((e) => {
+    if (!dragColorRef.current) return;
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    if (!el) return;
+    const cellEl = el.closest('[data-cell]');
+    if (!cellEl) return;
+    const r = parseInt(cellEl.dataset.r, 10);
+    const c = parseInt(cellEl.dataset.c, 10);
+    if (isNaN(r) || isNaN(c)) return;
+    handleCellEnter(r, c);
+  }, []);
+
   const handlePointerUp = useCallback(() => {
     if (!dragColorRef.current) return;
     setPaths(prev => ({ ...prev, [dragColorRef.current]: [...dragPathRef.current] }));
@@ -142,10 +154,15 @@ export default function ConnectDots() {
   }, [setPaths, setDragColor, setDragPath]);
 
   useEffect(() => {
-    const handler = () => handlePointerUp();
-    window.addEventListener('pointerup', handler);
-    return () => window.removeEventListener('pointerup', handler);
-  }, [handlePointerUp]);
+    const upHandler = () => handlePointerUp();
+    const moveHandler = (e) => handlePointerMove(e);
+    window.addEventListener('pointerup', upHandler);
+    window.addEventListener('pointermove', moveHandler);
+    return () => {
+      window.removeEventListener('pointerup', upHandler);
+      window.removeEventListener('pointermove', moveHandler);
+    };
+  }, [handlePointerUp, handlePointerMove]);
 
   useEffect(() => {
     if (!started || wonRef.current) return;
@@ -325,12 +342,9 @@ export default function ConnectDots() {
                   data-r={r}
                   data-c={c}
                   onPointerDown={(e) => {
-                    if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
-                      e.currentTarget.releasePointerCapture(e.pointerId);
-                    }
+                    e.currentTarget.releasePointerCapture?.(e.pointerId);
                     handleCellDown(r, c);
                   }}
-                  onPointerEnter={() => handleCellEnter(r, c)}
                   className="aspect-square cursor-pointer touch-none"
                 />
               );
