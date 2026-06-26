@@ -10,14 +10,14 @@ export default function LanguageSwitcher() {
         className={`px-3 py-1.5 rounded-lg text-base font-semibold transition-all
           ${lang === 'he' ? 'bg-card shadow text-primary' : 'text-muted-foreground hover:text-foreground'}`}
       >
-        עב
+        עברית
       </button>
       <button
         onClick={() => setLang('ar')}
         className={`px-3 py-1.5 rounded-lg text-base font-semibold transition-all
           ${lang === 'ar' ? 'bg-card shadow text-primary' : 'text-muted-foreground hover:text-foreground'}`}
       >
-        عر
+        عربية
       </button>
     </div>
   );
