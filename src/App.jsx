@@ -21,7 +21,6 @@ import NumberQuizDashboard from '@/pages/NumberQuizDashboard';
 import Settings from '@/pages/Settings';
 import FruitAlgebra from '@/pages/FruitAlgebra';
 import WeeklyReport from '@/pages/WeeklyReport';
-import ReminderSettings from '@/pages/ReminderSettings';
 import ConnectDots from '@/pages/ConnectDots';
 
 
@@ -65,7 +64,6 @@ const AuthenticatedApp = () => {
         <Route path="/settings" element={<Settings />} />
         <Route path="/fruit-algebra" element={<FruitAlgebra />} />
         <Route path="/weekly-report" element={<WeeklyReport />} />
-        <Route path="/reminder" element={<ReminderSettings />} />
         <Route path="/connect-dots" element={<ConnectDots />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
