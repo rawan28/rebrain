@@ -181,7 +181,7 @@ export default function WordComplete() {
 
       <div className="flex flex-col items-center gap-6">
         {/* Hint */}
-        <div className="w-full bg-amber-50 border-2 border-amber-300 rounded-2xl px-6 py-4 text-center">
+        <div className="w-full bg-amber-200 border-2 border-amber-500 rounded-2xl px-6 py-4 text-center">
           <p className="text-foreground text-xl md:text-2xl font-semibold leading-relaxed">
             💡 {question.hint}
           </p>
