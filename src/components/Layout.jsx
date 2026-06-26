@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, CalendarRange, Spline, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
+import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, CalendarRange, BellRing, Spline, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import CoinDisplay from './CoinDisplay';
@@ -40,10 +40,11 @@ export default function Layout() {
     { path: '/shape-word', label: t.shapeWordTitle, icon: Shapes },
     { path: '/connect-dots', label: t.navConnectDots, icon: Spline },
     { path: '/weekly-report', label: t.navWeekly, icon: CalendarRange },
+    { path: '/reminder', label: t.navReminder, icon: BellRing },
     { path: '/progress', label: t.navProgress, icon: BarChart2 },
   ];
 
-  const isInGame = !isRoot && location.pathname !== '/progress' && location.pathname !== '/settings' && location.pathname !== '/reminder';
+  const isInGame = !isRoot && location.pathname !== '/progress' && location.pathname !== '/settings';
 
   return (
     <div className="min-h-screen bg-background flex flex-col" dir={t.dir} lang={lang}>
