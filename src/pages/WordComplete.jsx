@@ -146,28 +146,28 @@ export default function WordComplete() {
     const isCorrectCell = submitted && isHidden && filled[i] === question.letters[i];
     const isWrongCell = submitted && isHidden && filled[i] !== question.letters[i];
 
-    let cellClass = 'border-2 rounded-xl flex items-center justify-center font-bold text-2xl md:text-3xl w-12 h-12 md:w-14 md:h-14 select-none transition-all';
+    let cellClass = 'border-4 rounded-2xl flex items-center justify-center font-bold text-3xl md:text-4xl w-16 h-16 md:w-20 md:h-20 select-none transition-all shadow-sm';
     if (!isHidden) {
       cellClass += ' bg-secondary border-border text-foreground';
     } else if (!value) {
-      cellClass += ' bg-white border-dashed border-primary/40 text-transparent';
+      cellClass += ' bg-background border-dashed border-primary/50';
     } else if (isCorrectCell) {
-      cellClass += ' bg-green-50 border-green-400 text-green-700';
+      cellClass += ' bg-green-100 border-green-500 text-green-800';
     } else if (isWrongCell) {
-      cellClass += ' bg-red-50 border-red-400 text-red-700';
+      cellClass += ' bg-red-100 border-red-500 text-red-800';
     } else {
-      cellClass += ' bg-primary/5 border-primary text-primary';
+      cellClass += ' bg-primary/10 border-primary text-primary';
     }
 
     return (
       <div key={i} className={cellClass}>
-        {isHidden && submitted && !isCorrectCell ? question.letters[i] : (value || '_')}
+        {isHidden && submitted && !isCorrectCell ? question.letters[i] : (value || '')}
       </div>
     );
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <GameHeader
         title={t.wordTitle}
         description={t.wordSubDesc}
@@ -179,14 +179,16 @@ export default function WordComplete() {
         onReset={handleReset}
       />
 
-      <Card className="p-6 md:p-8 flex flex-col items-center gap-6">
+      <div className="flex flex-col items-center gap-6">
         {/* Hint */}
-        <p className="text-muted-foreground text-base md:text-lg">
-          💡 {question.hint}
-        </p>
+        <div className="w-full bg-amber-50 border-2 border-amber-300 rounded-2xl px-6 py-4 text-center">
+          <p className="text-foreground text-xl md:text-2xl font-semibold leading-relaxed">
+            💡 {question.hint}
+          </p>
+        </div>
 
         {/* Word display */}
-        <div className="flex gap-2 flex-wrap justify-center" dir="rtl">
+        <div className="flex gap-3 flex-wrap justify-center" dir={t.dir === 'rtl' ? 'rtl' : 'ltr'}>
           {cells}
         </div>
 
@@ -194,10 +196,14 @@ export default function WordComplete() {
         <AnimatePresence>
           {submitted && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className={`text-xl font-bold px-6 py-2 rounded-full ${isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+              className={`text-2xl font-bold px-8 py-4 rounded-2xl border-2 ${
+                isCorrect
+                  ? 'bg-green-100 border-green-400 text-green-800'
+                  : 'bg-red-100 border-red-400 text-red-800'
+              }`}
             >
               {isCorrect ? t.correct : t.incorrect}
             </motion.div>
@@ -206,23 +212,23 @@ export default function WordComplete() {
 
         {/* Letter buttons */}
         {!submitted && (
-          <div className="flex flex-wrap gap-2 justify-center max-w-xs md:max-w-sm">
+          <div className="flex flex-wrap gap-3 justify-center max-w-sm">
             {question.options.map((letter, i) => (
               <motion.button
                 key={i}
-                whileTap={{ scale: 0.9 }}
+                whileTap={{ scale: 0.92 }}
                 onClick={() => handleLetterPick(letter)}
-                className="w-11 h-11 md:w-13 md:h-13 rounded-xl border-2 border-border bg-white hover:bg-primary/10 hover:border-primary font-bold text-xl md:text-2xl transition-all"
+                className="w-16 h-16 md:w-18 md:h-18 rounded-2xl border-4 border-border bg-card hover:bg-primary/10 hover:border-primary font-bold text-2xl md:text-3xl transition-all shadow-sm active:scale-95"
               >
                 {letter}
               </motion.button>
             ))}
             <motion.button
-              whileTap={{ scale: 0.9 }}
+              whileTap={{ scale: 0.92 }}
               onClick={handleDelete}
-              className="w-11 h-11 rounded-xl border-2 border-border bg-white hover:bg-red-50 hover:border-red-300 flex items-center justify-center transition-all"
+              className="w-16 h-16 rounded-2xl border-4 border-border bg-card hover:bg-red-50 hover:border-red-400 flex items-center justify-center transition-all shadow-sm"
             >
-              <Delete className="w-5 h-5 text-muted-foreground" />
+              <Delete className="w-7 h-7 text-muted-foreground" />
             </motion.button>
           </div>
         )}
@@ -233,21 +239,21 @@ export default function WordComplete() {
             size="lg"
             onClick={handleSubmit}
             disabled={!allFilled}
-            className="text-lg px-8"
+            className="text-xl px-10 py-7 rounded-2xl min-h-[64px] font-bold shadow-md"
           >
             {t.wordCheck}
           </Button>
         )}
-      </Card>
 
-      {/* Next button */}
-      {showNext && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <Button size="lg" onClick={handleNext} className="text-lg px-8 py-6">
-            {t.nextQuestion}
-          </Button>
-        </motion.div>
-      )}
+        {/* Next button */}
+        {showNext && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <Button size="lg" onClick={handleNext} className="text-xl px-10 py-7 rounded-2xl min-h-[64px] font-bold shadow-md">
+              {t.nextQuestion}
+            </Button>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }
