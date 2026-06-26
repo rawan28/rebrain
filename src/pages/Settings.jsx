@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
-import { Trash2, AlertTriangle, Type } from 'lucide-react';
+import { Trash2, AlertTriangle, Type, Sun, Moon, Monitor } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -11,13 +11,20 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { useLang } from '@/lib/LanguageContext';
-import { FONT_SIZES, applyFontSize } from '@/lib/ThemeProvider';
+import { FONT_SIZES, applyFontSize, applyTheme } from '@/lib/ThemeProvider';
 
 export default function Settings() {
   const { t } = useLang();
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [fontSize, setFontSize] = useState(() => localStorage.getItem('rebrain_fontsize') || 'large');
+  const [theme, setTheme] = useState(() => localStorage.getItem('rebrain_theme') || 'system');
+
+  const handleTheme = (mode) => {
+    setTheme(mode);
+    localStorage.setItem('rebrain_theme', mode);
+    applyTheme(mode);
+  };
 
   const handleFontSize = (key) => {
     setFontSize(key);
@@ -40,6 +47,34 @@ export default function Settings() {
       <div>
         <h2 className="text-2xl font-bold">{t.settingsTitle || 'הגדרות'}</h2>
         <p className="text-muted-foreground mt-1">{t.settingsDesc || 'ניהול חשבון והעדפות'}</p>
+      </div>
+
+      {/* Theme */}
+      <div className="bg-card border border-border rounded-xl p-5 space-y-3">
+        <div className="flex items-center gap-2 font-semibold text-foreground">
+          <Sun className="w-5 h-5" />
+          {t.settingsTheme || 'מצב תצוגה'}
+        </div>
+        <p className="text-sm text-muted-foreground">{t.settingsThemeDesc || 'בחר מצב בהיר, כהה, או לפי הגדרות המכשיר'}</p>
+        <div className="flex gap-3 flex-wrap">
+          {[
+            { key: 'light', label: t.themeLight || 'בהיר', Icon: Sun },
+            { key: 'dark', label: t.themeDark || 'כהה', Icon: Moon },
+            { key: 'system', label: t.themeSystem || 'אוטומטי', Icon: Monitor },
+          ].map(({ key, label, Icon }) => (
+            <button
+              key={key}
+              onClick={() => handleTheme(key)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 font-medium transition-all text-sm min-h-[44px]
+                ${theme === key
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-border bg-background text-foreground hover:border-primary/50'}`}
+            >
+              <Icon className="w-4 h-4" />
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Font size */}

@@ -12,19 +12,36 @@ export function applyFontSize(key) {
   document.documentElement.style.fontSize = size.scale;
 }
 
+export function applyTheme(mode) {
+  // mode: 'light' | 'dark' | 'system'
+  if (mode === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else if (mode === 'light') {
+    document.documentElement.classList.remove('dark');
+  } else {
+    // system
+    const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.classList.toggle('dark', dark);
+  }
+}
+
 export default function ThemeProvider({ children }) {
   useEffect(() => {
     // Apply saved font size
     const savedSize = localStorage.getItem('rebrain_fontsize') || 'large';
     applyFontSize(savedSize);
 
-    // Apply theme
-    const apply = (dark) => {
-      document.documentElement.classList.toggle('dark', dark);
-    };
+    // Apply saved theme
+    const savedTheme = localStorage.getItem('rebrain_theme') || 'system';
+    applyTheme(savedTheme);
+
+    // Listen to system changes only if mode is 'system'
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    apply(mq.matches);
-    const handler = (e) => apply(e.matches);
+    const handler = () => {
+      if ((localStorage.getItem('rebrain_theme') || 'system') === 'system') {
+        applyTheme('system');
+      }
+    };
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
   }, []);
