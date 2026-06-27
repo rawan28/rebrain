@@ -2,8 +2,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { getDailyGames, GAME_TYPES } from "../quizData";
 
-const WORD_RECALL_SHOW_MS = 5000;
-
 export function useDailyQuiz({ lang = "he" } = {}) {
   const today = new Date().toISOString().split("T")[0];
   const [games]                         = useState(() => getDailyGames(today));
@@ -45,7 +43,7 @@ export function useDailyQuiz({ lang = "he" } = {}) {
         ...currentGame.data.distractors.map(w => ({ text: t(w), isTarget: false })),
       ]);
       setRecallAnswers(pool);
-      setTimeout(() => setRecallPhase("test"), WORD_RECALL_SHOW_MS);
+      setTimeout(() => setRecallPhase("test"), currentGame.showMs ?? 5000);
     }
     setPhase("playing");
   }, [currentGame, lang]);

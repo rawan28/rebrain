@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDailyQuiz } from "../hooks/useDailyQuiz";
 import DailyQuizGame   from "../components/DailyQuizGame";
 import { useLang } from "@/lib/LanguageContext";
+import { getDifficultyLevel } from "../quizData";
 
 const PAGE_LABELS = {
   he: { title: "משחק יומי", subtitle: "שלושה אתגרים קצרים לחיזוק הזיכרון", alreadyDone: "כבר שיחקתם היום — חזרו מחר! 🌟", doneTitle: "כל הכבוד! סיימתם את המשחק היומי 🎉", doneSubtitle: "נתראה מחר עם אתגרים חדשים", totalScore: "ניקוד כולל", accuracy: "דיוק", backHome: "חזרה לדף הבית" },

@@ -5,6 +5,19 @@
 // 3 game types rotate daily: word_recall | trivia | pattern
 // ─────────────────────────────────────────────────────────────────────────────
 
+export function getDifficultyLevel(dateStr) {
+  const launch = new Date("2026-06-27");
+  const today  = new Date(dateStr);
+  const dayNum = Math.max(0, Math.floor((today - launch) / 86400000));
+  if (dayNum % 15 < 3)  return 1;
+  if (dayNum % 15 < 6)  return 2;
+  if (dayNum % 15 < 9)  return 3;
+  if (dayNum % 15 < 12) return 4;
+  return 5;
+}
+
+export const wordRecallShowMs = { 1: 5000, 2: 4000, 3: 3500, 4: 3000, 5: 2500 };
+
 export const GAME_TYPES = {
   WORD_RECALL:  "word_recall",
   TRIVIA:       "trivia",
