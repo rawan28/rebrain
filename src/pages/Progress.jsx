@@ -6,6 +6,9 @@ import PullToRefreshIndicator from '@/components/PullToRefreshIndicator';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { TrendingUp, Brain, Puzzle, Calculator, Trophy, Target, Zap } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { aggregateByPillar } from '@/lib/cognitivePillars';
+import PillarSummaryCards from '@/components/progress/PillarSummaryCards';
+import PillarTimeline from '@/components/progress/PillarTimeline';
 
 const GAME_TITLE_KEYS = {
   memory: 'memoryTitle',
@@ -112,6 +115,10 @@ export default function Progress() {
 
   const hasData = totalSessions > 0;
 
+  const { timeline: pillarTimeline, summary: pillarSummary } = useMemo(
+    () => aggregateByPillar(raw), [raw]
+  );
+
   return (
     <div className="space-y-6">
       <PullToRefreshIndicator pullY={pullY} progress={progress} refreshing={refreshing} />
@@ -119,6 +126,15 @@ export default function Progress() {
         <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t.progressTitle}</h2>
         <p className="text-lg text-muted-foreground mt-1">{t.progressDesc}</p>
       </div>
+
+      {/* Cognitive Pillar Overview */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3">{t.pillarOverview}</h3>
+        <PillarSummaryCards summary={pillarSummary} />
+      </div>
+
+      {/* Pillar Accuracy Over Time */}
+      <PillarTimeline timeline={pillarTimeline} />
 
       {/* Summary Stats */}
       <div className="flex flex-wrap gap-3">

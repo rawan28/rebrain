@@ -113,6 +113,14 @@ export const translations = {
     reminderSave: 'שמור תזכורת',
     reminderSaved: 'נשמר!',
     reminderCardDesc: 'קבל הודעה מעודדת כל יום בשעה הקבועה',
+    // Cognitive pillars
+    pillarMemory: 'זיכרון',
+    pillarLogic: 'חשיבה לוגית',
+    pillarAttention: 'קשב ודיוק',
+    pillarPattern: 'זיהוי דפוסים',
+    pillarOverview: 'סקירה קוגניטיבית',
+    pillarAccuracyOverTime: 'דיוק לפי יכולת קוגניטיבית',
+    pillarSessions: 'משחקים',
   },
   ar: {
     dir: 'rtl',
@@ -226,6 +234,14 @@ export const translations = {
     reminderSave: 'حفظ التذكير',
     reminderSaved: 'تم الحفظ!',
     reminderCardDesc: 'استلم رسالة تشجيعية كل يوم في الوقت المحدد',
+    // Cognitive pillars
+    pillarMemory: 'الذاكرة',
+    pillarLogic: 'التفكير المنطقي',
+    pillarAttention: 'الانتباه والدقة',
+    pillarPattern: 'التعرف على الأنماط',
+    pillarOverview: 'نظرة معرفية',
+    pillarAccuracyOverTime: 'الدقة حسب القدرة المعرفية',
+    pillarSessions: 'جلسات',
   },
 };
 
