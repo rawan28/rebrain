@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Spline, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing, Star } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
@@ -85,14 +85,6 @@ export default function Home() {
       icon: Shapes,
       color: 'bg-indigo-50 text-indigo-600 border-indigo-100',
       iconBg: 'bg-indigo-100',
-    },
-    {
-      path: '/connect-dots',
-      title: t.connectDotsTitle,
-      description: t.connectDotsDesc,
-      icon: Spline,
-      color: 'bg-teal-50 text-teal-600 border-teal-100',
-      iconBg: 'bg-teal-100',
     },
     {
       path: '/weekly-report',
