@@ -22,6 +22,14 @@ export default function Home() {
 
   const exercises = [
     {
+      path: '/daily-quiz',
+      title: t.dir === 'rtl' ? 'משחק יומי' : 'Daily Quiz',
+      description: t.dir === 'rtl' ? 'שלושה אתגרים קצרים לחיזוק הזיכרון — כל יום!' : 'Three short challenges to boost your memory — every day!',
+      icon: Star,
+      color: 'bg-violet-50 text-violet-600 border-violet-100',
+      iconBg: 'bg-violet-100',
+    },
+    {
       path: '/fruit-algebra',
       title: t.fruitAlgebraTitle || 'אלגברת פירות 🍓',
       description: t.fruitAlgebraDesc || 'גלה את ערך כל פרי ופתור את החידה!',
@@ -101,14 +109,6 @@ export default function Home() {
       icon: BellRing,
       color: 'bg-rose-50 text-rose-600 border-rose-100',
       iconBg: 'bg-rose-100',
-    },
-    {
-      path: '/daily-quiz',
-      title: t.dir === 'rtl' ? 'משחק יומי' : 'Daily Quiz',
-      description: t.dir === 'rtl' ? 'שלושה אתגרים קצרים לחיזוק הזיכרון — כל יום!' : 'Three short challenges to boost your memory — every day!',
-      icon: Star,
-      color: 'bg-violet-50 text-violet-600 border-violet-100',
-      iconBg: 'bg-violet-100',
     },
   ];
 
