@@ -12,7 +12,7 @@ import { awardCoin } from '@/lib/useCoin';
 export default function ConnectDots() {
   const { t } = useLang();
   const [levelIndex, setLevelIndex] = useState(() => {
-    try { const v = parseInt(localStorage.getItem('rebrain_level_connect_dots'), 10); return isNaN(v) ? 0 : Math.min(v, CONNECT_DOTS_LEVELS.length - 1); } catch { return 0; }
+    try { const v = parseInt(localStorage.getItem('rebrain_level_connect_dots'), 10); return isNaN(v) ? 3 : Math.min(v, CONNECT_DOTS_LEVELS.length - 1); } catch { return 3; }
   });
   const [started, setStarted] = useState(false);
   const [won, setWon] = useState(false);
@@ -234,7 +234,7 @@ export default function ConnectDots() {
         description={t.connectDotsDescLong}
         icon={Spline}
         gradient="from-teal-400 to-cyan-500"
-        onStart={() => startLevel(0)}
+        onStart={() => startLevel(3)}
         startLabel={t.startPlaying}
       />
     );
