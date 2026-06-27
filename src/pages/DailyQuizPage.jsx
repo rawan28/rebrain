@@ -6,8 +6,8 @@ import { useLang } from "@/lib/LanguageContext";
 import { getDifficultyLevel } from "../quizData";
 
 const PAGE_LABELS = {
-  he: { title: "משחק יומי", subtitle: "שלושה אתגרים קצרים לחיזוק הזיכרון", alreadyDone: "כבר שיחקתם היום — חזרו מחר! 🌟", doneTitle: "כל הכבוד! סיימתם את המשחק היומי 🎉", doneSubtitle: "נתראה מחר עם אתגרים חדשים", totalScore: "ניקוד כולל", accuracy: "דיוק", backHome: "חזרה לדף הבית" },
-  ar: { title: "لعبة اليوم", subtitle: "ثلاثة تحديات قصيرة لتقوية الذاكرة", alreadyDone: "لقد لعبت اليوم — عد غداً! 🌟", doneTitle: "أحسنت! أتممت لعبة اليوم 🎉", doneSubtitle: "إلى اللقاء غداً مع تحديات جديدة", totalScore: "النتيجة الإجمالية", accuracy: "الدقة", backHome: "العودة للرئيسية" },
+  he: { title: "משחק יומי", subtitle: "שלושה אתגרים קצרים לחיזוק הזיכרון", alreadyDone: "כבר שיחקתם היום — חזרו מחר! 🌟", doneTitle: "כל הכבוד! סיימתם את המשחק היומי 🎉", doneSubtitle: "נתראה מחר עם אתגרים חדשים", totalScore: "ניקוד כולל", accuracy: "דיוק", backHome: "חזרה לדף הבית", levelLabel: "רמת קושי", levels: ["","קל 🟢","קל-בינוני 🟡","בינוני 🟠","קשה 🔴","מאתגר מאוד 🔥"] },
+  ar: { title: "لعبة اليوم", subtitle: "ثلاثة تحديات قصيرة لتقوية الذاكرة", alreadyDone: "لقد لعبت اليوم — عد غداً! 🌟", doneTitle: "أحسنت! أتممت لعبة اليوم 🎉", doneSubtitle: "إلى اللقاء غداً مع تحديات جديدة", totalScore: "النتيجة الإجمالية", accuracy: "الدقة", backHome: "العودة للرئيسية", levelLabel: "مستوى الصعوبة", levels: ["","سهل 🟢","متوسط-سهل 🟡","متوسط 🟠","صعب 🔴","صعب جداً 🔥"] },
 };
 const GAME_ICONS = { word_recall: "🧠", trivia: "💡", pattern: "🔢" };
 
@@ -70,6 +70,7 @@ export default function DailyQuizPage() {
       <div className="text-center mb-6">
         <h1 className="text-3xl font-bold">{L.title}</h1>
         <p className="text-muted-foreground mt-1">{L.subtitle}</p>
+        <p className="text-base font-semibold mt-1 mb-0">{L.levelLabel}: {L.levels[getDifficultyLevel(quiz.today)]}</p>
       </div>
       <ProgressDots total={quiz.totalGames} current={quiz.gameIndex} />
       <DailyQuizGame game={quiz.currentGame} lang={lang} t={quiz.t} phase={quiz.phase} onStart={quiz.startCurrentGame} onFinish={quiz.finishGame} selectedIdx={quiz.selectedIdx} feedback={quiz.feedback} onAnswerSelect={quiz.submitAnswer} recallPhase={quiz.recallPhase} recallAnswers={quiz.recallAnswers} selectedWords={quiz.selectedWords} onToggleWord={quiz.toggleWord} onSubmitRecall={quiz.submitWordRecall} score={quiz.score} attempts={quiz.attempts} gameIndex={quiz.gameIndex} totalGames={quiz.totalGames} />

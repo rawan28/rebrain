@@ -65,11 +65,28 @@ export const patternSequences = [
 ];
 
 export function getDailyGames(dateStr) {
-  const seed = dateStr.replace(/-/g, "").split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  const pickIndex = (arr, offset) => arr[(seed + offset) % arr.length];
+  const level = getDifficultyLevel(dateStr);
+  const seed  = dateStr.replace(/-/g,"").split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+  const pick  = (arr, off) => arr[(seed + off) % arr.length];
+
+  const easyWR   = wordRecallRounds.slice(0, 3);
+  const mediumWR = wordRecallRounds.slice(3, 5);
+  const hardWR   = wordRecallRounds.slice(5, 7);
+  const wrPool   = level <= 2 ? easyWR : level === 3 ? mediumWR : hardWR;
+
+  const easyT   = triviaQuestions.slice(0, 5);
+  const mediumT = triviaQuestions.slice(5, 10);
+  const hardT   = triviaQuestions.slice(10, 14);
+  const trPool  = level <= 2 ? easyT : level === 3 ? mediumT : hardT;
+
+  const easyP   = patternSequences.slice(0, 3);
+  const mediumP = patternSequences.slice(3, 7);
+  const hardP   = patternSequences.slice(7, 10);
+  const ptPool  = level <= 2 ? easyP : level === 3 ? mediumP : hardP;
+
   return [
-    { type: GAME_TYPES.WORD_RECALL, data: pickIndex(wordRecallRounds, 0) },
-    { type: GAME_TYPES.TRIVIA,      data: pickIndex(triviaQuestions,  1) },
-    { type: GAME_TYPES.PATTERN,     data: pickIndex(patternSequences, 2) },
+    { type: GAME_TYPES.WORD_RECALL, data: pick(wrPool, 0), level, showMs: wordRecallShowMs[level] },
+    { type: GAME_TYPES.TRIVIA,      data: pick(trPool, 1), level },
+    { type: GAME_TYPES.PATTERN,     data: pick(ptPool, 2), level },
   ];
 }

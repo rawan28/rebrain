@@ -43,7 +43,7 @@ export function useDailyQuiz({ lang = "he" } = {}) {
         ...currentGame.data.distractors.map(w => ({ text: t(w), isTarget: false })),
       ]);
       setRecallAnswers(pool);
-      setTimeout(() => setRecallPhase("test"), currentGame.showMs ?? 5000);
+      setTimeout(() => setRecallPhase("test"), currentGame.showMs ?? 5000); // already updated
     }
     setPhase("playing");
   }, [currentGame, lang]);
