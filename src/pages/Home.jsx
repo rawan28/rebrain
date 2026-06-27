@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Spline, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Spline, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
@@ -109,6 +109,14 @@ export default function Home() {
       icon: BellRing,
       color: 'bg-rose-50 text-rose-600 border-rose-100',
       iconBg: 'bg-rose-100',
+    },
+    {
+      path: '/daily-quiz',
+      title: t.dir === 'rtl' ? 'משחק יומי' : 'Daily Quiz',
+      description: t.dir === 'rtl' ? 'שלושה אתגרים קצרים לחיזוק הזיכרון — כל יום!' : 'Three short challenges to boost your memory — every day!',
+      icon: Star,
+      color: 'bg-violet-50 text-violet-600 border-violet-100',
+      iconBg: 'bg-violet-100',
     },
   ];
 
