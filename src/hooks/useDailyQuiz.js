@@ -91,5 +91,5 @@ export function useDailyQuiz({ lang = "he" } = {}) {
     }
   }, [currentGame, score, attempts, results, gameIndex, games.length, today]);
 
-  return { today, games, gameIndex, currentGame, phase, score, attempts, feedback, selectedIdx, results, alreadyDone, recallPhase, recallAnswers, selectedWords, t, startCurrentGame, submitAnswer, toggleWord, submitWordRecall, finishGame, totalGames: games.length, isLastGame: gameIndex === games.length - 1 };
+  return { today, games, gameIndex, currentGame,  phase, score, attempts, feedback, selectedIdx, results, alreadyDone, recallPhase, recallAnswers, selectedWords, t, startCurrentGame, submitAnswer, toggleWord, submitWordRecall, finishGame, totalGames: games.length, isLastGame: gameIndex === games.length - 1 };
 }
