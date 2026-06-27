@@ -9,7 +9,7 @@ const PAGE_LABELS = {
   he: { title: "משחק יומי", subtitle: "שלושה אתגרים קצרים לחיזוק הזיכרון", alreadyDone: "כבר שיחקתם היום — חזרו מחר! 🌟", doneTitle: "כל הכבוד! סיימתם את המשחק היומי 🎉", doneSubtitle: "נתראה מחר עם אתגרים חדשים", totalScore: "ניקוד כולל", accuracy: "דיוק", backHome: "חזרה לדף הבית", levelLabel: "רמת קושי", levels: ["","קל 🟢","קל-בינוני 🟡","בינוני 🟠","קשה 🔴","מאתגר מאוד 🔥"] },
   ar: { title: "لعبة اليوم", subtitle: "ثلاثة تحديات قصيرة لتقوية الذاكرة", alreadyDone: "لقد لعبت اليوم — عد غداً! 🌟", doneTitle: "أحسنت! أتممت لعبة اليوم 🎉", doneSubtitle: "إلى اللقاء غداً مع تحديات جديدة", totalScore: "النتيجة الإجمالية", accuracy: "الدقة", backHome: "العودة للرئيسية", levelLabel: "مستوى الصعوبة", levels: ["","سهل 🟢","متوسط-سهل 🟡","متوسط 🟠","صعب 🔴","صعب جداً 🔥"] },
 };
-const GAME_ICONS = { word_recall: "🧠", trivia: "💡", pattern: "🔢" };
+const GAME_ICONS = { word_recall: "🧠", trivia: "💡", pattern: "🔢", rapid_recall: "⚡", logic_odd_one_out: "🧩", spot_difference: "🔍", pattern_advanced: "🔢" };
 
 function ProgressDots({ total, current }) {
   return (
@@ -74,7 +74,7 @@ export default function DailyQuizPage() {
         {(() => { const level = getDifficultyLevel(quiz.today); const levelNames = { he: ["","קל 🟢","קל-בינוני 🟡","בינוני 🟠","קשה 🔴","מאתגר מאוד 🔥"], ar: ["","سهل 🟢","متوسط-سهل 🟡","متوسط 🟠","صعب 🔴","صعب جداً 🔥"] }; return <p className="text-sm font-semibold mb-2">{lang === "ar" ? "مستوى الصعوبة" : "רמת קושי"}: {(levelNames[lang] || levelNames.he)[level]}</p>; })()}
       </div>
       <ProgressDots total={quiz.totalGames} current={quiz.gameIndex} />
-      <DailyQuizGame game={quiz.currentGame} lang={lang} t={quiz.t} phase={quiz.phase} onStart={quiz.startCurrentGame} onFinish={quiz.finishGame} selectedIdx={quiz.selectedIdx} feedback={quiz.feedback} onAnswerSelect={quiz.submitAnswer} recallPhase={quiz.recallPhase} recallAnswers={quiz.recallAnswers} selectedWords={quiz.selectedWords} onToggleWord={quiz.toggleWord} onSubmitRecall={quiz.submitWordRecall} score={quiz.score} attempts={quiz.attempts} gameIndex={quiz.gameIndex} totalGames={quiz.totalGames} />
+      <DailyQuizGame game={quiz.currentGame} lang={lang} t={quiz.t} phase={quiz.phase} onStart={quiz.startCurrentGame} onFinish={quiz.finishGame} selectedIdx={quiz.selectedIdx} feedback={quiz.feedback} onAnswerSelect={quiz.submitAnswer} recallPhase={quiz.recallPhase} recallAnswers={quiz.recallAnswers} selectedWords={quiz.selectedWords} onToggleWord={quiz.toggleWord} onSubmitRecall={quiz.submitWordRecall} score={quiz.score} attempts={quiz.attempts} gameIndex={quiz.gameIndex} totalGames={quiz.totalGames} onNewGameComplete={quiz.handleNewGameComplete} />
     </div>
   );
 }

@@ -1,10 +1,16 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { getDailyGames, GAME_TYPES } from "../quizData";
+import { getDailyGames, GAME_TYPES, getDifficultyLevel } from "../quizData";
+import { getNewDailyGames, NEW_GAME_TYPES } from "../newQuizData";
 
 export function useDailyQuiz({ lang = "he" } = {}) {
   const today = new Date().toISOString().split("T")[0];
-  const [games]                         = useState(() => getDailyGames(today));
+  const [games]                         = useState(() => {
+    const original = getDailyGames(today);
+    const level = getDifficultyLevel(today);
+    const newGames = getNewDailyGames(today, level);
+    return [...original, ...newGames];
+  });
   const [gameIndex,  setGameIndex]       = useState(0);
   const [phase,      setPhase]           = useState("intro");
   const [score,      setScore]           = useState(0);
@@ -33,6 +39,13 @@ export function useDailyQuiz({ lang = "he" } = {}) {
   const t       = (obj) => (obj ? (obj[lang] ?? obj["he"] ?? "") : "");
   const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
+  // New game types manage their own internal state and call onComplete(score, max) when done
+  const handleNewGameComplete = useCallback((score, max) => {
+    setScore(score);
+    setAttempts(max);
+    setFeedback(score > 0 ? "correct" : "wrong");
+  }, []);
+
   const startCurrentGame = useCallback(() => {
     setFeedback(null); setSelectedIdx(null); setScore(0); setAttempts(0);
     startTimeRef.current = Date.now();
@@ -43,7 +56,7 @@ export function useDailyQuiz({ lang = "he" } = {}) {
         ...currentGame.data.distractors.map(w => ({ text: t(w), isTarget: false })),
       ]);
       setRecallAnswers(pool);
-      setTimeout(() => setRecallPhase("test"), currentGame.showMs ?? 5000); // already updated
+      setTimeout(() => setRecallPhase("test"), currentGame.showMs ?? 5000);
     }
     setPhase("playing");
   }, [currentGame, lang]);
@@ -91,5 +104,5 @@ export function useDailyQuiz({ lang = "he" } = {}) {
     }
   }, [currentGame, score, attempts, results, gameIndex, games.length, today]);
 
-  return { today, games, gameIndex, currentGame,  phase, score, attempts, feedback, selectedIdx, results, alreadyDone, recallPhase, recallAnswers, selectedWords, t, startCurrentGame, submitAnswer, toggleWord, submitWordRecall, finishGame, totalGames: games.length, isLastGame: gameIndex === games.length - 1 };
+  return { today, games, gameIndex, currentGame, phase, score, attempts, feedback, selectedIdx, results, alreadyDone, recallPhase, recallAnswers, selectedWords, t, startCurrentGame, submitAnswer, toggleWord, submitWordRecall, finishGame, handleNewGameComplete, totalGames: games.length, isLastGame: gameIndex === games.length - 1 };
 }
