@@ -70,7 +70,7 @@ export default function DailyQuizPage() {
       <div className="text-center mb-6">
         <h1 className="text-3xl font-bold">{L.title}</h1>
         <p className="text-muted-foreground mt-1">{L.subtitle}</p>
-        <p className="text-base font-semibold mt-1 mb-0">{L.levelLabel}: {L.levels[getDifficultyLevel(quiz.today)]}</p>
+        {(() => { const level = getDifficultyLevel(quiz.today); const levelNames = { he: ["","קל 🟢","קל-בינוני 🟡","בינוני 🟠","קשה 🔴","מאתגר מאוד 🔥"], ar: ["","سهل 🟢","متوسط-سهل 🟡","متوسط 🟠","صعب 🔴","صعب جداً 🔥"] }; return <p className="text-sm font-semibold mt-1">{lang === "ar" ? "مستوى الصعوبة" : "רמת קושי"}: {(levelNames[lang] || levelNames.he)[level]}</p>; })()}
       </div>
       <ProgressDots total={quiz.totalGames} current={quiz.gameIndex} />
       <DailyQuizGame game={quiz.currentGame} lang={lang} t={quiz.t} phase={quiz.phase} onStart={quiz.startCurrentGame} onFinish={quiz.finishGame} selectedIdx={quiz.selectedIdx} feedback={quiz.feedback} onAnswerSelect={quiz.submitAnswer} recallPhase={quiz.recallPhase} recallAnswers={quiz.recallAnswers} selectedWords={quiz.selectedWords} onToggleWord={quiz.toggleWord} onSubmitRecall={quiz.submitWordRecall} score={quiz.score} attempts={quiz.attempts} gameIndex={quiz.gameIndex} totalGames={quiz.totalGames} />
