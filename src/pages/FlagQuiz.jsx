@@ -108,9 +108,10 @@ export default function FlagQuiz() {
             const isCorrectAnswer = option === question.answer;
             const showResult = selected !== null;
 
-            let cls = 'border-border hover:border-primary/60 hover:bg-primary/5';
-            if (showResult && isCorrectAnswer) cls = 'border-green-400 bg-green-50';
-            else if (showResult && isSelected && !isCorrectAnswer) cls = 'border-red-400 bg-red-50';
+            let cls = 'border-border hover:border-primary/60 hover:bg-primary/5 text-foreground';
+            if (showResult && isCorrectAnswer) cls = 'border-green-400 bg-green-50 dark:bg-green-900/40 text-green-800 dark:text-green-200';
+            else if (showResult && isSelected && !isCorrectAnswer) cls = 'border-red-400 bg-red-50 dark:bg-red-900/40 text-red-800 dark:text-red-200';
+            else if (showResult) cls = 'border-border text-muted-foreground opacity-60';
 
             return (
               <motion.button
