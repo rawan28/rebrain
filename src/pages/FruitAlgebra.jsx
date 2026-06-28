@@ -20,8 +20,10 @@ function shuffle(arr) {
   return a;
 }
 
-// Generate a fruit algebra puzzle — step-by-step, no algebra literacy needed.
-// Each clue directly reveals one fruit's value. Question uses those values.
+// Generate a fruit algebra puzzle where the user must INFER at least one value.
+// Level 1-3: 2 fruits, one given directly, one inferred from a mixed clue.
+// Level 4-7: 3 fruits, two given directly, one inferred.
+// Level 8+:  3 fruits, one given directly, two inferred through chained clues.
 function generateFruitPuzzle(level) {
   const fruitSets = [
     ['🍓', '🍇', '🍉'],
@@ -30,39 +32,63 @@ function generateFruitPuzzle(level) {
     ['🥝', '🍍', '🥭'],
   ];
 
-  const [f1, f2, f3] = fruitSets[Math.floor(Math.random() * fruitSets.length)];
+  const set = fruitSets[Math.floor(Math.random() * fruitSets.length)];
+  const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-  // Simple whole-number values — grow slightly with level
-  const v1 = Math.floor(Math.random() * 3) + 2 + Math.min(level - 1, 4); // 2–8
-  const v2 = Math.floor(Math.random() * 3) + 2 + Math.min(level - 1, 4); // 2–8
-  const v3 = Math.floor(Math.random() * 3) + 1 + Math.min(level - 1, 3); // 1–6
+  if (level <= 3) {
+    // 2 fruits: clue 1 gives f1, clue 2 uses f1+f2 so user infers f2
+    const [f1, f2] = set;
+    const v1 = rand(2, 5);
+    const v2 = rand(2, 5);
+    const clues = [
+      { parts: [f1, '+', f1, '+', f1], right: 3 * v1, reveal: { fruit: f1, value: v1 } },
+      { parts: [f1, '+', f2], right: v1 + v2, reveal: null },
+    ];
+    const answer = v2 * 2;
+    const question = [f2, '+', f2];
+    const wrongs = uniqueWrongs(answer, [answer - 1, answer + 1, answer - 2, answer + 2, v1 + v2]);
+    return { clues, question, answer: String(answer), options: shuffle([String(answer), ...wrongs.map(String)]), askFruit: f2 };
+  }
 
-  // Clue 1: f1 × 3 = ? → reveals v1 directly (3 identical fruits)
-  // Clue 2: f2 × 3 = ? → reveals v2 directly
-  // Clue 3: f3 × 3 = ? → reveals v3 directly
-  // Question: f1 + f2 + f3 = ? (simple addition of the three values)
+  if (level <= 7) {
+    // 3 fruits: clue 1 gives f1, clue 2 gives f2, clue 3 uses f1+f2+f3 → infer f3
+    const [f1, f2, f3] = set;
+    const v1 = rand(2, 6);
+    const v2 = rand(2, 6);
+    const v3 = rand(1, 5);
+    const clues = [
+      { parts: [f1, '+', f1, '+', f1], right: 3 * v1, reveal: { fruit: f1, value: v1 } },
+      { parts: [f2, '+', f2], right: 2 * v2, reveal: { fruit: f2, value: v2 } },
+      { parts: [f1, '+', f2, '+', f3], right: v1 + v2 + v3, reveal: null },
+    ];
+    const answer = v3 * 3;
+    const question = [f3, '+', f3, '+', f3];
+    const wrongs = uniqueWrongs(answer, [answer - 1, answer + 1, answer + 3, answer - 3, v1 + v2 + v3]);
+    return { clues, question, answer: String(answer), options: shuffle([String(answer), ...wrongs.map(String)]), askFruit: f3 };
+  }
+
+  // Level 8+: chain — clue 1 gives f1, clue 2 uses f1 to find f2, clue 3 uses f2 to find f3
+  const [f1, f2, f3] = set;
+  const v1 = rand(2, 7);
+  const v2 = rand(2, 7);
+  const v3 = rand(1, 6);
   const clues = [
-    { left: [f1, '+', f1, '+', f1], right: 3 * v1, value: v1, fruit: f1 },
-    { left: [f2, '+', f2, '+', f2], right: 3 * v2, value: v2, fruit: f2 },
-    { left: [f3, '+', f3, '+', f3], right: 3 * v3, value: v3, fruit: f3 },
+    { parts: [f1, '+', f1], right: 2 * v1, reveal: { fruit: f1, value: v1 } },
+    { parts: [f1, '+', f2], right: v1 + v2, reveal: null },
+    { parts: [f2, '+', f3], right: v2 + v3, reveal: null },
   ];
-
   const answer = v1 + v2 + v3;
+  const question = [f1, '+', f2, '+', f3];
+  const wrongs = uniqueWrongs(answer, [answer - 1, answer + 1, answer - 2, answer + 2, answer + v1]);
+  return { clues, question, answer: String(answer), options: shuffle([String(answer), ...wrongs.map(String)]), askFruit: null };
+}
 
-  const wrongs = shuffle(
-    [answer - 1, answer + 1, answer - 2, answer + 2, answer + v1, answer - v3]
-      .filter(x => x !== answer && x > 0)
-  ).slice(0, 3);
-  while (wrongs.length < 3) wrongs.push(answer + wrongs.length + 2);
-
-  return {
-    clues,
-    question: [f1, '+', f2, '+', f3],
-    answer: String(answer),
-    options: shuffle([String(answer), ...wrongs.map(String)]),
-    fruits: [f1, f2, f3],
-    values: [v1, v2, v3],
-  };
+function uniqueWrongs(answer, candidates) {
+  const set = new Set();
+  candidates.forEach(c => { if (c !== answer && c > 0) set.add(c); });
+  const arr = [...set];
+  while (arr.length < 3) arr.push(answer + arr.length + 2);
+  return shuffle(arr).slice(0, 3);
 }
 
 export default function FruitAlgebra() {
@@ -138,10 +164,10 @@ export default function FruitAlgebra() {
       />
 
       <Card className="p-5 md:p-8 space-y-6">
-        {/* Step 1: Discover each fruit's value */}
+        {/* Clues */}
         <div className="space-y-3">
           <p className="text-base font-semibold text-muted-foreground">
-            {t.dir === 'rtl' ? '📖 שלב 1 — גלה את ערך כל פרי:' : '📖 Step 1 — Find each fruit\'s value:'}
+            {t.dir === 'rtl' ? '📖 רמזים — השתמש בהם כדי לחשב:' : '📖 Clues — use them to calculate:'}
           </p>
           {puzzle.clues.map((clue, i) => (
             <motion.div
@@ -151,19 +177,19 @@ export default function FruitAlgebra() {
               transition={{ delay: i * 0.2 }}
               className="bg-muted/40 rounded-xl px-4 py-3 flex items-center gap-3 flex-wrap"
             >
-              {/* equation */}
-              <span className="text-3xl md:text-4xl">{clue.fruit}</span>
-              <span className="text-orange-500 font-bold text-2xl">+</span>
-              <span className="text-3xl md:text-4xl">{clue.fruit}</span>
-              <span className="text-orange-500 font-bold text-2xl">+</span>
-              <span className="text-3xl md:text-4xl">{clue.fruit}</span>
+              {clue.parts.map((part, j) => (
+                <span key={j} className={part === '+' ? 'text-orange-500 font-bold text-2xl' : 'text-3xl md:text-4xl'}>{part}</span>
+              ))}
               <span className="text-orange-500 font-bold text-2xl">=</span>
               <span className="text-2xl font-bold text-foreground">{clue.right}</span>
-              {/* reveal arrow → value */}
-              <span className="text-muted-foreground text-xl mx-1">→</span>
-              <span className="text-3xl md:text-4xl">{clue.fruit}</span>
-              <span className="text-orange-500 font-bold text-2xl">=</span>
-              <span className="text-2xl font-bold text-green-600 bg-green-50 border border-green-200 rounded-lg px-3 py-1">{clue.value}</span>
+              {clue.reveal && (
+                <>
+                  <span className="text-muted-foreground text-xl mx-1">→</span>
+                  <span className="text-3xl md:text-4xl">{clue.reveal.fruit}</span>
+                  <span className="text-orange-500 font-bold text-2xl">=</span>
+                  <span className="text-2xl font-bold text-green-600 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-lg px-3 py-1">{clue.reveal.value}</span>
+                </>
+              )}
             </motion.div>
           ))}
         </div>
@@ -174,7 +200,7 @@ export default function FruitAlgebra() {
         {/* Step 2: Use the values to answer */}
         <div className="space-y-4">
           <p className="text-base font-semibold text-primary">
-            {t.dir === 'rtl' ? '❓ שלב 2 — עכשיו חשב:' : '❓ Step 2 — Now calculate:'}
+            {t.dir === 'rtl' ? '❓ מה התוצאה?' : '❓ What\'s the answer?'}
           </p>
           <motion.div
             initial={{ opacity: 0, y: 10 }}
