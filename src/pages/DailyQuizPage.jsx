@@ -9,7 +9,7 @@ const PAGE_LABELS = {
   he: { title: "משחק יומי", subtitle: "שלושה אתגרים קצרים לחיזוק הזיכרון", alreadyDone: "כבר שיחקתם היום — חזרו מחר! 🌟", doneTitle: "כל הכבוד! סיימתם את המשחק היומי 🎉", doneSubtitle: "נתראה מחר עם אתגרים חדשים", totalScore: "ניקוד כולל", accuracy: "דיוק", backHome: "חזרה לדף הבית", levelLabel: "רמת קושי", levels: ["","קל 🟢","קל-בינוני 🟡","בינוני 🟠","קשה 🔴","מאתגר מאוד 🔥"] },
   ar: { title: "لعبة اليوم", subtitle: "ثلاثة تحديات قصيرة لتقوية الذاكرة", alreadyDone: "لقد لعبت اليوم — عد غداً! 🌟", doneTitle: "أحسنت! أتممت لعبة اليوم 🎉", doneSubtitle: "إلى اللقاء غداً مع تحديات جديدة", totalScore: "النتيجة الإجمالية", accuracy: "الدقة", backHome: "العودة للرئيسية", levelLabel: "مستوى الصعوبة", levels: ["","سهل 🟢","متوسط-سهل 🟡","متوسط 🟠","صعب 🔴","صعب جداً 🔥"] },
 };
-const GAME_ICONS = { word_recall: "🧠", trivia: "💡", pattern: "🔢", rapid_recall: "⚡", logic_odd_one_out: "🧩", spot_difference: "🔍", pattern_advanced: "🔢" };
+const GAME_ICONS = { word_recall: "🧠", trivia: "💡", pattern: "🔢", rapid_recall: "⚡", logic_odd_one_out: "🧩", spot_difference: "🔍", pattern_advanced: "🔢", zipzap: "⚡", speedMatch: "🎯", visualMemory: "🧠", attentionScan: "🔍" };
 
 function ProgressDots({ total, current }) {
   return (

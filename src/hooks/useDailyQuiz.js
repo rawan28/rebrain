@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { getDailyGames, GAME_TYPES, getDifficultyLevel } from "../quizData";
 import { getNewDailyGames, NEW_GAME_TYPES } from "../newQuizData";
+import { generateDailyAgentGames, AGENT_GAME_TYPES } from "../agentQuizData";
 
 export function useDailyQuiz({ lang = "he" } = {}) {
   const today = new Date().toISOString().split("T")[0];
@@ -9,7 +10,8 @@ export function useDailyQuiz({ lang = "he" } = {}) {
     const original = getDailyGames(today);
     const level = getDifficultyLevel(today);
     const newGames = getNewDailyGames(today, level);
-    return [...original, ...newGames];
+    const agentGames = generateDailyAgentGames(today, level);
+    return [...original, ...newGames, ...agentGames];
   });
   const [gameIndex,  setGameIndex]       = useState(0);
   const [phase,      setPhase]           = useState("intro");

@@ -1,27 +1,32 @@
 import React from "react";
 import { GAME_TYPES } from "../quizData";
 import { NEW_GAME_TYPES } from "../newQuizData";
+import { AGENT_GAME_TYPES } from "../agentQuizData";
 import RapidRecallGame from "./games/RapidRecallGame";
 import LogicOddOneOutGame from "./games/LogicOddOneOutGame";
 import SpotDiffGame from "./games/SpotDiffGame";
 import PatternAdvGame from "./games/PatternAdvGame";
+import ZipZapGame from "./games/ZipZapGame";
+import SpeedMatchGame from "./games/SpeedMatchGame";
+import VisualMemoryGame from "./games/VisualMemoryGame";
+import AttentionScanGame from "./games/AttentionScanGame";
 
 const BTN  = "w-full py-4 px-6 rounded-2xl text-xl font-bold cursor-pointer transition-all duration-150 active:scale-95";
 const BASE = "w-full rounded-2xl p-6 text-center transition-all duration-200";
 
 const LABELS = {
   he: { start: "בואו נתחיל!", memorize: "זכרו את המילים...", memorizeTimer: "המילים נעלמות עוד רגע...", pickWords: "סמנו את המילים שראיתם", submit: "שלחו תשובה", next: "הבא", correct: "כל הכבוד! ✓", wrong: "לא מדויק — נסו שוב מחר", missing: "המספר החסר:", game: "משחק", of: "מתוך", score: "ניקוד", outOf: "מתוך",
-    gameNames: { word_recall: "זיכרון מילים", trivia: "שאלות ידע", pattern: "המשך הסדרה", rapid_recall: "זיכרון מהיר", logic_odd_one_out: "חשיבה לוגית", spot_difference: "קשב לפרטים", pattern_advanced: "זיהוי דפוסים" },
-    gameDesc:  { word_recall: "זכרו את המילים — ואחר כך בחרו אותן", trivia: "בחרו את התשובה הנכונה", pattern: "מצאו את המספר החסר", rapid_recall: "זכרו את הפריטים — ובחרו אותם", logic_odd_one_out: "מצאו את השונה מהקבוצה", spot_difference: "מצאו את ההבדל בין שני המשפטים", pattern_advanced: "השלימו את הרצף" } },
+    gameNames: { word_recall: "זיכרון מילים", trivia: "שאלות ידע", pattern: "המשך הסדרה", rapid_recall: "זיכרון מהיר", logic_odd_one_out: "חשיבה לוגית", spot_difference: "קשב לפרטים", pattern_advanced: "זיהוי דפוסים", zipzap: "זיפ-זאפ", speedMatch: "מהירות התאמה", visualMemory: "זיכרון חזותי", attentionScan: "סריקת קשב" },
+    gameDesc:  { word_recall: "זכרו את המילים — ואחר כך בחרו אותן", trivia: "בחרו את התשובה הנכונה", pattern: "מצאו את המספר החסר", rapid_recall: "זכרו את הפריטים — ובחרו אותם", logic_odd_one_out: "מצאו את השונה מהקבוצה", spot_difference: "מצאו את ההבדל בין שני המשפטים", pattern_advanced: "השלימו את הרצף", zipzap: "זכרו את הסדר והקישו אותו", speedMatch: "מצאו את כל הצורות התואמות", visualMemory: "זכרו פריטים ובחרו אותם מהזיכרון", attentionScan: "מצאו את האות הנכונה בשניות" } },
   ar: { start: "لنبدأ!", memorize: "احفظ الكلمات...", memorizeTimer: "ستختفي الكلمات بعد لحظة...", pickWords: "اختر الكلمات التي رأيتها", submit: "إرسال الإجابة", next: "التالي", correct: "أحسنت! ✓", wrong: "غير صحيح — حاول غداً", missing: "الرقم الناقص:", game: "لعبة", of: "من", score: "النتيجة", outOf: "من",
-    gameNames: { word_recall: "تذكّر الكلمات", trivia: "أسئلة المعرفة", pattern: "أكمل المتسلسلة", rapid_recall: "الذاكرة السريعة", logic_odd_one_out: "التفكير المنطقي", spot_difference: "الانتباه للتفاصيل", pattern_advanced: "التعرف على الأنماط" },
-    gameDesc:  { word_recall: "احفظ الكلمات — ثم اختَرها", trivia: "اختر الإجابة الصحيحة", pattern: "اعثر على الرقم الناقص", rapid_recall: "احفظ العناصر — ثم اختَرها", logic_odd_one_out: "جد العنصر المختلف", spot_difference: "جد الفرق بين الجملتين", pattern_advanced: "أكمل التسلسل" } },
+    gameNames: { word_recall: "تذكّر الكلمات", trivia: "أسئلة المعرفة", pattern: "أكمل المتسلسلة", rapid_recall: "الذاكرة السريعة", logic_odd_one_out: "التفكير المنطقي", spot_difference: "الانتباه للتفاصيل", pattern_advanced: "التعرف على الأنماط", zipzap: "زيب-زاب", speedMatch: "سرعة التطابق", visualMemory: "الذاكرة البصرية", attentionScan: "مسح الانتباه" },
+    gameDesc:  { word_recall: "احفظ الكلمات — ثم اختَرها", trivia: "اختر الإجابة الصحيحة", pattern: "اعثر على الرقم الناقص", rapid_recall: "احفظ العناصر — ثم اختَرها", logic_odd_one_out: "جد العنصر المختلف", spot_difference: "جد الفرق بين الجملتين", pattern_advanced: "أكمل التسلسل", zipzap: "تذكّر الترتيب وانقره", speedMatch: "جد جميع الأشكال المتطابقة", visualMemory: "تذكّر العناصر واختَرها", attentionScan: "جد الحرف الصحيح بسرعة" } },
 };
-const ICONS = { word_recall: "🧠", trivia: "💡", pattern: "🔢", rapid_recall: "⚡", logic_odd_one_out: "🧩", spot_difference: "🔍", pattern_advanced: "🔢" };
+const ICONS = { word_recall: "🧠", trivia: "💡", pattern: "🔢", rapid_recall: "⚡", logic_odd_one_out: "🧩", spot_difference: "🔍", pattern_advanced: "🔢", zipzap: "⚡", speedMatch: "🎯", visualMemory: "🧠", attentionScan: "🔍" };
 
 const SKILL_LABELS = {
-  he: { rapid_recall: "⚡ זיכרון מהיר", logic_odd_one_out: "🧩 חשיבה לוגית", spot_difference: "🔍 קשב לפרטים", pattern_advanced: "🔢 זיהוי דפוסים" },
-  ar: { rapid_recall: "⚡ الذاكرة السريعة", logic_odd_one_out: "🧩 التفكير المنطقي", spot_difference: "🔍 الانتباه للتفاصيل", pattern_advanced: "🔢 التعرف على الأنماط" },
+  he: { rapid_recall: "⚡ זיכרון מהיר", logic_odd_one_out: "🧩 חשיבה לוגית", spot_difference: "🔍 קשב לפרטים", pattern_advanced: "🔢 זיהוי דפוסים", zipzap: "⚡ עיבוד מהיר", speedMatch: "🎯 מהירות ודיוק", visualMemory: "🧠 זיכרון חזותי", attentionScan: "🔍 קשב וריכוז" },
+  ar: { rapid_recall: "⚡ الذاكرة السريعة", logic_odd_one_out: "🧩 التفكير المنطقي", spot_difference: "🔍 الانتباه للتفاصيل", pattern_advanced: "🔢 التعرف على الأنماط", zipzap: "⚡ المعالجة السريعة", speedMatch: "🎯 السرعة والدقة", visualMemory: "🧠 الذاكرة البصرية", attentionScan: "🔍 الانتباه والتركيز" },
 };
 
 export default function DailyQuizGame({ game, lang, t, phase, onStart, onFinish, selectedIdx, feedback, onAnswerSelect, recallPhase, recallAnswers, selectedWords, onToggleWord, onSubmitRecall, score, attempts, gameIndex, totalGames, onNewGameComplete }) {
@@ -121,7 +126,8 @@ export default function DailyQuizGame({ game, lang, t, phase, onStart, onFinish,
     onNewGameComplete(s, m);
   };
 
-  const isNewType = [NEW_GAME_TYPES.RAPID_RECALL, NEW_GAME_TYPES.LOGIC, NEW_GAME_TYPES.SPOT_DIFF, NEW_GAME_TYPES.PATTERN_ADV].includes(game.type);
+  const AGENT_TYPE_VALUES = Object.values(AGENT_GAME_TYPES);
+  const isNewType = [NEW_GAME_TYPES.RAPID_RECALL, NEW_GAME_TYPES.LOGIC, NEW_GAME_TYPES.SPOT_DIFF, NEW_GAME_TYPES.PATTERN_ADV, ...AGENT_TYPE_VALUES].includes(game.type);
 
   if (isNewType && feedback !== null) {
     return (
@@ -142,6 +148,14 @@ export default function DailyQuizGame({ game, lang, t, phase, onStart, onFinish,
     return <SpotDiffGame data={game.data} lang={lang} onComplete={handleNewComplete} />;
   if (game.type === NEW_GAME_TYPES.PATTERN_ADV)
     return <PatternAdvGame data={game.data} lang={lang} onComplete={handleNewComplete} />;
+  if (game.type === AGENT_GAME_TYPES.ZIPZAP)
+    return <ZipZapGame data={game.data} lang={lang} onComplete={handleNewComplete} />;
+  if (game.type === AGENT_GAME_TYPES.SPEED_MATCH)
+    return <SpeedMatchGame data={game.data} lang={lang} onComplete={handleNewComplete} />;
+  if (game.type === AGENT_GAME_TYPES.VISUAL_MEMORY)
+    return <VisualMemoryGame data={game.data} lang={lang} onComplete={handleNewComplete} />;
+  if (game.type === AGENT_GAME_TYPES.ATTENTION_SCAN)
+    return <AttentionScanGame data={game.data} lang={lang} onComplete={handleNewComplete} />;
 
   return null;
 }
