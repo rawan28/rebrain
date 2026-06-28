@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, CalendarRange, BellRing, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
+import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import CoinDisplay from './CoinDisplay';
@@ -38,6 +38,7 @@ export default function Layout() {
     { path: '/word', label: t.navWord, icon: PenLine },
     { path: '/trivia', label: t.triviaTitle, icon: Lightbulb },
     { path: '/shape-word', label: t.shapeWordTitle, icon: Shapes },
+    { path: '/shape-pattern', label: t.shapePatternTitle || 'דפוסי צורות', icon: Hexagon },
     { path: '/weekly-report', label: t.navWeekly, icon: CalendarRange },
     { path: '/reminder', label: t.navReminder, icon: BellRing },
     { path: '/progress', label: t.navProgress, icon: BarChart2 },

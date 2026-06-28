@@ -23,6 +23,7 @@ import FruitAlgebra from '@/pages/FruitAlgebra';
 import WeeklyReport from '@/pages/WeeklyReport';
 import ReminderSettings from '@/pages/ReminderSettings';
 import DailyQuizPage from '@/pages/DailyQuizPage';
+import ShapePattern from '@/pages/ShapePattern';
 
 
 const AuthenticatedApp = () => {
@@ -67,6 +68,7 @@ const AuthenticatedApp = () => {
         <Route path="/weekly-report" element={<WeeklyReport />} />
         <Route path="/reminder" element={<ReminderSettings />} />
         <Route path="/daily-quiz" element={<DailyQuizPage />} />
+        <Route path="/shape-pattern" element={<ShapePattern />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
