@@ -19,11 +19,13 @@ const LAUNCH = new Date("2026-06-27");
 export function getDifficultyLevel(dateStr) {
   const dayNum = Math.max(0, Math.floor((new Date(dateStr) - LAUNCH) / 86400000));
   const pos = dayNum % 15;
-  if (pos < 3)  return 1;
-  if (pos < 6)  return 2;
-  if (pos < 9)  return 3;
-  if (pos < 12) return 4;
-  return 5;
+  let base;
+  if (pos < 3)  base = 1;
+  else if (pos < 6)  base = 2;
+  else if (pos < 9)  base = 3;
+  else if (pos < 12) base = 4;
+  else base = 5;
+  return Math.min(5, base + 2);
 }
 
 export function getWeekNumber(dateStr) {
