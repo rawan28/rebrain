@@ -9,11 +9,16 @@ export const AGENT_GAME_TYPES = {
 };
 
 const config = {
-  1: { zipzapLen: 3, zipzapShowMs: 4000, gridSize: 12, gridCols: 4, memItems: 3, memShowMs: 4000, scanSize: 16, scanCols: 4 },
-  2: { zipzapLen: 4, zipzapShowMs: 3500, gridSize: 16, gridCols: 4, memItems: 4, memShowMs: 3000, scanSize: 20, scanCols: 5 },
-  3: { zipzapLen: 5, zipzapShowMs: 3000, gridSize: 20, gridCols: 5, memItems: 5, memShowMs: 2500, scanSize: 25, scanCols: 5 },
-  4: { zipzapLen: 6, zipzapShowMs: 2500, gridSize: 25, gridCols: 5, memItems: 6, memShowMs: 2000, scanSize: 30, scanCols: 6 },
-  5: { zipzapLen: 7, zipzapShowMs: 2000, gridSize: 30, gridCols: 6, memItems: 7, memShowMs: 1500, scanSize: 36, scanCols: 6 },
+  1:  { zipzapLen: 3,  zipzapShowMs: 4000, gridSize: 12, gridCols: 4, memItems: 3,  memShowMs: 4000, scanSize: 16, scanCols: 4 },
+  2:  { zipzapLen: 4,  zipzapShowMs: 3500, gridSize: 16, gridCols: 4, memItems: 4,  memShowMs: 3000, scanSize: 20, scanCols: 5 },
+  3:  { zipzapLen: 5,  zipzapShowMs: 3000, gridSize: 20, gridCols: 5, memItems: 5,  memShowMs: 2500, scanSize: 25, scanCols: 5 },
+  4:  { zipzapLen: 6,  zipzapShowMs: 2500, gridSize: 25, gridCols: 5, memItems: 6,  memShowMs: 2000, scanSize: 30, scanCols: 6 },
+  5:  { zipzapLen: 7,  zipzapShowMs: 2000, gridSize: 30, gridCols: 6, memItems: 7,  memShowMs: 1500, scanSize: 36, scanCols: 6 },
+  6:  { zipzapLen: 8,  zipzapShowMs: 1800, gridSize: 35, gridCols: 7, memItems: 8,  memShowMs: 1300, scanSize: 42, scanCols: 7 },
+  7:  { zipzapLen: 9,  zipzapShowMs: 1500, gridSize: 36, gridCols: 6, memItems: 9,  memShowMs: 1100, scanSize: 48, scanCols: 8 },
+  8:  { zipzapLen: 10, zipzapShowMs: 1300, gridSize: 42, gridCols: 7, memItems: 10, memShowMs: 1000, scanSize: 56, scanCols: 8 },
+  9:  { zipzapLen: 11, zipzapShowMs: 1100, gridSize: 48, gridCols: 8, memItems: 11, memShowMs: 900,  scanSize: 63, scanCols: 9 },
+  10: { zipzapLen: 12, zipzapShowMs: 1000, gridSize: 56, gridCols: 8, memItems: 12, memShowMs: 800,  scanSize: 72, scanCols: 9 },
 };
 
 function seededRand(seed) {
@@ -38,11 +43,16 @@ export function generateDailyAgentGames(dateStr, level) {
 
   // 2. SpeedMatch
   const shapesByLevel = {
-    1: ["▲", "■", "●", "◆"],
-    2: ["▲", "■", "●", "◆", "★", "♦"],
-    3: ["▲", "■", "●", "◆", "★", "♦", "♥", "♠"],
-    4: ["▲", "■", "●", "◆", "★", "♦", "♥", "♠", "⬡", "⬢"],
-    5: ["A", "B", "C", "D", "E", "F", "▲", "■", "●", "◆"],
+    1:  ["▲", "■", "●", "◆"],
+    2:  ["▲", "■", "●", "◆", "★", "♦"],
+    3:  ["▲", "■", "●", "◆", "★", "♦", "♥", "♠"],
+    4:  ["▲", "■", "●", "◆", "★", "♦", "♥", "♠", "⬡", "⬢"],
+    5:  ["A", "B", "C", "D", "E", "F", "▲", "■", "●", "◆"],
+    6:  ["A", "B", "C", "D", "E", "F", "G", "▲", "■", "●", "◆", "★"],
+    7:  ["A", "B", "C", "D", "E", "F", "G", "H", "▲", "■", "●", "◆", "★", "♦"],
+    8:  ["A", "B", "C", "D", "E", "F", "G", "H", "I", "▲", "■", "●", "◆", "★", "♦", "♥"],
+    9:  ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "▲", "■", "●", "◆", "★", "♦", "♥", "♠"],
+    10: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "▲", "■", "●", "◆", "★", "♦", "♥", "♠", "⬡"],
   };
   const shapes = shapesByLevel[level] || shapesByLevel[1];
   const target = shapes[Math.floor(rand() * shapes.length)];
@@ -58,12 +68,18 @@ export function generateDailyAgentGames(dateStr, level) {
   };
 
   // 3. VisualMemory
+  const bigPool = ["🍎", "🔑", "🐟", "🌙", "📘", "🧩", "🌸", "🎵", "🏠", "⭐", "🦋", "🚗", "🌊", "🏔️", "🎭", "🧲", "🦁", "🎯", "🧊", "🎻", "🌺", "🦅", "🌋", "🔭", "🎪", "🏆", "🎨", "🔔", "🎲", "🧬", "🎈", "🪐", "🦊", "🐢", "🌻"];
   const emojiPools = {
-    1: ["🍎", "🔑", "🐟", "🌙", "📘", "🧩", "🌸", "🎵"],
-    2: ["🍎", "🔑", "🐟", "🌙", "📘", "🧩", "🌸", "🎵", "🏠", "⭐", "🦋", "🚗"],
-    3: ["🍎", "🔑", "🐟", "🌙", "📘", "🧩", "🌸", "🎵", "🏠", "⭐", "🦋", "🚗", "🌊", "🏔️", "🎭", "🧲"],
-    4: ["🍎", "🔑", "🐟", "🌙", "📘", "🧩", "🌸", "🎵", "🏠", "⭐", "🦋", "🚗", "🌊", "🏔️", "🎭", "🧲", "🦁", "🎯", "🧊", "🎻"],
-    5: ["🍎", "🔑", "🐟", "🌙", "📘", "🧩", "🌸", "🎵", "🏠", "⭐", "🦋", "🚗", "🌊", "🏔️", "🎭", "🧲", "🦁", "🎯", "🧊", "🎻", "🌺", "🦅", "🌋", "🔭", "🎪"],
+    1:  bigPool.slice(0, 8),
+    2:  bigPool.slice(0, 12),
+    3:  bigPool.slice(0, 16),
+    4:  bigPool.slice(0, 20),
+    5:  bigPool.slice(0, 25),
+    6:  bigPool.slice(0, 28),
+    7:  bigPool.slice(0, 30),
+    8:  bigPool.slice(0, 32),
+    9:  bigPool.slice(0, 34),
+    10: bigPool,
   };
   const pool = emojiPools[level] || emojiPools[1];
   const shuffled = [...pool].sort(() => rand() - 0.5);
@@ -77,11 +93,16 @@ export function generateDailyAgentGames(dateStr, level) {
 
   // 4. AttentionScan
   const scanPools = {
-    1: "ABCDEFGHIJKLMNOP".split(""),
-    2: "ABCDEFGHIJKLMNOPQRSTUVWX".split(""),
-    3: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),
-    4: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghij".split(""),
-    5: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnop0123456789".split(""),
+    1:  "ABCDEFGHIJKLMNOP".split(""),
+    2:  "ABCDEFGHIJKLMNOPQRSTUVWX".split(""),
+    3:  "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),
+    4:  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghij".split(""),
+    5:  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnop0123456789".split(""),
+    6:  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstu0123456789".split(""),
+    7:  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".split(""),
+    8:  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$".split(""),
+    9:  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*".split(""),
+    10: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-+=".split(""),
   };
   const letters = scanPools[level] || scanPools[1];
   const scanTarget = letters[Math.floor(rand() * letters.length)];

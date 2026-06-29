@@ -113,7 +113,7 @@ export const patternAdvBank = {
 
 export function getNewDailyGames(dateStr, level) {
   const seed = dateStr.replace(/-/g,"").split("").reduce((a,c)=>a+c.charCodeAt(0),0);
-  const pick = (bank, off) => { const pool = bank[level]||bank[1]; return pool[(seed+off)%pool.length]; };
+  const pick = (bank, off) => { const pool = bank[level]||bank[Math.min(level,5)]||bank[5]; return pool[(seed+off)%pool.length]; };
   return [
     { type: NEW_GAME_TYPES.RAPID_RECALL, data: pick(rapidRecallBank,0), level },
     { type: NEW_GAME_TYPES.LOGIC,        data: pick(logicBank,1),       level },
