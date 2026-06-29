@@ -3,8 +3,8 @@
 //
 // ARCHITECTURE:
 //   • 5 themed weekly packs (rotate every week, cycling through all 5)
-//   • Each pack has word recall, trivia, and pattern banks by difficulty level 1–5
-//   • getDifficultyLevel(dateStr) → 1-5 (3-day blocks, 15-day full cycle)
+//   • Each pack has word recall, trivia, and pattern banks by difficulty level 1–10
+//   • getDifficultyLevel(dateStr) → 1-10 (3-day blocks, 30-day full cycle)
 //   • getWeekPack(dateStr)        → one of 5 themed packs
 //   • getDailyGames(dateStr)      → [wordRecall, trivia, pattern] for that day
 

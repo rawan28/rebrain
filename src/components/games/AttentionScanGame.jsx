@@ -51,10 +51,10 @@ export default function AttentionScanGame({ data, lang, onComplete }) {
         <span className="text-5xl font-bold text-foreground">{data.target}</span>
       </div>
       {found === null && <p className="text-sm text-muted-foreground">{elapsed}s</p>}
-      <div className="grid gap-2 w-full max-w-xs" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+      <div className="grid gap-1.5 w-full" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)`, maxWidth: cols <= 5 ? '20rem' : cols <= 7 ? '26rem' : '32rem' }}>
         {data.grid.map((item, i) => (
           <button key={i} onClick={() => handleTap(item, i)}
-            className={`h-12 rounded-xl text-xl font-bold border transition-all duration-100 ${getColor(item, i)}`}>
+            className={`${cols > 6 ? 'h-10 text-base' : 'h-12 text-xl'} rounded-xl font-bold border transition-all duration-100 ${getColor(item, i)}`}>
             {item}
           </button>
         ))}

@@ -100,7 +100,8 @@ export function useDailyQuiz({ lang = "he" } = {}) {
     } else {
       try {
         const tc = updated.reduce((s,r)=>s+r.score,0), ta = updated.reduce((s,r)=>s+r.attempts,0);
-        await base44.entities.UserProgress.create({ game: "daily_quiz", date: today, level: 3, totalCorrect: tc, totalAttempts: ta, accuracy: ta > 0 ? Math.round((tc/ta)*100) : 0, responseTimeMs: updated.reduce((s,r)=>s+r.responseTime,0), streak: 1 });
+        const diffLevel = getDifficultyLevel(today);
+        await base44.entities.UserProgress.create({ game: "daily_quiz", date: today, level: diffLevel, totalCorrect: tc, totalAttempts: ta, accuracy: ta > 0 ? Math.round((tc/ta)*100) : 0, responseTimeMs: updated.reduce((s,r)=>s+r.responseTime,0), streak: 1 });
       } catch(e) { console.error(e); }
       setPhase("done");
     }

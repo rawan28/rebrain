@@ -57,9 +57,9 @@ export default function VisualMemoryGame({ data, lang, onComplete }) {
             <div className="bg-primary h-3 rounded-full transition-all duration-1000"
               style={{ width: `${(timeLeft / (data.showMs / 1000)) * 100}%` }} />
           </div>
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-wrap gap-3 justify-center">
             {data.shown.map((item, i) => (
-              <div key={i} className="w-20 h-20 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center text-5xl shadow-lg">
+              <div key={i} className={`${data.shown.length > 8 ? 'w-14 h-14 text-3xl' : 'w-20 h-20 text-5xl'} rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shadow-lg`}>
                 {item}
               </div>
             ))}
@@ -70,10 +70,10 @@ export default function VisualMemoryGame({ data, lang, onComplete }) {
       {phase === "recall" && (
         <>
           <p className="text-lg text-muted-foreground text-center">{t.recall}</p>
-          <div className="grid grid-cols-4 gap-3 w-full max-w-xs">
+          <div className="grid gap-2 w-full" style={{ gridTemplateColumns: `repeat(${data.allItems.length > 16 ? 6 : data.allItems.length > 12 ? 5 : 4}, 1fr)`, maxWidth: data.allItems.length > 16 ? '28rem' : '20rem' }}>
             {data.allItems.map((item, i) => (
               <button key={i} onClick={() => toggle(item)}
-                className={`h-16 rounded-2xl text-4xl transition-all duration-150 ${getColor(item)}`}>
+                className={`${data.allItems.length > 16 ? 'h-12 text-3xl' : 'h-16 text-4xl'} rounded-2xl transition-all duration-150 ${getColor(item)}`}>
                 {item}
               </button>
             ))}

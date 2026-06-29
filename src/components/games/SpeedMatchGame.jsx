@@ -48,10 +48,10 @@ export default function SpeedMatchGame({ data, lang, onComplete }) {
         <span className="text-lg text-muted-foreground">{t.find}</span>
         <span className="text-5xl">{data.target}</span>
       </div>
-      <div className="grid gap-2 w-full max-w-xs" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+      <div className="grid gap-1.5 w-full" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)`, maxWidth: cols <= 5 ? '20rem' : cols <= 7 ? '26rem' : '32rem' }}>
         {data.grid.map((item, i) => (
           <button key={i} onClick={() => toggle(i)}
-            className={`h-14 rounded-xl border-2 text-3xl font-bold transition-all duration-150 ${getColor(i)}`}>
+            className={`${cols > 6 ? 'h-10 text-xl' : 'h-14 text-3xl'} rounded-xl border-2 font-bold transition-all duration-150 ${getColor(i)}`}>
             {item}
           </button>
         ))}

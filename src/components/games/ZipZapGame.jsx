@@ -21,7 +21,9 @@ export default function ZipZapGame({ data, lang, onComplete }) {
 
   const shuffled = React.useMemo(() => {
     if (phase !== "input") return [];
-    return [...new Set(data.sequence.map(String))].sort(() => Math.random() - 0.5);
+    // Show all digits 1-9 as buttons (not deduped sequence) so repeated digits work
+    const allDigits = [...new Set(data.sequence.map(String))].sort(() => Math.random() - 0.5);
+    return allDigits;
   }, [phase, data.sequence]);
 
   const handleTap = (item) => {
@@ -63,15 +65,15 @@ export default function ZipZapGame({ data, lang, onComplete }) {
       {phase === "input" && (
         <>
           <p className="text-base text-muted-foreground text-center">{t.hint}</p>
-          <div className="flex gap-2 flex-wrap justify-center min-h-[60px]">
+          <div className="flex gap-1.5 flex-wrap justify-center min-h-[48px]">
             {userSeq.map((v, i) => (
-              <div key={i} className="w-12 h-12 rounded-xl bg-secondary text-secondary-foreground flex items-center justify-center text-xl font-bold">{v}</div>
+              <div key={i} className="w-10 h-10 rounded-lg bg-secondary text-secondary-foreground flex items-center justify-center text-lg font-bold">{v}</div>
             ))}
             {Array.from({ length: data.sequence.length - userSeq.length }).map((_, i) => (
-              <div key={`e${i}`} className="w-12 h-12 rounded-xl border-2 border-dashed border-muted-foreground/30" />
+              <div key={`e${i}`} className="w-10 h-10 rounded-lg border-2 border-dashed border-muted-foreground/30" />
             ))}
           </div>
-          <div className="grid grid-cols-4 gap-3 w-full max-w-xs">
+          <div className="grid gap-2.5 w-full max-w-sm" style={{ gridTemplateColumns: `repeat(${Math.min(shuffled.length, 5)}, 1fr)` }}>
             {shuffled.map((item, i) => (
               <button key={i} onClick={() => handleTap(item)}
                 className="h-14 rounded-2xl bg-card border-2 border-primary text-foreground text-2xl font-bold active:scale-95 transition-transform shadow">
