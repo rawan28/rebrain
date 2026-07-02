@@ -136,7 +136,7 @@ export default function MemoryGame() {
 
         if (newMatched.length === cards.length / 2) {
           const perfectMoves = cards.length / 2;
-          const isGood = moves + 1 <= perfectMoves + 2;
+          const isGood = moves + 1 <= perfectMoves + 3;
           awardCoin(isGood);
           difficulty.recordAnswer(isGood);
           saveSession('memory', {
