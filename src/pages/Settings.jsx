@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
-import { Trash2, AlertTriangle, Type, Sun, Moon, Monitor } from 'lucide-react';
+import { Trash2, AlertTriangle, Type, Sun, Moon, Monitor, Volume2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { useLang } from '@/lib/LanguageContext';
 import { FONT_SIZES, applyFontSize, applyTheme } from '@/lib/ThemeProvider';
+import { isSoundEnabled, setSoundEnabled, playCorrect } from '@/lib/audioFeedback';
 
 export default function Settings() {
   const { t } = useLang();
@@ -19,6 +20,7 @@ export default function Settings() {
   const [deleting, setDeleting] = useState(false);
   const [fontSize, setFontSize] = useState(() => localStorage.getItem('rebrain_fontsize') || 'large');
   const [theme, setTheme] = useState(() => localStorage.getItem('rebrain_theme') || 'system');
+  const [sound, setSound] = useState(() => isSoundEnabled());
 
   const handleTheme = (mode) => {
     setTheme(mode);
@@ -71,6 +73,36 @@ export default function Settings() {
                   : 'border-border bg-background text-foreground hover:border-primary/50'}`}
             >
               <Icon className="w-4 h-4" />
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Sound */}
+      <div className="bg-card border border-border rounded-xl p-5 space-y-3">
+        <div className="flex items-center gap-2 font-semibold text-foreground">
+          <Volume2 className="w-5 h-5" />
+          {t.settingsSound || 'צלילים'}
+        </div>
+        <p className="text-sm text-muted-foreground">{t.settingsSoundDesc || 'משוב קולי לתשובות נכונות ושגויות'}</p>
+        <div className="flex gap-3">
+          {[
+            { key: true, label: t.soundOn || 'מופעל 🔊' },
+            { key: false, label: t.soundOff || 'כבוי 🔇' },
+          ].map(({ key, label }) => (
+            <button
+              key={String(key)}
+              onClick={() => {
+                setSound(key);
+                setSoundEnabled(key);
+                if (key) playCorrect();
+              }}
+              className={`px-4 py-2.5 rounded-xl border-2 font-medium transition-all text-sm min-h-[44px]
+                ${sound === key
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-border bg-background text-foreground hover:border-primary/50'}`}
+            >
               {label}
             </button>
           ))}

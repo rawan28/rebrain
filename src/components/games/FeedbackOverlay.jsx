@@ -1,9 +1,17 @@
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
+import { playCorrect, playWrong } from '@/lib/audioFeedback';
 
 export default function FeedbackOverlay({ show, isCorrect, message }) {
   const { t } = useLang();
+
+  useEffect(() => {
+    if (!show) return;
+    if (isCorrect) playCorrect();
+    else playWrong();
+  }, [show, isCorrect]);
 
   const fireConfetti = () => {
     if (!isCorrect) return;
