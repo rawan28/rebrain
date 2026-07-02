@@ -9,16 +9,16 @@ export const AGENT_GAME_TYPES = {
 };
 
 const config = {
-  1:  { zipzapLen: 3,  zipzapShowMs: 4000, gridSize: 12, gridCols: 4, memItems: 3,  memShowMs: 4000, scanSize: 16, scanCols: 4 },
-  2:  { zipzapLen: 4,  zipzapShowMs: 3500, gridSize: 16, gridCols: 4, memItems: 4,  memShowMs: 3000, scanSize: 20, scanCols: 5 },
-  3:  { zipzapLen: 5,  zipzapShowMs: 3000, gridSize: 20, gridCols: 5, memItems: 5,  memShowMs: 2500, scanSize: 25, scanCols: 5 },
-  4:  { zipzapLen: 6,  zipzapShowMs: 2500, gridSize: 25, gridCols: 5, memItems: 6,  memShowMs: 2000, scanSize: 30, scanCols: 6 },
-  5:  { zipzapLen: 7,  zipzapShowMs: 2000, gridSize: 30, gridCols: 6, memItems: 7,  memShowMs: 1500, scanSize: 36, scanCols: 6 },
-  6:  { zipzapLen: 8,  zipzapShowMs: 1800, gridSize: 35, gridCols: 7, memItems: 8,  memShowMs: 1300, scanSize: 42, scanCols: 7 },
-  7:  { zipzapLen: 9,  zipzapShowMs: 1500, gridSize: 36, gridCols: 6, memItems: 9,  memShowMs: 1100, scanSize: 48, scanCols: 8 },
-  8:  { zipzapLen: 10, zipzapShowMs: 1300, gridSize: 42, gridCols: 7, memItems: 10, memShowMs: 1000, scanSize: 56, scanCols: 8 },
-  9:  { zipzapLen: 11, zipzapShowMs: 1100, gridSize: 48, gridCols: 8, memItems: 11, memShowMs: 900,  scanSize: 63, scanCols: 9 },
-  10: { zipzapLen: 12, zipzapShowMs: 1000, gridSize: 56, gridCols: 8, memItems: 12, memShowMs: 800,  scanSize: 72, scanCols: 9 },
+  1:  { zipzapLen: 3,  zipzapShowMs: 34000, gridSize: 12, gridCols: 4, memItems: 3,  memShowMs: 34000, scanSize: 16, scanCols: 4 },
+  2:  { zipzapLen: 4,  zipzapShowMs: 33500, gridSize: 16, gridCols: 4, memItems: 4,  memShowMs: 33000, scanSize: 20, scanCols: 5 },
+  3:  { zipzapLen: 5,  zipzapShowMs: 33000, gridSize: 20, gridCols: 5, memItems: 5,  memShowMs: 32500, scanSize: 25, scanCols: 5 },
+  4:  { zipzapLen: 6,  zipzapShowMs: 32500, gridSize: 25, gridCols: 5, memItems: 6,  memShowMs: 32000, scanSize: 30, scanCols: 6 },
+  5:  { zipzapLen: 7,  zipzapShowMs: 32000, gridSize: 30, gridCols: 6, memItems: 7,  memShowMs: 31500, scanSize: 36, scanCols: 6 },
+  6:  { zipzapLen: 8,  zipzapShowMs: 31800, gridSize: 35, gridCols: 7, memItems: 8,  memShowMs: 31300, scanSize: 42, scanCols: 7 },
+  7:  { zipzapLen: 9,  zipzapShowMs: 31500, gridSize: 36, gridCols: 6, memItems: 9,  memShowMs: 31100, scanSize: 48, scanCols: 8 },
+  8:  { zipzapLen: 10, zipzapShowMs: 31300, gridSize: 42, gridCols: 7, memItems: 10, memShowMs: 31000, scanSize: 56, scanCols: 8 },
+  9:  { zipzapLen: 11, zipzapShowMs: 31100, gridSize: 48, gridCols: 8, memItems: 11, memShowMs: 30900, scanSize: 63, scanCols: 9 },
+  10: { zipzapLen: 12, zipzapShowMs: 31000, gridSize: 56, gridCols: 8, memItems: 12, memShowMs: 30800, scanSize: 72, scanCols: 9 },
 };
 
 function seededRand(seed) {

@@ -38,7 +38,7 @@ export function getWeekPack(dateStr) {
   return getWeekNumber(dateStr) % 5;
 }
 
-export const wordRecallShowMs = { 1: 5000, 2: 4000, 3: 3500, 4: 3000, 5: 2500, 6: 2200, 7: 2000, 8: 1800, 9: 1500, 10: 1200 };
+export const wordRecallShowMs = { 1: 35000, 2: 34000, 3: 33500, 4: 33000, 5: 32500, 6: 32200, 7: 32000, 8: 31800, 9: 31500, 10: 31200 };
 
 export const weeklyPacks = [
   // PACK 0 — Nature & Animals
