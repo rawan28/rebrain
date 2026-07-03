@@ -1,15 +1,17 @@
 import { useEffect } from 'react';
 
-// Font size scale applied to <html> so rem-based sizing scales everything
+// Font size scale applied to <html> using fluid clamp() so text
+// scales down gracefully on narrow screens and up on wider ones.
+// clamp(min, preferred, max) — min keeps mobile readable, max = chosen size.
 export const FONT_SIZES = [
-  { key: 'normal', label: 'רגיל / عادي', scale: '100%' },
-  { key: 'large', label: 'גדול / كبير', scale: '115%' },
-  { key: 'xlarge', label: 'גדול מאוד / كبير جداً', scale: '130%' },
+  { key: 'normal', label: 'רגיל / عادي', clamp: 'clamp(87.5%, 2.5vw + 0.5rem, 100%)' },
+  { key: 'large', label: 'גדול / كبير', clamp: 'clamp(93.75%, 2.8vw + 0.5rem, 115%)' },
+  { key: 'xlarge', label: 'גדול מאוד / كبير جداً', clamp: 'clamp(100%, 3.2vw + 0.5rem, 130%)' },
 ];
 
 export function applyFontSize(key) {
   const size = FONT_SIZES.find(s => s.key === key) || FONT_SIZES[0];
-  document.documentElement.style.fontSize = size.scale;
+  document.documentElement.style.fontSize = size.clamp;
 }
 
 export function applyTheme(mode) {
