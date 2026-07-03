@@ -112,15 +112,25 @@ export default function Layout() {
         </div>
       </main>
 
-      {/* Disclaimer */}
-      <div className="bg-muted/60 border-t border-border px-4 py-3 text-center md:mb-20">
-        <p className="text-sm text-muted-foreground">
-          {isRtl
-            ? 'האפליקציה נוצרה למטרות אישיות. כל שימוש בה הוא באחריות המשתמש בלבד.'
-            : "This app was created for personal purposes. Any use of it is solely at the user's own responsibility."}
-        </p>
-        <p className="text-sm text-muted-foreground mt-0.5">© Rawan Awadieh 2026</p>
-      </div>
+      {/* Disclaimer — visible only on the home page */}
+      <AnimatePresence>
+        {isRoot && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+            className="bg-muted/60 border-t border-border px-4 py-3 text-center md:mb-20"
+          >
+            <p className="text-sm text-muted-foreground">
+              {isRtl
+                ? 'האפליקציה נוצרה למטרות אישיות. כל שימוש בה הוא באחריות המשתמש בלבד.'
+                : "This app was created for personal purposes. Any use of it is solely at the user's own responsibility."}
+            </p>
+            <p className="text-sm text-muted-foreground mt-0.5">© Rawan Awadieh 2026</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Bottom Navigation - desktop only */}
       <nav
