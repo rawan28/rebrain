@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, Settings } from 'lucide-react';
+import { Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, Settings } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 
@@ -62,11 +62,10 @@ export default function Layout() {
             </Link>
           )}
 
-          <div className="bg-primary/10 p-2.5 rounded-xl">
-            <Brain className="w-7 h-7 md:w-8 md:h-8 text-primary" />
-          </div>
+          <Link to="/" className="flex items-center gap-3 shrink-0">
+            <img src="https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/1a9046fc8_Copilot_20260703_160930.png" alt="ReBrain" className="h-12 md:h-14 w-auto" />
+          </Link>
           <div className="flex-1">
-            <h1 className="text-xl md:text-2xl font-bold text-foreground tracking-tight">{t.appName}</h1>
             <p className="text-sm md:text-base text-muted-foreground">{t.appSubtitle}</p>
           </div>
           <Link
