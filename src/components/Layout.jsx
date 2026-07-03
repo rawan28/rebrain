@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
+import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, Settings } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 
@@ -12,7 +12,6 @@ export default function Layout() {
   const { t, lang } = useLang();
   const isRoot = location.pathname === '/';
   const isRtl = t.dir === 'rtl';
-  const BackIcon = isRtl ? ChevronRight : ChevronLeft;
 
   // Persist scroll positions per route
   const scrollPositions = useRef({});
@@ -44,8 +43,6 @@ export default function Layout() {
     { path: '/progress', label: t.navProgress, icon: BarChart2 },
   ];
 
-  const isInGame = !isRoot && location.pathname !== '/progress' && location.pathname !== '/settings';
-
   return (
     <div className="min-h-screen bg-background flex flex-col" dir={t.dir} lang={lang}>
       {/* Header with safe-area top */}
@@ -54,22 +51,11 @@ export default function Layout() {
         style={{ paddingTop: `max(1rem, calc(1rem + env(safe-area-inset-top)))` }}
       >
         <div className="max-w-5xl mx-auto flex items-center gap-3">
-          {/* Back button - only on non-root pages (desktop) */}
+          {/* Home button - visible on every non-root page */}
           {!isRoot && (
-            <button
-              onClick={() => navigate(-1)}
-              className="hidden md:flex p-3 rounded-xl hover:bg-muted transition-colors select-none text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] items-center justify-center"
-              aria-label="Back"
-            >
-              <BackIcon className="w-6 h-6" />
-            </button>
-          )}
-
-          {/* Mobile: Home button when in a game */}
-          {isInGame && (
             <Link
               to="/"
-              className="flex md:hidden p-3 rounded-xl hover:bg-muted transition-colors select-none text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] items-center justify-center"
+              className="flex p-3 rounded-xl hover:bg-muted transition-colors select-none text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] items-center justify-center"
               aria-label="Home"
             >
               <Home className="w-6 h-6" />
