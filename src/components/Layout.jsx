@@ -111,7 +111,7 @@ export default function Layout() {
                 ? 'האפליקציה נוצרה למטרות אישיות. כל שימוש בה הוא באחריות המשתמש בלבד.'
                 : "This app was created for personal purposes. Any use of it is solely at the user's own responsibility."}
             </p>
-            <p className="text-sm text-muted-foreground mt-0.5">© Rawan Awadieh 2026</p>
+            <p className="text-sm text-muted-foreground mt-0.5">© R.A 2026</p>
           </motion.div>
         )}
       </AnimatePresence>
