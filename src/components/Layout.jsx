@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Brain, Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
-import CoinDisplay from './CoinDisplay';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 
@@ -83,7 +83,6 @@ export default function Layout() {
             <h1 className="text-xl md:text-2xl font-bold text-foreground tracking-tight">{t.appName}</h1>
             <p className="text-sm md:text-base text-muted-foreground">{t.appSubtitle}</p>
           </div>
-          <CoinDisplay />
           <Link
             to="/settings"
             className="p-3 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center"
