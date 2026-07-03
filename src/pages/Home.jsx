@@ -17,14 +17,14 @@ const item = {
 };
 
 export default function Home() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { pullY, refreshing, progress } = usePullToRefresh(() => new Promise(r => setTimeout(r, 800)));
 
   const exercises = [
     {
       path: '/daily-quiz',
-      title: t.dir === 'rtl' ? 'משחק יומי' : 'Daily Quiz',
-      description: t.dir === 'rtl' ? 'שלושה אתגרים קצרים לחיזוק הזיכרון — כל יום!' : 'Three short challenges to boost your memory — every day!',
+      title: lang === 'ar' ? 'لعبة اليوم' : lang === 'he' ? 'משחק יומי' : 'Daily Quiz',
+      description: lang === 'ar' ? 'ثلاثة تحديات قصيرة لتقوية الذاكرة — كل يوم!' : lang === 'he' ? 'שלושה אתגרים קצרים לחיזוק הזיכרון — כל יום!' : 'Three short challenges to boost your memory — every day!',
       icon: Star,
       color: 'bg-violet-50 text-violet-600 border-violet-100',
       iconBg: 'bg-violet-100',
