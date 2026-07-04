@@ -2,6 +2,7 @@ import React from "react";
 import { GAME_TYPES } from "../quizData";
 import { NEW_GAME_TYPES } from "../newQuizData";
 import { AGENT_GAME_TYPES } from "../agentQuizData";
+import { SKILL_LABELS as DAILY_SKILL_LABELS } from "../dailyVariation";
 import RapidRecallGame from "./games/RapidRecallGame";
 import LogicOddOneOutGame from "./games/LogicOddOneOutGame";
 import SpotDiffGame from "./games/SpotDiffGame";
@@ -24,22 +25,24 @@ const LABELS = {
 };
 const ICONS = { word_recall: "🧠", trivia: "💡", pattern: "🔢", rapid_recall: "⚡", logic_odd_one_out: "🧩", spot_difference: "🔍", pattern_advanced: "🔢", zipzap: "⚡", speedMatch: "🎯", visualMemory: "🧠", attentionScan: "🔍" };
 
-const SKILL_LABELS = {
-  he: { rapid_recall: "⚡ זיכרון מהיר", logic_odd_one_out: "🧩 חשיבה לוגית", spot_difference: "🔍 קשב לפרטים", pattern_advanced: "🔢 זיהוי דפוסים", zipzap: "⚡ עיבוד מהיר", speedMatch: "🎯 מהירות ודיוק", visualMemory: "🧠 זיכרון חזותי", attentionScan: "🔍 קשב וריכוז" },
-  ar: { rapid_recall: "⚡ الذاكرة السريعة", logic_odd_one_out: "🧩 التفكير المنطقي", spot_difference: "🔍 الانتباه للتفاصيل", pattern_advanced: "🔢 التعرف على الأنماط", zipzap: "⚡ المعالجة السريعة", speedMatch: "🎯 السرعة والدقة", visualMemory: "🧠 الذاكرة البصرية", attentionScan: "🔍 الانتباه والتركيز" },
-};
-
-export default function DailyQuizGame({ game, lang, t, phase, onStart, onFinish, selectedIdx, feedback, onAnswerSelect, recallPhase, recallAnswers, selectedWords, onToggleWord, onSubmitRecall, score, attempts, gameIndex, totalGames, onNewGameComplete }) {
+export default function DailyQuizGame({ game, lang, t, phase, onStart, onFinish, selectedIdx, feedback, onAnswerSelect, recallPhase, recallAnswers, selectedWords, onToggleWord, onSubmitRecall, score, attempts, gameIndex, totalGames, onNewGameComplete, isSpotlight }) {
   const dir = "rtl";
   const L   = LABELS[lang] || LABELS["he"];
 
-  const skillLabel = (SKILL_LABELS[lang] || SKILL_LABELS.he)[game.type];
+  const skillLabel = DAILY_SKILL_LABELS[game.type]?.[lang];
 
   if (phase === "intro") return (
     <div dir={dir} className={`${BASE} bg-card text-card-foreground`}>
       <div className="text-6xl mb-4">{ICONS[game.type]}</div>
       <p className="text-sm font-medium text-muted-foreground mb-1">{L.game} {gameIndex + 1} {L.of} {totalGames}</p>
-      <h2 className="text-3xl font-bold mb-3">{L.gameNames[game.type]}</h2>
+      <h2 className="text-3xl font-bold mb-3">
+        {L.gameNames[game.type]}
+        {isSpotlight && (
+          <span className="text-xs bg-primary text-primary-foreground rounded-full px-2 py-0.5 ml-2 align-middle">
+            {lang === "ar" ? "⭐ لعبة اليوم" : "⭐ משחק היום"}
+          </span>
+        )}
+      </h2>
       {skillLabel && <p className="text-base font-semibold text-primary mb-2">{skillLabel}</p>}
       <p className="text-lg text-muted-foreground mb-8">{L.gameDesc[game.type]}</p>
       <button onClick={onStart} className={`${BTN} bg-primary text-primary-foreground text-2xl py-5`}>{L.start}</button>

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDailyQuiz } from "../hooks/useDailyQuiz";
 import DailyQuizGame   from "../components/DailyQuizGame";
 import { useLang } from "@/lib/LanguageContext";
-import { getDifficultyLevel, getWeekPack } from "../quizData";
+import { getDifficultyLevel, getWeekTheme } from "../dailyVariation";
 
 const PAGE_LABELS = {
   he: { title: "משחק יומי", subtitle: "שלושה אתגרים קצרים לחיזוק הזיכרון", alreadyDone: "כבר שיחקתם היום — חזרו מחר! 🌟", doneTitle: "כל הכבוד! סיימתם את המשחק היומי 🎉", doneSubtitle: "נתראה מחר עם אתגרים חדשים", totalScore: "ניקוד כולל", accuracy: "דיוק", backHome: "חזרה לדף הבית", levelLabel: "רמת קושי", levels: ["","קל 🟢","קל-בינוני 🟡","בינוני 🟠","קשה 🔴","מאתגר מאוד 🔥","מומחה 💎","מתקדם ⚡","מקצוען 🏆","אגדי 👑","בלתי אפשרי 🌟"] },
@@ -54,6 +54,8 @@ export default function DailyQuizPage() {
   const L    = PAGE_LABELS[lang] || PAGE_LABELS["he"];
   const quiz = useDailyQuiz({ lang });
   const onBack = () => navigate("/");
+  const level = getDifficultyLevel(quiz.today);
+  const theme = getWeekTheme(quiz.today);
 
   if (quiz.alreadyDone && quiz.phase !== "done") return (
     <div dir="rtl" className="flex flex-col items-center justify-center min-h-64 gap-6 py-8 px-4">
@@ -67,14 +69,22 @@ export default function DailyQuizPage() {
 
   return (
     <div dir="rtl" className="max-w-md mx-auto px-4 py-6">
+      <div className="w-full rounded-2xl bg-muted px-5 py-3 flex items-center justify-between mb-4">
+        <div>
+          <p className="text-xs text-muted-foreground">{lang === "ar" ? "موضوع الأسبوع" : "נושא השבוע"}</p>
+          <p className="text-lg font-semibold text-foreground">{theme[lang]}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-xs text-muted-foreground">{lang === "ar" ? "مستوى اليوم" : "רמת היום"}</p>
+          <p className="text-base font-bold text-primary">{"★".repeat(level)}{"☆".repeat(5 - level)}</p>
+        </div>
+      </div>
       <div className="text-center mb-6">
         <h1 className="text-3xl font-bold">{L.title}</h1>
         <p className="text-muted-foreground mt-1">{L.subtitle}</p>
-        <p className="text-sm font-medium text-muted-foreground mt-0 mb-1">{quiz.games?.[0]?.packName?.[lang] || quiz.games?.[0]?.packName?.he}</p>
-        {(() => { const level = getDifficultyLevel(quiz.today); const levelNames = { he: ["","קל 🟢","קל-בינוני 🟡","בינוני 🟠","קשה 🔴","מאתגר מאוד 🔥","מומחה 💎","מתקדם ⚡","מקצוען 🏆","אגדי 👑","בלתי אפשרי 🌟"], ar: ["","سهل 🟢","متوسط-سهل 🟡","متوسط 🟠","صعب 🔴","صعب جداً 🔥","خبير 💎","متقدم ⚡","محترف 🏆","أسطوري 👑","مستحيل 🌟"] }; return <p className="text-sm font-semibold mb-2">{lang === "ar" ? "مستوى الصعوبة" : "רמת קושי"}: {(levelNames[lang] || levelNames.he)[level] || level}</p>; })()}
       </div>
       <ProgressDots total={quiz.totalGames} current={quiz.gameIndex} />
-      <DailyQuizGame game={quiz.currentGame} lang={lang} t={quiz.t} phase={quiz.phase} onStart={quiz.startCurrentGame} onFinish={quiz.finishGame} selectedIdx={quiz.selectedIdx} feedback={quiz.feedback} onAnswerSelect={quiz.submitAnswer} recallPhase={quiz.recallPhase} recallAnswers={quiz.recallAnswers} selectedWords={quiz.selectedWords} onToggleWord={quiz.toggleWord} onSubmitRecall={quiz.submitWordRecall} score={quiz.score} attempts={quiz.attempts} gameIndex={quiz.gameIndex} totalGames={quiz.totalGames} onNewGameComplete={quiz.handleNewGameComplete} />
+      <DailyQuizGame game={quiz.currentGame} lang={lang} t={quiz.t} phase={quiz.phase} onStart={quiz.startCurrentGame} onFinish={quiz.finishGame} selectedIdx={quiz.selectedIdx} feedback={quiz.feedback} onAnswerSelect={quiz.submitAnswer} recallPhase={quiz.recallPhase} recallAnswers={quiz.recallAnswers} selectedWords={quiz.selectedWords} onToggleWord={quiz.toggleWord} onSubmitRecall={quiz.submitWordRecall} score={quiz.score} attempts={quiz.attempts} gameIndex={quiz.gameIndex} totalGames={quiz.totalGames} onNewGameComplete={quiz.handleNewGameComplete} isSpotlight={quiz.gameIndex === 0} />
     </div>
   );
 }
