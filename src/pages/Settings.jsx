@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
-import { Trash2, AlertTriangle, Type, Sun, Moon, Monitor, Volume2 } from 'lucide-react';
+import { Trash2, AlertTriangle, Type, Sun, Moon, Monitor, Volume2, Share2, Check } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -15,12 +15,29 @@ import { FONT_SIZES, applyFontSize, applyTheme } from '@/lib/ThemeProvider';
 import { isSoundEnabled, setSoundEnabled, playCorrect } from '@/lib/audioFeedback';
 
 export default function Settings() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [fontSize, setFontSize] = useState(() => localStorage.getItem('rebrain_fontsize') || 'large');
   const [theme, setTheme] = useState(() => localStorage.getItem('rebrain_theme') || 'system');
   const [sound, setSound] = useState(() => isSoundEnabled());
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const shareUrl = window.location.origin;
+    const shareText = lang === 'ar'
+      ? 'جرّب تطبيق ReBrain لتدريب العقل والذاكرة'
+      : 'נסו את ReBrain — אימון יומי למוח ולזיכרון';
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'ReBrain', text: shareText, url: shareUrl });
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    } catch {}
+  };
 
   const handleTheme = (mode) => {
     setTheme(mode);
@@ -130,6 +147,27 @@ export default function Settings() {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Share app */}
+      <div className="bg-card border border-border rounded-xl p-5 space-y-3">
+        <div className="flex items-center gap-2 font-semibold text-foreground">
+          <Share2 className="w-5 h-5" />
+          {lang === 'ar' ? 'شارك التطبيق' : 'שתפו את האפליקציה'}
+        </div>
+        <p className="text-sm text-muted-foreground">
+          {lang === 'ar'
+            ? 'شارك ReBrain مع الأصدقاء والعائلة لمساعدتهم على تقوية ذاكرتهم'
+            : 'שתפו את ReBrain עם חברים ומשפחה כדי לעזור להם לחזק את הזיכרון'}
+        </p>
+        <Button
+          onClick={handleShare}
+          className="gap-2 select-none min-h-[44px] w-full"
+        >
+          {copied
+            ? (<><Check className="w-4 h-4" />{lang === 'ar' ? 'تم نسخ الرابط' : 'הקישור הועתק'}</>)
+            : (<><Share2 className="w-4 h-4" />{lang === 'ar' ? 'مشاركة' : 'שיתוף'}</>)}
+        </Button>
       </div>
 
       {/* Danger zone */}
