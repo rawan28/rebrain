@@ -11,70 +11,22 @@ import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
 
 const ALL_IMAGES = [
-  { id: 'key',        emoji: '🔑' },
-  { id: 'sunglasses', emoji: '🕶️' },
-  { id: 'bag',        emoji: '👜' },
-  { id: 'money',      emoji: '💰' },
-  { id: 'bed',        emoji: '🛏️' },
-  { id: 'hat',        emoji: '🎩' },
-  { id: 'food',       emoji: '🍽️' },
-  { id: 'pan',        emoji: '🍳' },
-  { id: 'board',      emoji: '📋' },
-  { id: 'child',      emoji: '🧒' },
-  { id: 'book',       emoji: '📚' },
-  { id: 'newspaper',  emoji: '📰' },
-  { id: 'headphones', emoji: '🎧' },
-  { id: 'coffee',     emoji: '☕' },
-  { id: 'candle',     emoji: '🕯️' },
-  { id: 'tree',       emoji: '🌳' },
-  { id: 'flower',     emoji: '🌸' },
-  { id: 'chair',      emoji: '🪑' },
-  { id: 'sea',        emoji: '🌊' },
-  { id: 'pool',       emoji: '🏊' },
-  { id: 'plane',      emoji: '✈️' },
-  { id: 'table',      emoji: '🪞' },
-  { id: 'car',        emoji: '🚗' },
-  { id: 'letter',     emoji: '✉️' },
-  { id: 'bird',       emoji: '🐦' },
-  { id: 'dog',        emoji: '🐶' },
-  { id: 'rocket',     emoji: '🚀' },
-  { id: 'rainbow',    emoji: '🌈' },
-  { id: 'guitar',     emoji: '🎸' },
-  { id: 'crown',      emoji: '👑' },
-  { id: 'diamond',    emoji: '💎' },
-  { id: 'globe',      emoji: '🌍' },
-  { id: 'volcano',    emoji: '🌋' },
-  { id: 'lighthouse', emoji: '🏯' },
-  { id: 'cactus',     emoji: '🌵' },
-  { id: 'mushroom',   emoji: '🍄' },
-  { id: 'anchor',     emoji: '⚓' },
-  { id: 'compass',    emoji: '🧭' },
-  { id: 'telescope',  emoji: '🔭' },
-  { id: 'microscope', emoji: '🔬' },
-  { id: 'hourglass',  emoji: '⏳' },
-  { id: 'magnet',     emoji: '🧲' },
-  { id: 'balloon',    emoji: '🎈' },
-  { id: 'kite',       emoji: '🪁' },
-  { id: 'chess',      emoji: '♟️' },
-  { id: 'dice',       emoji: '🎲' },
-  { id: 'butterfly',  emoji: '🦋' },
-  { id: 'snail',      emoji: '🐌' },
-  { id: 'octopus',    emoji: '🐙' },
-  { id: 'crab',       emoji: '🦀' },
-  { id: 'fox',        emoji: '🦊' },
-  { id: 'penguin',    emoji: '🐧' },
-  { id: 'whale',      emoji: '🐋' },
-  { id: 'dragon',     emoji: '🐉' },
-  { id: 'unicorn',    emoji: '🦄' },
-  { id: 'robot',      emoji: '🤖' },
-  { id: 'ghost',      emoji: '👻' },
-  { id: 'alien',      emoji: '👾' },
-  { id: 'wizard',     emoji: '🧙' },
-  { id: 'mermaid',    emoji: '🧜' },
-  { id: 'volcano2',   emoji: '🏔️' },
-  { id: 'cave',       emoji: '🕌' },
-  { id: 'waterfall',  emoji: '🏞️' },
-  { id: 'igloo',      emoji: '🛖' },
+  { id: 'telescope',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/2e6f554ee_generated_image.png' },
+  { id: 'bust',       img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/5191817f9_generated_image.png' },
+  { id: 'stones',     img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/a388b7d6e_generated_image.png' },
+  { id: 'easel',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/8853f3aac_generated_image.png' },
+  { id: 'compass',    img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/9644fdf7f_generated_image.png' },
+  { id: 'books',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/684948d7b_generated_image.png' },
+  { id: 'watch',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/d84d9b2ba_generated_image.png' },
+  { id: 'hourglass',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/dc3f0be9a_generated_image.png' },
+  { id: 'staircase',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/55c9c75d0_generated_image.png' },
+  { id: 'globe',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/228f0d294_generated_image.png' },
+  { id: 'lantern',    img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/80a4de7b0_generated_image.png' },
+  { id: 'key',        img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/ddd90a237_generated_image.png' },
+  { id: 'mapbottle',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/a4891f222_generated_image.png' },
+  { id: 'astrolabe',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/aa1e0b4b9_generated_image.png' },
+  { id: 'typewriter', img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/10907808d_generated_image.png' },
+  { id: 'gramophone', img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/b625cc795_generated_image.png' },
 ];
 
 function getGridForLevel(level) {
@@ -115,7 +67,7 @@ export default function MemoryGame() {
     const deck = shuffleArray([...images, ...images]).map((image, i) => ({
       id: i,
       imageId: image.id,
-      emoji: image.emoji,
+      img: image.img,
     }));
     setCards(deck);
     setFlipped([]);
@@ -237,24 +189,25 @@ export default function MemoryGame() {
             >
               {/* Card back */}
               <div className="absolute inset-0 rounded-2xl flex items-center justify-center
-                bg-gradient-to-br from-primary to-indigo-600 border-2 border-primary/50 shadow-md"
+                bg-gradient-to-br from-amber-700 to-amber-900 border-2 border-amber-600/50 shadow-md"
                 style={{ backfaceVisibility: 'hidden' }}>
-                <span className="text-3xl md:text-4xl text-white/30 font-bold">?</span>
+                <span className="text-3xl md:text-4xl text-amber-200/40 font-bold">?</span>
               </div>
               {/* Card front */}
-              <div className={`absolute inset-0 rounded-2xl flex items-center justify-center border-2 shadow-lg
+              <div className={`absolute inset-0 rounded-2xl overflow-hidden border-2 shadow-lg
                 ${isMatched
-                  ? 'bg-gradient-to-br from-green-50 to-emerald-100 border-green-300'
-                  : 'bg-white border-primary'}`}
-                style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-                <motion.span
-                  initial={{ scale: 0.5 }}
-                  animate={{ scale: 1 }}
+                  ? 'border-emerald-400 ring-2 ring-emerald-300'
+                  : 'border-[#D2C4A7]'}`}
+                style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', backgroundColor: '#F5F0E6' }}>
+                <motion.img
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: isMatched ? 0.75 : 1 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-                  className={`text-4xl md:text-5xl select-none ${isMatched ? 'opacity-80' : ''}`}
-                >
-                  {card.emoji}
-                </motion.span>
+                  src={card.img}
+                  alt=""
+                  className="w-full h-full object-cover select-none"
+                  draggable={false}
+                />
               </div>
             </motion.button>
           );
