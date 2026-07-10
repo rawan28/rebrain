@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Hexagon, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing, Star, Link2 } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Hexagon, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
@@ -93,14 +93,6 @@ export default function Home() {
       icon: Shapes,
       color: 'bg-indigo-50 text-indigo-600 border-indigo-100',
       iconBg: 'bg-indigo-100',
-    },
-    {
-      path: '/matching',
-      title: lang === 'ar' ? 'توصيل الأزواج' : 'חיבור זוגות',
-      description: lang === 'ar' ? 'وصّل كل عنصر بزوجه الصحيح في العمود الآخر!' : 'חברו כל פריט לזוג הנכון בטור השני!',
-      icon: Link2,
-      color: 'bg-fuchsia-50 text-fuchsia-600 border-fuchsia-100',
-      iconBg: 'bg-fuchsia-100',
     },
     {
       path: '/shape-pattern',
