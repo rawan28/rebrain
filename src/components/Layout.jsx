@@ -1,10 +1,10 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, Settings } from 'lucide-react';
+import { Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, Settings, Share2, Check } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Layout() {
   const location = useLocation();
@@ -12,6 +12,23 @@ export default function Layout() {
   const { t, lang } = useLang();
   const isRoot = location.pathname === '/';
   const isRtl = t.dir === 'rtl';
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const shareUrl = window.location.origin;
+    const shareText = lang === 'ar'
+      ? 'جرّب تطبيق ReBrain لتدريب العقل والذاكرة'
+      : 'נסו את ReBrain — אימון יומי למוח ולזיכרון';
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'ReBrain', text: shareText, url: shareUrl });
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    } catch {}
+  };
 
   // Persist scroll positions per route
   const scrollPositions = useRef({});
@@ -68,6 +85,15 @@ export default function Layout() {
           <div className="flex-1">
             <p className="text-sm md:text-base text-muted-foreground">{t.appSubtitle}</p>
           </div>
+          <button
+            onClick={handleShare}
+            className="p-3 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center"
+            aria-label={lang === 'ar' ? 'مشاركة التطبيق' : 'שיתוף האפליקציה'}
+          >
+            {copied
+              ? <Check className="w-5 h-5 md:w-6 md:h-6 text-emerald-500" />
+              : <Share2 className="w-5 h-5 md:w-6 md:h-6" />}
+          </button>
           <Link
             to="/settings"
             className="p-3 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center"
