@@ -36,18 +36,11 @@ const formatTime = (s) => {
   return `${m}:${sec.toString().padStart(2, '0')}`;
 };
 
-function getCellBorderStyle(r, c) {
-  const isBlockRightEdge = c === 2;
-  const isBlockBottomEdge = r === 1 || r === 3;
-  const isLastCol = c === 5;
-  const isLastRow = r === 5;
-  const thin = '1px solid hsl(var(--border))';
-  const thick = '3px solid hsl(var(--foreground))';
-  return {
-    borderRight: isLastCol ? 'none' : isBlockRightEdge ? thick : thin,
-    borderBottom: isLastRow ? 'none' : isBlockBottomEdge ? thick : thin,
-  };
-}
+// Block layout: 2 rows × 3 cols per block, 3 block-rows × 2 block-cols
+const BLOCK_R = 2;
+const BLOCK_C = 3;
+const BLOCK_ROW_COUNT = 3;
+const BLOCK_COL_COUNT = 2;
 
 export default function MiniSudoku() {
   const { lang } = useLang();
@@ -170,41 +163,55 @@ export default function MiniSudoku() {
         ))}
       </div>
 
-      {/* Sudoku grid */}
+      {/* Sudoku grid — nested grids: thick gaps between blocks, thin gaps within */}
       <div className="relative">
-        <div className="grid grid-cols-6 gap-0 border-2 border-foreground rounded-xl overflow-hidden bg-card">
-          {grid.map((row, r) =>
-            row.map((val, c) => {
-              const isGiven = puzzle[r][c] !== 0;
-              const isSelected = selected && selected[0] === r && selected[1] === c;
-              const isSameRow = selected && r === selected[0];
-              const isSameCol = selected && c === selected[1];
-              const isSameBlock = selected &&
-                Math.floor(r / 2) === Math.floor(selected[0] / 2) &&
-                Math.floor(c / 3) === Math.floor(selected[1] / 3);
-              const isRelated = isSameRow || isSameCol || isSameBlock;
-              const isSameValue = selectedValue && val !== 0 && val === selectedValue;
-              const isConflict = conflicts.has(`${r},${c}`);
+        <div className="bg-foreground rounded-xl p-[3px]">
+          <div className="grid grid-cols-2 gap-[3px]">
+            {Array.from({ length: BLOCK_ROW_COUNT }).map((_, blockRow) =>
+              Array.from({ length: BLOCK_COL_COUNT }).map((_, blockCol) => {
+                const cells = [];
+                for (let r = 0; r < BLOCK_R; r++) {
+                  for (let c = 0; c < BLOCK_C; c++) {
+                    cells.push({ r: blockRow * BLOCK_R + r, c: blockCol * BLOCK_C + c });
+                  }
+                }
+                return (
+                  <div key={`${blockRow}-${blockCol}`} className="grid grid-cols-3 gap-px bg-border">
+                    {cells.map(({ r, c }) => {
+                      const val = grid[r][c];
+                      const isGiven = puzzle[r][c] !== 0;
+                      const isSelected = selected && selected[0] === r && selected[1] === c;
+                      const isSameRow = selected && r === selected[0];
+                      const isSameCol = selected && c === selected[1];
+                      const isSameBlock = selected &&
+                        Math.floor(r / 2) === Math.floor(selected[0] / 2) &&
+                        Math.floor(c / 3) === Math.floor(selected[1] / 3);
+                      const isRelated = isSameRow || isSameCol || isSameBlock;
+                      const isSameValue = selectedValue && val !== 0 && val === selectedValue;
+                      const isConflict = conflicts.has(`${r},${c}`);
 
-              let cellClass = 'text-foreground';
-              if (isConflict) cellClass = 'bg-destructive/20 text-destructive font-bold';
-              else if (isSelected) cellClass = 'bg-primary text-primary-foreground';
-              else if (isSameValue) cellClass = 'bg-accent text-accent-foreground font-semibold';
-              else if (isRelated) cellClass = 'bg-muted/50';
-              else if (isGiven) cellClass = 'text-foreground font-bold';
+                      let cellClass = 'bg-card text-foreground';
+                      if (isConflict) cellClass = 'bg-destructive/20 text-destructive font-bold';
+                      else if (isSelected) cellClass = 'bg-primary text-primary-foreground';
+                      else if (isSameValue) cellClass = 'bg-accent text-accent-foreground font-semibold';
+                      else if (isRelated) cellClass = 'bg-muted/50';
+                      else if (isGiven) cellClass = 'bg-card text-foreground font-bold';
 
-              return (
-                <button
-                  key={`${r}-${c}`}
-                  onClick={() => setSelected([r, c])}
-                  style={getCellBorderStyle(r, c)}
-                  className={`aspect-square flex items-center justify-center text-2xl md:text-3xl transition-colors ${cellClass}`}
-                >
-                  {val !== 0 ? val : ''}
-                </button>
-              );
-            })
-          )}
+                      return (
+                        <button
+                          key={`${r}-${c}`}
+                          onClick={() => setSelected([r, c])}
+                          className={`aspect-square flex items-center justify-center text-2xl md:text-3xl transition-colors ${cellClass}`}
+                        >
+                          {val !== 0 ? val : ''}
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
 
         {/* Win overlay */}
