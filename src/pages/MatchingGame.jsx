@@ -95,10 +95,10 @@ export default function MatchingGame() {
   const baseNode =
     'relative z-10 flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full text-white transition-all duration-150 select-none cursor-pointer active:scale-95 shrink-0';
   const stateClasses = {
-    idle: 'bg-foreground text-foreground',
+    idle: 'bg-foreground text-background',
     selected: 'bg-primary text-primary-foreground ring-4 ring-primary/30 scale-105',
     connected: 'bg-emerald-500 text-white',
-    wrong: 'bg-destructive text-destructive-foreground animate-[shake_0.4s_ease]',
+    wrong: 'bg-destructive text-destructive-foreground animate-shake',
   };
 
   const L = {
@@ -238,14 +238,6 @@ export default function MatchingGame() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <style>{`
-        @keyframes shake {
-          0%,100%{transform:translateX(0)}
-          25%{transform:translateX(-4px)}
-          75%{transform:translateX(4px)}
-        }
-      `}</style>
     </div>
   );
 }
