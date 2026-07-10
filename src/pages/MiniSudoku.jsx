@@ -36,19 +36,17 @@ const formatTime = (s) => {
   return `${m}:${sec.toString().padStart(2, '0')}`;
 };
 
-function getCellBorderClasses(r, c) {
+function getCellBorderStyle(r, c) {
   const isBlockRightEdge = c === 2;
   const isBlockBottomEdge = r === 1 || r === 3;
   const isLastCol = c === 5;
   const isLastRow = r === 5;
-  let classes = '';
-  if (!isLastCol) {
-    classes += isBlockRightEdge ? ' border-r-2 border-r-foreground' : ' border-r border-border';
-  }
-  if (!isLastRow) {
-    classes += isBlockBottomEdge ? ' border-b-2 border-b-foreground' : ' border-b border-border';
-  }
-  return classes;
+  const thin = '1px solid hsl(var(--border))';
+  const thick = '3px solid hsl(var(--foreground))';
+  return {
+    borderRight: isLastCol ? 'none' : isBlockRightEdge ? thick : thin,
+    borderBottom: isLastRow ? 'none' : isBlockBottomEdge ? thick : thin,
+  };
 }
 
 export default function MiniSudoku() {
@@ -199,7 +197,8 @@ export default function MiniSudoku() {
                 <button
                   key={`${r}-${c}`}
                   onClick={() => setSelected([r, c])}
-                  className={`aspect-square flex items-center justify-center text-2xl md:text-3xl transition-colors ${cellClass} ${getCellBorderClasses(r, c)}`}
+                  style={getCellBorderStyle(r, c)}
+                  className={`aspect-square flex items-center justify-center text-2xl md:text-3xl transition-colors ${cellClass}`}
                 >
                   {val !== 0 ? val : ''}
                 </button>
