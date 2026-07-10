@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Hexagon, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing, Star } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Hexagon, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing, Star, Hash } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
@@ -101,6 +101,14 @@ export default function Home() {
       icon: Hexagon,
       color: 'bg-teal-50 text-teal-600 border-teal-100',
       iconBg: 'bg-teal-100',
+    },
+    {
+      path: '/mini-sudoku',
+      title: t.miniSudokuTitle || 'מיני סודוקו',
+      description: t.miniSudokuDesc || 'מלאו את הרשת 6×6 — אתגר לוגי קלאסי!',
+      icon: Hash,
+      color: 'bg-cyan-50 text-cyan-600 border-cyan-100',
+      iconBg: 'bg-cyan-100',
     },
     {
       path: '/weekly-report',
