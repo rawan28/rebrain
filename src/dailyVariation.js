@@ -1,8 +1,8 @@
 const LAUNCH = new Date("2026-06-27");
 
 const MEMORY_GAMES    = ["word_recall", "rapid_recall", "visualMemory"];
-const LOGIC_GAMES     = ["trivia", "logic_odd_one_out", "pattern"];
-const ATTENTION_GAMES = ["spot_difference", "attentionScan", "pattern_advanced"];
+const LOGIC_GAMES     = ["trivia", "logic_odd_one_out", "pattern", "word_association", "mental_math"];
+const ATTENTION_GAMES = ["spot_difference", "attentionScan", "pattern_advanced", "sequence_order"];
 const SPEED_GAMES     = ["zipzap", "speedMatch"];
 
 export const SKILL_LABELS = {
@@ -17,6 +17,9 @@ export const SKILL_LABELS = {
   speedMatch:        { he: "🎯 מהירות ודיוק",           ar: "🎯 السرعة والدقة" },
   visualMemory:      { he: "🖼️ זיכרון חזותי",          ar: "🖼️ الذاكرة البصرية" },
   attentionScan:     { he: "🔭 ריכוז וסריקה",           ar: "🔭 التركيز والمسح" },
+  word_association:  { he: "🔗 אסוציאציה מילולית",      ar: "🔗 الترابط اللفظي" },
+  mental_math:       { he: "🔢 חשבון מנטלי",            ar: "🔢 الحساب الذهني" },
+  sequence_order:    { he: "📋 סדר רצף",               ar: "📋 ترتيب التسلسل" },
 };
 
 function seededRand(seed) {

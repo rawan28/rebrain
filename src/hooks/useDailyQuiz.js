@@ -4,6 +4,7 @@ import { getDailyGames, GAME_TYPES } from "../quizData";
 import { getNewDailyGames, NEW_GAME_TYPES } from "../newQuizData";
 import { generateDailyAgentGames, AGENT_GAME_TYPES } from "../agentQuizData";
 import { getDailyGameTypes, getDifficultyLevel } from "../dailyVariation";
+import { getNewGamesDailySet } from "../newGamesData";
 
 export function useDailyQuiz({ lang = "he" } = {}) {
   const today = new Date().toISOString().split("T")[0];
@@ -13,10 +14,14 @@ export function useDailyQuiz({ lang = "he" } = {}) {
     const original   = getDailyGames(today);
     const newGames   = getNewDailyGames(today, level);
     const agentGames = generateDailyAgentGames(today, level);
+    const newCognitiveGames = getNewGamesDailySet(today, level);
     const typeMap = {};
     original.forEach(g   => { typeMap[g.type] = g; });
     newGames.forEach(g   => { typeMap[g.type] = g; });
     agentGames.forEach(g => { typeMap[g.type] = g; });
+    typeMap["word_association"] = { type: "word_association", data: newCognitiveGames.word_association, level };
+    typeMap["mental_math"]     = { type: "mental_math", data: newCognitiveGames.mental_math, level };
+    typeMap["sequence_order"]  = { type: "sequence_order", data: newCognitiveGames.sequence_order, level };
     return todayGameTypes.map(type => typeMap[type]).filter(Boolean);
   });
   const [gameIndex,  setGameIndex]       = useState(0);
