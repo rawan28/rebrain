@@ -24,6 +24,7 @@ import WeeklyReport from '@/pages/WeeklyReport';
 import ReminderSettings from '@/pages/ReminderSettings';
 import DailyQuizPage from '@/pages/DailyQuizPage';
 import ShapePattern from '@/pages/ShapePattern';
+import MatchingGame from '@/pages/MatchingGame';
 
 
 const AuthenticatedApp = () => {
@@ -69,6 +70,7 @@ const AuthenticatedApp = () => {
         <Route path="/reminder" element={<ReminderSettings />} />
         <Route path="/daily-quiz" element={<DailyQuizPage />} />
         <Route path="/shape-pattern" element={<ShapePattern />} />
+        <Route path="/matching" element={<MatchingGame />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
