@@ -116,4 +116,20 @@ export const matchingLevels = [
     ],
     pairs: { l1: 'r2', l2: 'r3', l3: 'r1', l4: 'r5', l5: 'r4' },
   },
+  {
+    id: 7,
+    title: { he: 'מספרים באנגלית', ar: 'أرقام بالإنجليزية' },
+    difficulty: 'easy',
+    left: [
+      { id: 'l1', label: { he: '2', ar: '2' } },
+      { id: 'l2', label: { he: '5', ar: '5' } },
+      { id: 'l3', label: { he: '9', ar: '9' } },
+    ],
+    right: [
+      { id: 'r1', label: { he: 'Two', ar: 'Two' } },
+      { id: 'r2', label: { he: 'Five', ar: 'Five' } },
+      { id: 'r3', label: { he: 'Nine', ar: 'Nine' } },
+    ],
+    pairs: { l1: 'r1', l2: 'r2', l3: 'r3' },
+  },
 ];
