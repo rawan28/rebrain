@@ -1,7 +1,7 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, Settings, Share2, Check } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
-import LanguageSwitcher from './LanguageSwitcher';
+
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
@@ -101,7 +101,7 @@ export default function Layout() {
           >
             <Settings className="w-5 h-5 md:w-6 md:h-6" />
           </Link>
-          <LanguageSwitcher />
+
         </div>
       </header>
 

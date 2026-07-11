@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
-import { Trash2, AlertTriangle, Type, Sun, Moon, Monitor, Volume2, Share2, Check } from 'lucide-react';
+import { Trash2, AlertTriangle, Type, Sun, Moon, Monitor, Volume2, Share2, Check, Languages } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -15,7 +15,7 @@ import { FONT_SIZES, applyFontSize, applyTheme } from '@/lib/ThemeProvider';
 import { isSoundEnabled, setSoundEnabled, playCorrect } from '@/lib/audioFeedback';
 
 export default function Settings() {
-  const { t, lang } = useLang();
+  const { t, lang, setLang } = useLang();
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [fontSize, setFontSize] = useState(() => localStorage.getItem('rebrain_fontsize') || 'large');
@@ -66,6 +66,34 @@ export default function Settings() {
       <div>
         <h2 className="text-2xl font-bold">{t.settingsTitle || 'הגדרות'}</h2>
         <p className="text-muted-foreground mt-1">{t.settingsDesc || 'ניהול חשבון והעדפות'}</p>
+      </div>
+
+      {/* Language */}
+      <div className="bg-card border border-border rounded-xl p-5 space-y-3">
+        <div className="flex items-center gap-2 font-semibold text-foreground">
+          <Languages className="w-5 h-5" />
+          {lang === 'ar' ? 'اللغة' : 'שפה'}
+        </div>
+        <p className="text-sm text-muted-foreground">
+          {lang === 'ar' ? 'اختر لغة التطبيق' : 'בחר את שפת האפליקציה'}
+        </p>
+        <div className="flex gap-3">
+          {[
+            { key: 'he', label: 'עברית' },
+            { key: 'ar', label: 'العربية' },
+          ].map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => setLang(key)}
+              className={`px-4 py-2.5 rounded-xl border-2 font-medium transition-all text-sm min-h-[44px]
+                ${lang === key
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-border bg-background text-foreground hover:border-primary/50'}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Theme */}
