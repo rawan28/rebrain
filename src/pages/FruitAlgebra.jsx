@@ -183,12 +183,12 @@ export default function FruitAlgebra() {
               <span className="text-orange-500 font-bold text-2xl">=</span>
               <span className="text-2xl font-bold text-foreground">{clue.right}</span>
               {clue.reveal && (
-                <>
-                  <span className="text-muted-foreground text-xl mx-1">→</span>
+                <div className="w-full flex items-center gap-2 mt-1 ps-2">
+                  <span className="text-2xl font-bold text-muted-foreground">1</span>
                   <span className="text-3xl md:text-4xl">{clue.reveal.fruit}</span>
                   <span className="text-orange-500 font-bold text-2xl">=</span>
                   <span className="text-2xl font-bold text-green-600 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-lg px-3 py-1">{clue.reveal.value}</span>
-                </>
+                </div>
               )}
             </motion.div>
           ))}
