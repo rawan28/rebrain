@@ -25,6 +25,7 @@ import ReminderSettings from '@/pages/ReminderSettings';
 import DailyQuizPage from '@/pages/DailyQuizPage';
 import ShapePattern from '@/pages/ShapePattern';
 import MiniSudoku from '@/pages/MiniSudoku';
+import WordSpell from '@/pages/WordSpell';
 
 
 const AuthenticatedApp = () => {
@@ -71,6 +72,7 @@ const AuthenticatedApp = () => {
         <Route path="/daily-quiz" element={<DailyQuizPage />} />
         <Route path="/shape-pattern" element={<ShapePattern />} />
         <Route path="/mini-sudoku" element={<MiniSudoku />} />
+        <Route path="/word-spell" element={<WordSpell />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

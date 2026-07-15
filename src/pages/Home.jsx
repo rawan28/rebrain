@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Hexagon, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing, Star, Hash } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Hexagon, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing, Star, Hash, Volume2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
@@ -109,6 +109,14 @@ export default function Home() {
       icon: Hash,
       color: 'bg-cyan-50 text-cyan-600 border-cyan-100',
       iconBg: 'bg-cyan-100',
+    },
+    {
+      path: '/word-spell',
+      title: t.wordSpellTitle,
+      description: t.wordSpellDesc,
+      icon: Volume2,
+      color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+      iconBg: 'bg-emerald-100',
     },
     {
       path: '/weekly-report',
