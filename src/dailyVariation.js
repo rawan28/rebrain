@@ -69,13 +69,18 @@ export function getDailyGameTypes(dateStr) {
     pick(SPEED_GAMES),
   ];
 
+  // 5th game: pick from any category, avoiding duplicates
+  const remainingPool = [...MEMORY_GAMES, ...LOGIC_GAMES, ...ATTENTION_GAMES, ...SPEED_GAMES]
+    .filter(g => !four.includes(g));
+  const five = [...four, pick(remainingPool)];
+
   // Shuffle order so even the sequence feels fresh each day
-  for (let i = four.length - 1; i > 0; i--) {
+  for (let i = five.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
-    [four[i], four[j]] = [four[j], four[i]];
+    [five[i], five[j]] = [five[j], five[i]];
   }
 
-  return { games: four, spotlight: four[0] };
+  return { games: five, spotlight: five[0] };
 }
 
 export function getBonusGame(dateStr) {

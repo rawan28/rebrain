@@ -11,18 +11,27 @@ export function useDailyQuiz({ lang = "he" } = {}) {
   const level = getDifficultyLevel(today);
   const [games]                         = useState(() => {
     const { games: todayGameTypes } = getDailyGameTypes(today);
-    const original   = getDailyGames(today);
-    const newGames   = getNewDailyGames(today, level);
-    const agentGames = generateDailyAgentGames(today, level);
-    const newCognitiveGames = getNewGamesDailySet(today, level);
-    const typeMap = {};
-    original.forEach(g   => { typeMap[g.type] = g; });
-    newGames.forEach(g   => { typeMap[g.type] = g; });
-    agentGames.forEach(g => { typeMap[g.type] = g; });
-    typeMap["word_association"] = { type: "word_association", data: newCognitiveGames.word_association, level };
-    typeMap["mental_math"]     = { type: "mental_math", data: newCognitiveGames.mental_math, level };
-    typeMap["sequence_order"]  = { type: "sequence_order", data: newCognitiveGames.sequence_order, level };
-    return todayGameTypes.map(type => typeMap[type]).filter(Boolean);
+    const origTypes    = Object.values(GAME_TYPES);
+    const newTypes     = Object.values(NEW_GAME_TYPES);
+    const agentTypes   = Object.values(AGENT_GAME_TYPES);
+    return todayGameTypes.map((type, i) => {
+      const gameLevel = Math.min(level + i, 10);
+      if (origTypes.includes(type)) {
+        const orig = getDailyGames(today, gameLevel);
+        return orig.find(g => g.type === type);
+      }
+      if (newTypes.includes(type)) {
+        return getNewDailyGames(today, gameLevel).find(g => g.type === type);
+      }
+      if (agentTypes.includes(type)) {
+        return generateDailyAgentGames(today, gameLevel).find(g => g.type === type);
+      }
+      const cognitive = getNewGamesDailySet(today, gameLevel);
+      if (type === "word_association") return { type, data: cognitive.word_association, level: gameLevel };
+      if (type === "mental_math")     return { type, data: cognitive.mental_math,      level: gameLevel };
+      if (type === "sequence_order")  return { type, data: cognitive.sequence_order,    level: gameLevel };
+      return null;
+    }).filter(Boolean);
   });
   const [gameIndex,  setGameIndex]       = useState(0);
   const [phase,      setPhase]           = useState("intro");

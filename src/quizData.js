@@ -650,8 +650,8 @@ export const weeklyPacks = [
   },
 ];
 
-export function getDailyGames(dateStr) {
-  const level   = getDifficultyLevel(dateStr);
+export function getDailyGames(dateStr, overrideLevel) {
+  const level   = overrideLevel || getDifficultyLevel(dateStr);
   const packIdx = getWeekPack(dateStr);
   const pack    = weeklyPacks[packIdx];
   const seed    = dateStr.replace(/-/g,"").split("").reduce((a,c) => a + c.charCodeAt(0), 0);
