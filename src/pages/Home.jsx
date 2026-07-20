@@ -54,14 +54,6 @@ export default function Home() {
       iconBg: 'bg-purple-100',
     },
     {
-      path: '/numbers',
-      title: t.numbersTitle,
-      description: t.numbersDesc,
-      icon: Calculator,
-      color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
-      iconBg: 'bg-emerald-100',
-    },
-    {
       path: '/flags',
       title: t.flagTitle,
       description: t.flagDesc,

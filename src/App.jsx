@@ -58,7 +58,6 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<Home />} />
         <Route path="/memory" element={<MemoryGame />} />
         <Route path="/logic" element={<LogicPuzzle />} />
-        <Route path="/numbers" element={<NumberQuiz />} />
         <Route path="/flags" element={<FlagQuiz />} />
         <Route path="/word" element={<WordComplete />} />
         <Route path="/trivia" element={<TriviaQuiz />} />

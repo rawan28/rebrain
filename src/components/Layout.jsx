@@ -49,7 +49,6 @@ export default function Layout() {
     { path: '/', label: t.navHome, icon: Home },
     { path: '/memory', label: t.navMemory, icon: Grid3X3 },
     { path: '/logic', label: t.navLogic, icon: Puzzle },
-    { path: '/numbers', label: t.navNumbers, icon: Calculator },
     { path: '/flags', label: t.navFlags, icon: Flag },
     { path: '/word', label: t.navWord, icon: PenLine },
     { path: '/trivia', label: t.triviaTitle, icon: Lightbulb },
