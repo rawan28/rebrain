@@ -24,27 +24,27 @@ export const SHAPE_PAIRS = [
   { emoji: '⛰️', he: 'הר', ar: 'جبل' },
   // Objects
   { emoji: '⏰', he: 'שעון מעורר', ar: 'منبّه' },
-  { emoji: '🔦', he: 'פנס', ar: 'مصباح يدوي' },
-  { emoji: '☂️', he: 'מטרייה', ar: 'مظلة' },
+  { emoji: '🔦', he: 'פנס', ar: 'كشّاف' },
+  { emoji: '☂️', he: 'מטרייה', ar: 'شمسية' },
   { emoji: '🎈', he: 'בלון', ar: 'بالون' },
   { emoji: '🔔', he: 'פעמון', ar: 'جرس' },
   { emoji: '🧭', he: 'מצפן', ar: 'بوصلة' },
-  { emoji: '🪜', he: 'סולם', ar: 'سلّم' },
+  { emoji: '🪜', he: 'סולם', ar: 'دَرَج' },
   { emoji: '🕯️', he: 'נר', ar: 'شمعة' },
   // Food
   { emoji: '🍉', he: 'אבטיח', ar: 'بطيخ' },
   { emoji: '🍇', he: 'ענבים', ar: 'عنب' },
   { emoji: '🥕', he: 'גזר', ar: 'جزر' },
   { emoji: '🍋', he: 'לימון', ar: 'ليمون' },
-  { emoji: '🍓', he: 'תות', ar: 'فراولة' },
+  { emoji: '🍓', he: 'תות', ar: 'فريز' },
   { emoji: '🥐', he: 'קרואסון', ar: 'كرواسون' },
   // Transport & places
   { emoji: '🚂', he: 'רכבת', ar: 'قطار' },
   { emoji: '⛵', he: 'סירת מפרש', ar: 'قارب شراعي' },
-  { emoji: '🚁', he: 'מסוק', ar: 'مروحية' },
+  { emoji: '🚁', he: 'מסוק', ar: 'هليكوبتر' },
   { emoji: '🏰', he: 'טירה', ar: 'قلعة' },
   { emoji: '🗼', he: 'מגדל', ar: 'برج' },
-  { emoji: '🎡', he: 'גלגל ענק', ar: 'عجلة عملاقة' },
+  { emoji: '🎡', he: 'גלגל ענק', ar: 'دولاب هوا' },
 ];
 
 export function buildShapeWordDeck(lang, pairsCount) {
