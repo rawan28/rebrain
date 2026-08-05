@@ -5,6 +5,7 @@ import { useLang } from '@/lib/LanguageContext';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import SkipLink from '@/components/SkipLink';
 
 export default function Layout() {
   const location = useLocation();
@@ -62,8 +63,10 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col" dir={t.dir} lang={lang}>
+      <SkipLink />
       {/* Header with safe-area top */}
       <header
+        role="banner"
         className="bg-card border-b border-border px-4 py-4 md:py-5 shadow-sm"
         style={{ paddingTop: `max(1rem, calc(1rem + env(safe-area-inset-top)))` }}
       >
@@ -106,7 +109,7 @@ export default function Layout() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 px-4 py-6 md:py-8 md:pb-36">
+      <main id="main-content" tabIndex={-1} className="flex-1 px-4 py-6 md:py-8 md:pb-36 outline-none">
         <div className="max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
@@ -144,6 +147,7 @@ export default function Layout() {
 
       {/* Bottom Navigation - desktop only */}
       <nav
+        aria-label={lang === 'ar' ? 'التنقل الرئيسي' : 'ניווט ראשי'}
         className="hidden md:block bg-card border-t border-border px-2 py-2 md:py-3 fixed bottom-0 left-0 right-0 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.08)] safe-bottom"
       >
         <div className="max-w-5xl mx-auto flex justify-around overflow-x-auto">
