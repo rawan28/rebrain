@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Hexagon, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing, Star, Hash, Volume2 } from 'lucide-react';
+import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Hexagon, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing, Star, Hash, Volume2, MessageSquareHeart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
 import PullToRefreshIndicator from '@/components/PullToRefreshIndicator';
+import FeedbackSurvey from '@/components/FeedbackSurvey';
 
 const container = {
   hidden: {},
@@ -19,6 +21,7 @@ const item = {
 export default function Home() {
   const { t, lang } = useLang();
   const { pullY, refreshing, progress } = usePullToRefresh(() => new Promise(r => setTimeout(r, 800)));
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   const exercises = [
     {
@@ -184,7 +187,18 @@ export default function Home() {
         })}
       </motion.div>
 
+      {/* Feedback button */}
+      <div className="flex justify-center pt-2 pb-4">
+        <button
+          onClick={() => setFeedbackOpen(true)}
+          className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-accent/15 text-accent-foreground border-2 border-accent/30 text-lg font-semibold hover:bg-accent/25 transition-colors active:scale-95"
+        >
+          <MessageSquareHeart className="w-6 h-6" />
+          {lang === 'ar' ? 'شاركونا رأيكم' : 'השאירו לנו משוב'}
+        </button>
+      </div>
 
+      <FeedbackSurvey open={feedbackOpen} onOpenChange={setFeedbackOpen} />
     </div>
   );
 }

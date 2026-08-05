@@ -1,0 +1,55 @@
+{
+  "name": "Feedback",
+  "type": "object",
+  "properties": {
+    "challenge": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "How challenging the games felt (1-5)"
+    },
+    "enjoyment": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "How enjoyable the experience was (1-5)"
+    },
+    "comfort": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "How comfortable / accessible the app felt (1-5)"
+    },
+    "recommend": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "How likely to recommend (1-5)"
+    },
+    "comment": {
+      "type": "string",
+      "description": "Optional free-text comment"
+    },
+    "lang": {
+      "type": "string",
+      "enum": [
+        "he",
+        "ar"
+      ],
+      "default": "he"
+    }
+  },
+  "required": [],
+  "rls": {
+    "create": {},
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}
