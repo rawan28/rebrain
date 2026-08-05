@@ -5,6 +5,7 @@ import { getNewDailyGames, NEW_GAME_TYPES } from "../newQuizData";
 import { generateDailyAgentGames, AGENT_GAME_TYPES } from "../agentQuizData";
 import { getDailyGameTypes, getDifficultyLevel } from "../dailyVariation";
 import { getNewGamesDailySet } from "../newGamesData";
+import { getAttentionArenaDaily, ATTENTION_ARENA } from "../attentionArenaData";
 
 export function useDailyQuiz({ lang = "he" } = {}) {
   const today = new Date().toISOString().split("T")[0];
@@ -25,6 +26,9 @@ export function useDailyQuiz({ lang = "he" } = {}) {
       }
       if (agentTypes.includes(type)) {
         return generateDailyAgentGames(today, gameLevel).find(g => g.type === type);
+      }
+      if (type === ATTENTION_ARENA) {
+        return { type, data: getAttentionArenaDaily(today, gameLevel), level: gameLevel };
       }
       const cognitive = getNewGamesDailySet(today, gameLevel);
       if (type === "word_association") return { type, data: cognitive.word_association, level: gameLevel };

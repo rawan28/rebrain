@@ -9,7 +9,7 @@ const PAGE_LABELS = {
   he: { title: "משחק יומי",   subtitle: "חמישה אתגרים קצרים לחיזוק הזיכרון", alreadyDone: "כבר שיחקתם היום — חזרו מחר! 🌟", doneTitle: "כל הכבוד! סיימתם את המשחק היומי 🎉", doneSubtitle: "נתראה מחר עם אתגרים חדשים", totalScore: "ניקוד כולל", accuracy: "דיוק", backHome: "חזרה לדף הבית", levelLabel: "רמת קושי", levels: ["","קל 🟢","קל-בינוני 🟡","בינוני 🟠","קשה 🔴","מאתגר מאוד 🔥","מומחה 💎","מתקדם ⚡","מקצוען 🏆","אגדי 👑","בלתי אפשרי 🌟"] },
   ar: { title: "لعبة اليوم",   subtitle: "خمسة تحديات قصيرة لتقوية الذاكرة", alreadyDone: "لقد لعبت اليوم — عد غداً! 🌟", doneTitle: "أحسنت! أتممت لعبة اليوم 🎉", doneSubtitle: "إلى اللقاء غداً مع تحديات جديدة", totalScore: "النتيجة الإجمالية", accuracy: "الدقة", backHome: "العودة للرئيسية", levelLabel: "مستوى الصعوبة", levels: ["","سهل 🟢","متوسط-سهل 🟡","متوسط 🟠","صعب 🔴","صعب جداً 🔥","خبير 💎","متقدم ⚡","محترف 🏆","أسطوري 👑","مستحيل 🌟"] },
 };
-const GAME_ICONS = { word_recall: "🧠", trivia: "💡", pattern: "🔢", rapid_recall: "⚡", logic_odd_one_out: "🧩", spot_difference: "🔍", pattern_advanced: "🔢", zipzap: "⚡", speedMatch: "🎯", visualMemory: "🧠", attentionScan: "🔍", word_association: "🔗", mental_math: "🔢", sequence_order: "📋" };
+const GAME_ICONS = { word_recall: "🧠", trivia: "💡", pattern: "🔢", rapid_recall: "⚡", logic_odd_one_out: "🧩", spot_difference: "🔍", pattern_advanced: "🔢", zipzap: "⚡", speedMatch: "🎯", visualMemory: "🧠", attentionScan: "🔍", word_association: "🔗", mental_math: "🔢", sequence_order: "📋", attention_arena: "🏟️" };
 
 function ProgressDots({ total, current }) {
   return (
