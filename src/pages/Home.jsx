@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageSquareHeart } from 'lucide-react';
+import { MessageSquareHeart, CalendarRange, BellRing } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
@@ -51,8 +51,6 @@ export default function Home() {
     { label: t.miniSudokuTitle, icon: '🔢', route: '/mini-sudoku' },
     { label: t.shapePatternTitle, icon: '🔶', route: '/shape-pattern' },
     { label: t.wordSpellTitle, icon: '🔤', route: '/word-spell' },
-    { label: t.weeklyReportTitle, icon: '📊', route: '/weekly-report' },
-    { label: t.reminderTitle, icon: '🔔', route: '/reminder' },
   ];
 
   return (
@@ -106,11 +104,25 @@ export default function Home() {
         )}
       </section>
 
-      {/* Feedback button */}
-      <div className="flex justify-center pt-2">
+      {/* Tools: weekly report, reminder, feedback */}
+      <div className="flex flex-col items-center gap-3 pt-2">
+        <button
+          onClick={() => navigate('/weekly-report')}
+          className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-accent/15 text-accent-foreground border-2 border-accent/30 text-lg font-semibold hover:bg-accent/25 transition-colors active:scale-95"
+        >
+          <CalendarRange className="w-6 h-6" />
+          {t.weeklyReportTitle}
+        </button>
+        <button
+          onClick={() => navigate('/reminder')}
+          className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-accent/15 text-accent-foreground border-2 border-accent/30 text-lg font-semibold hover:bg-accent/25 transition-colors active:scale-95"
+        >
+          <BellRing className="w-6 h-6" />
+          {t.reminderTitle}
+        </button>
         <button
           onClick={() => setFeedbackOpen(true)}
-          className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-accent/15 text-accent-foreground border-2 border-accent/30 text-lg font-semibold hover:bg-accent/25 transition-colors active:scale-95"
+          className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-accent/15 text-accent-foreground border-2 border-accent/30 text-lg font-semibold hover:bg-accent/25 transition-colors active:scale-95"
         >
           <MessageSquareHeart className="w-6 h-6" />
           {L.feedback}
