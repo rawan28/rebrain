@@ -67,18 +67,35 @@ export function generateDailyAgentGames(dateStr, level) {
     data: { target, grid, gridCols: cfg.gridCols, instructions: { he: `מצא וסמן את כל: ${target}`, ar: `ابحث وحدد جميع: ${target}` } },
   };
 
-  // 3. VisualMemory
-  const bigPool = ["🍎", "🔑", "🐟", "🌙", "📘", "🧩", "🌸", "🎵", "🏠", "⭐", "🦋", "🚗", "🌊", "🏔️", "🎭", "🧲", "🦁", "🎯", "🧊", "🎻", "🌺", "🦅", "🌋", "🔭", "🎪", "🏆", "🎨", "🔔", "🎲", "🧬", "🎈", "🪐", "🦊", "🐢", "🌻"];
+  // 3. VisualMemory — classic vintage illustrations (not childish emojis)
+  const bigPool = [
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/e1caa5167_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/93f492132_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/597a3710b_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/05cb13980_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/3a85835ad_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/c75f291bc_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/d5d1798a7_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/889cb8851_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/3b92ea5de_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/b3f9a6853_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/e86edd50f_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/747c67b95_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/e17f89ab9_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/c31dd5852_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/22657584f_generated_image.png",
+    "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/4c71bd8fa_generated_image.png",
+  ];
   const emojiPools = {
     1:  bigPool.slice(0, 8),
     2:  bigPool.slice(0, 12),
     3:  bigPool.slice(0, 16),
-    4:  bigPool.slice(0, 20),
-    5:  bigPool.slice(0, 25),
-    6:  bigPool.slice(0, 28),
-    7:  bigPool.slice(0, 30),
-    8:  bigPool.slice(0, 32),
-    9:  bigPool.slice(0, 34),
+    4:  bigPool,
+    5:  bigPool,
+    6:  bigPool,
+    7:  bigPool,
+    8:  bigPool,
+    9:  bigPool,
     10: bigPool,
   };
   const pool = emojiPools[level] || emojiPools[1];

@@ -59,8 +59,8 @@ export default function VisualMemoryGame({ data, lang, onComplete }) {
           </div>
           <div className="flex flex-wrap gap-3 justify-center">
             {data.shown.map((item, i) => (
-              <div key={i} className={`${data.shown.length > 8 ? 'w-14 h-14 text-3xl' : 'w-20 h-20 text-5xl'} rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shadow-lg`}>
-                {item}
+              <div key={i} className={`${data.shown.length > 8 ? 'w-16 h-16' : 'w-24 h-24'} rounded-2xl bg-white border border-border overflow-hidden flex items-center justify-center shadow-lg`}>
+                <img src={item} alt="" className="w-full h-full object-contain p-1.5" />
               </div>
             ))}
           </div>
@@ -73,8 +73,8 @@ export default function VisualMemoryGame({ data, lang, onComplete }) {
           <div className="grid gap-2 w-full" style={{ gridTemplateColumns: `repeat(${data.allItems.length > 16 ? 6 : data.allItems.length > 12 ? 5 : 4}, 1fr)`, maxWidth: data.allItems.length > 16 ? '28rem' : '20rem' }}>
             {data.allItems.map((item, i) => (
               <button key={i} onClick={() => toggle(item)}
-                className={`${data.allItems.length > 16 ? 'h-12 text-3xl' : 'h-16 text-4xl'} rounded-2xl transition-all duration-150 ${getColor(item)}`}>
-                {item}
+                className={`${data.allItems.length > 16 ? 'h-16' : 'h-20'} rounded-2xl transition-all duration-150 overflow-hidden p-1.5 ${getColor(item)}`}>
+                <img src={item} alt="" className="w-full h-full object-contain" />
               </button>
             ))}
           </div>
