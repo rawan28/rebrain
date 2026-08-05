@@ -1,200 +1,119 @@
-import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Grid3X3, Puzzle, Calculator, Flag, PenLine, Lightbulb, Shapes, Hexagon, ArrowLeft, ArrowRight, Sparkles, Apple, CalendarRange, BellRing, Star, Hash, Volume2, MessageSquareHeart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { MessageSquareHeart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
 import PullToRefreshIndicator from '@/components/PullToRefreshIndicator';
 import FeedbackSurvey from '@/components/FeedbackSurvey';
+import DailyHeroCard from '@/components/home/DailyHeroCard';
+import QuickPlayCard from '@/components/home/QuickPlayCard';
+import AllGamesGrid from '@/components/home/AllGamesGrid';
+import useDailyStreak from '@/hooks/useDailyStreak';
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 },
+const LABELS = {
+  he: {
+    quickPlay: 'משחק מהיר',
+    moreGames: 'עוד משחקים',
+    feedback: 'השאירו לנו משוב',
+    diffEasy: 'קל',
+    diffMedium: 'בינוני',
+  },
+  ar: {
+    quickPlay: 'لعب سريع',
+    moreGames: 'ألعاب أخرى',
+    feedback: 'شاركونا رأيكم',
+    diffEasy: 'سهل',
+    diffMedium: 'متوسط',
+  },
 };
 
 export default function Home() {
   const { t, lang } = useLang();
+  const navigate = useNavigate();
+  const streak = useDailyStreak();
   const { pullY, refreshing, progress } = usePullToRefresh(() => new Promise(r => setTimeout(r, 800)));
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [showAllGames, setShowAllGames] = useState(false);
+  const L = LABELS[lang] || LABELS.he;
 
-  const exercises = [
-    {
-      path: '/daily-quiz',
-      title: lang === 'ar' ? 'لعبة اليوم' : lang === 'he' ? 'משחק יומי' : 'Daily Quiz',
-      description: lang === 'ar' ? 'ثلاثة تحديات قصيرة لتقوية الذاكرة — كل يوم!' : lang === 'he' ? 'שלושה אתגרים קצרים לחיזוק הזיכרון — כל יום!' : 'Three short challenges to boost your memory — every day!',
-      icon: Star,
-      color: 'bg-violet-50 text-violet-600 border-violet-100',
-      iconBg: 'bg-violet-100',
-    },
-    {
-      path: '/fruit-algebra',
-      title: t.fruitAlgebraTitle || 'אלגברת פירות 🍓',
-      description: t.fruitAlgebraDesc || 'גלה את ערך כל פרי ופתור את החידה!',
-      icon: Apple,
-      color: 'bg-red-50 text-red-600 border-red-100',
-      iconBg: 'bg-red-100',
-    },
-    {
-      path: '/memory',
-      title: t.memoryTitle,
-      description: t.memoryDesc,
-      icon: Grid3X3,
-      color: 'bg-blue-50 text-blue-600 border-blue-100',
-      iconBg: 'bg-blue-100',
-    },
-    {
-      path: '/logic',
-      title: t.logicTitle,
-      description: t.logicDesc,
-      icon: Puzzle,
-      color: 'bg-purple-50 text-purple-600 border-purple-100',
-      iconBg: 'bg-purple-100',
-    },
-    {
-      path: '/flags',
-      title: t.flagTitle,
-      description: t.flagDesc,
-      icon: Flag,
-      color: 'bg-orange-50 text-orange-600 border-orange-100',
-      iconBg: 'bg-orange-100',
-    },
-    {
-      path: '/word',
-      title: t.wordTitle,
-      description: t.wordDesc,
-      icon: PenLine,
-      color: 'bg-pink-50 text-pink-600 border-pink-100',
-      iconBg: 'bg-pink-100',
-    },
-
-    {
-      path: '/trivia',
-      title: t.triviaTitle,
-      description: t.triviaDesc,
-      icon: Lightbulb,
-      color: 'bg-yellow-50 text-yellow-600 border-yellow-100',
-      iconBg: 'bg-yellow-100',
-    },
-    {
-      path: '/shape-word',
-      title: t.shapeWordTitle,
-      description: t.shapeWordDesc,
-      icon: Shapes,
-      color: 'bg-indigo-50 text-indigo-600 border-indigo-100',
-      iconBg: 'bg-indigo-100',
-    },
-    {
-      path: '/shape-pattern',
-      title: t.shapePatternTitle || 'דפוסי צורות',
-      description: t.shapePatternDesc || 'מצא את הצורה הבאה ברצף — צורות בתוך צורות!',
-      icon: Hexagon,
-      color: 'bg-teal-50 text-teal-600 border-teal-100',
-      iconBg: 'bg-teal-100',
-    },
-    {
-      path: '/mini-sudoku',
-      title: t.miniSudokuTitle || 'מיני סודוקו',
-      description: t.miniSudokuDesc || 'מלאו את הרשת 6×6 — אתגר לוגי קלאסי!',
-      icon: Hash,
-      color: 'bg-cyan-50 text-cyan-600 border-cyan-100',
-      iconBg: 'bg-cyan-100',
-    },
-    {
-      path: '/word-spell',
-      title: t.wordSpellTitle,
-      description: t.wordSpellDesc,
-      icon: Volume2,
-      color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
-      iconBg: 'bg-emerald-100',
-    },
-    {
-      path: '/weekly-report',
-      title: t.weeklyReportTitle,
-      description: t.weeklyCardDesc,
-      icon: CalendarRange,
-      color: 'bg-cyan-50 text-cyan-600 border-cyan-100',
-      iconBg: 'bg-cyan-100',
-    },
-    {
-      path: '/reminder',
-      title: t.reminderTitle,
-      description: t.reminderCardDesc,
-      icon: BellRing,
-      color: 'bg-rose-50 text-rose-600 border-rose-100',
-      iconBg: 'bg-rose-100',
-    },
+  const quickPlay = [
+    { label: t.memoryTitle, icon: '🃏', route: '/memory', difficulty: L.diffEasy, color: 'from-purple-400 to-indigo-500' },
+    { label: t.logicTitle, icon: '🧩', route: '/logic', difficulty: L.diffMedium, color: 'from-teal-400 to-cyan-500' },
+    { label: t.fruitAlgebraTitle, icon: '🍎', route: '/fruit-algebra', difficulty: L.diffEasy, color: 'from-orange-400 to-rose-500' },
   ];
 
-  const ArrowIcon = t.dir === 'rtl' ? ArrowLeft : ArrowRight;
+  const allGames = [
+    { label: t.flagTitle, icon: '🏳️', route: '/flags' },
+    { label: t.wordTitle, icon: '📝', route: '/word' },
+    { label: t.triviaTitle, icon: '💡', route: '/trivia' },
+    { label: t.shapeWordTitle, icon: '🔷', route: '/shape-word' },
+    { label: t.miniSudokuTitle, icon: '🔢', route: '/mini-sudoku' },
+    { label: t.shapePatternTitle, icon: '🔶', route: '/shape-pattern' },
+    { label: t.wordSpellTitle, icon: '🔤', route: '/word-spell' },
+    { label: t.weeklyReportTitle, icon: '📊', route: '/weekly-report' },
+    { label: t.reminderTitle, icon: '🔔', route: '/reminder' },
+  ];
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-md mx-auto space-y-6 pb-8">
       <PullToRefreshIndicator pullY={pullY} progress={progress} refreshing={refreshing} />
-      {/* Welcome Section */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center space-y-3 py-4"
-      >
-        <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full">
-          <Sparkles className="w-5 h-5" />
-          <span className="text-base font-medium">{t.dailyBrainTraining}</span>
-        </div>
-        <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-          {t.welcomeTitle}
-        </h2>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-lg mx-auto leading-relaxed">
-          {t.welcomeDesc}
-        </p>
+
+      {/* Zone 1: Daily Challenge Hero */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+        <DailyHeroCard lang={lang} streak={streak} onStart={() => navigate('/daily-quiz')} />
       </motion.div>
 
-      {/* Exercise Cards */}
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="grid gap-4 md:gap-6"
-      >
-        {exercises.map((exercise) => {
-          const Icon = exercise.icon;
-          return (
-            <motion.div key={exercise.path} variants={item}>
-              <Link to={exercise.path} className="block group">
-                <Card className={`border-2 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:-translate-y-0.5 relative overflow-hidden ${exercise.color}`}>
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/40 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <CardHeader className="flex flex-row items-center gap-4 md:gap-5 p-5 md:p-6 relative z-10">
-                    <div className={`p-3 md:p-4 rounded-2xl ${exercise.iconBg} shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
-                      <Icon className="w-8 h-8 md:w-10 md:h-10" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <CardTitle className="text-xl md:text-2xl mb-1">{exercise.title}</CardTitle>
-                      <CardDescription className="text-base md:text-lg leading-relaxed">
-                        {exercise.description}
-                      </CardDescription>
-                    </div>
-                    <ArrowIcon className="w-6 h-6 md:w-7 md:h-7 text-muted-foreground group-hover:translate-x-1 transition-transform shrink-0" />
-                  </CardHeader>
-                </Card>
-              </Link>
-            </motion.div>
-          );
-        })}
-      </motion.div>
+      {/* Zone 2: Quick Play strip */}
+      <section aria-labelledby="quick-play-heading">
+        <h2 id="quick-play-heading" className="text-xl font-bold text-foreground mb-3">
+          {L.quickPlay}
+        </h2>
+        <div
+          className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4"
+          style={{ scrollSnapType: 'x mandatory' }}
+          role="list"
+        >
+          {quickPlay.map((game) => (
+            <div key={game.route} role="listitem" style={{ scrollSnapAlign: 'start' }}>
+              <QuickPlayCard game={game} onClick={() => navigate(game.route)} />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Zone 3: More Games (collapsed) */}
+      <section>
+        <button
+          onClick={() => setShowAllGames((prev) => !prev)}
+          className="w-full flex items-center justify-between text-xl font-bold text-foreground py-3 min-h-[52px] border-t border-border"
+          aria-expanded={showAllGames}
+          aria-controls="all-games-grid"
+        >
+          <span>{L.moreGames}</span>
+          <span
+            className="text-muted-foreground transition-transform duration-200"
+            style={{ transform: showAllGames ? 'rotate(180deg)' : 'none' }}
+            aria-hidden="true"
+          >
+            ▼
+          </span>
+        </button>
+        {showAllGames && (
+          <div id="all-games-grid" className="mt-3">
+            <AllGamesGrid games={allGames} onSelect={(route) => navigate(route)} />
+          </div>
+        )}
+      </section>
 
       {/* Feedback button */}
-      <div className="flex justify-center pt-2 pb-4">
+      <div className="flex justify-center pt-2">
         <button
           onClick={() => setFeedbackOpen(true)}
           className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-accent/15 text-accent-foreground border-2 border-accent/30 text-lg font-semibold hover:bg-accent/25 transition-colors active:scale-95"
         >
           <MessageSquareHeart className="w-6 h-6" />
-          {lang === 'ar' ? 'شاركونا رأيكم' : 'השאירו לנו משוב'}
+          {L.feedback}
         </button>
       </div>
 
