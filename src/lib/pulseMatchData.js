@@ -80,7 +80,7 @@ export function getPulseMatchSession(level) {
   const cfg = pulseMatchConfig[level] || pulseMatchConfig[1];
   const rand = seededRand(Math.floor(Math.random() * 1e9) + 1);
   const rounds = Array.from({ length: cfg.rounds }, () => makeRound(rand, level));
-  return { rounds, ...cfg };
+  return { id: `${Date.now()}-${Math.random()}`, rounds, ...cfg };
 }
 
 export const PULSE_MATCH_LABELS = {

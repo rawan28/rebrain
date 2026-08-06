@@ -81,7 +81,7 @@ export default function PulseMatch() {
         onReset={handleReset}
       />
 
-      <PulseMatchGame key={session.rounds[0].targetShape + difficulty.totalAttempts} data={session} lang={lang} onComplete={handleComplete} />
+      <PulseMatchGame key={session.id} data={session} lang={lang} onComplete={handleComplete} />
 
       {showNext && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center">

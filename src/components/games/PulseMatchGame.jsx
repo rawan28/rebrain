@@ -26,6 +26,7 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
   const arenaRef = useRef(null);
   const [travel, setTravel] = useState(0);
   const doneRef = useRef(false);
+  const completedRef = useRef(false);
 
   const round = data.rounds[roundIdx];
   const optionCount = round ? round.options.length : 0;
@@ -41,19 +42,22 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
   }, []);
 
   const advance = useCallback((isCorrect) => {
-    if (doneRef.current) return;
+    if (doneRef.current || completedRef.current) return;
     doneRef.current = true;
     setFeedback(isCorrect);
-    if (isCorrect) setScore(s => s + 1);
+    const nextScore = score + (isCorrect ? 1 : 0);
+    if (isCorrect) setScore(nextScore);
+
     setTimeout(() => {
       if (roundIdx + 1 < data.rounds.length) {
-        setRoundIdx(i => i + 1);
+        setRoundIdx(roundIdx + 1);
         setFeedback(null);
         doneRef.current = false;
-      } else {
-        onComplete(score + (isCorrect ? 1 : 0), data.rounds.length);
+        return;
       }
-    }, 900);
+      completedRef.current = true;
+      onComplete(nextScore, data.rounds.length);
+    }, 700);
   }, [roundIdx, data.rounds.length, onComplete, score]);
 
   // miss timer — one per round
