@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { PULSE_MATCH_LABELS, COLORS } from "@/lib/pulseMatchData";
+import useTimeouts from '@/hooks/useTimeouts';
 
 const COLOR_MAP = {};
 COLORS.forEach((c) => { COLOR_MAP[c.key] = c.css; });
@@ -28,17 +29,30 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
   const lockRef = useRef(false);
   const doneRef = useRef(false);
 
+  // refs to hold most recent values for timeouts/advance without needing them in deps
+  const scoreRef = useRef(0);
+  const roundIdxRef = useRef(0);
+
+  const { setTimeoutAndTrack } = useTimeouts();
+
   const round = rounds[roundIdx];
+
+  // keep refs in sync with state when state changes externally
+  useEffect(() => { scoreRef.current = score; }, [score]);
+  useEffect(() => { roundIdxRef.current = roundIdx; }, [roundIdx]);
 
   const advance = useCallback((isCorrect) => {
     if (lockRef.current || doneRef.current) return;
     lockRef.current = true;
-    const nextScore = score + (isCorrect ? 1 : 0);
-    setFeedback(isCorrect ? "correct" : "wrong");
+    const nextScore = scoreRef.current + (isCorrect ? 1 : 0);
+    scoreRef.current = nextScore;
     setScore(nextScore);
-    setTimeout(() => {
-      if (roundIdx + 1 < rounds.length) {
-        setRoundIdx(roundIdx + 1);
+    setFeedback(isCorrect ? "correct" : "wrong");
+
+    setTimeoutAndTrack(() => {
+      if (roundIdxRef.current + 1 < rounds.length) {
+        roundIdxRef.current = roundIdxRef.current + 1;
+        setRoundIdx(roundIdxRef.current);
         setFeedback(null);
         lockRef.current = false;
       } else {
@@ -46,15 +60,13 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
         onComplete(nextScore, rounds.length);
       }
     }, 700);
-  }, [score, roundIdx, rounds.length, onComplete]);
+  }, [onComplete, rounds.length, setTimeoutAndTrack]);
 
   useEffect(() => {
     if (!round) return;
     const ms = (round.driftMs || 5000) + 2000;
-    const id = setTimeout(() => advance(false), ms);
-    return () => clearTimeout(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roundIdx]);
+    setTimeoutAndTrack(() => advance(false), ms);
+  }, [round, advance, setTimeoutAndTrack]);
 
   if (!round) return null;
 
