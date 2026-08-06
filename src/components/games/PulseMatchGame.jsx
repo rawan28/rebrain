@@ -1,109 +1,113 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
-import { PULSE_MATCH_LABELS, COLORS, SHAPES } from "@/lib/pulseMatchData";
+import { PULSE_MATCH_LABELS, COLORS } from "@/lib/pulseMatchData";
 
 const COLOR_MAP = Object.fromEntries(COLORS.map(c => [c.key, c]));
+const SHAPE_PX = 64;
+const ROW_H = 86;
 
-function Shape({ shape, color, size = 64 }) {
+function Shape({ shape, color, size = SHAPE_PX }) {
   const fill = COLOR_MAP[color]?.css || "#888";
-  const common = { width: size, height: size };
-  switch (shape) {
-    case "circle":
-      return <svg {...common} viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill={fill} /></svg>;
-    case "square":
-      return <svg {...common} viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill={fill} /></svg>;
-    case "triangle":
-      return <svg {...common} viewBox="0 0 100 100"><polygon points="50,10 92,88 8,88" fill={fill} /></svg>;
-    case "star":
-      return <svg {...common} viewBox="0 0 100 100"><polygon points="50,8 61,38 93,38 67,58 77,90 50,70 23,90 33,58 7,38 39,38" fill={fill} /></svg>;
-    case "diamond":
-      return <svg {...common} viewBox="0 0 100 100"><polygon points="50,8 92,50 50,92 8,50" fill={fill} /></svg>;
-    case "hexagon":
-      return <svg {...common} viewBox="0 0 100 100"><polygon points="25,8 75,8 96,50 75,92 25,92 4,50" fill={fill} /></svg>;
-    default:
-      return null;
-  }
+  const p = { width: size, height: size, viewBox: "0 0 100 100" };
+  if (shape === "circle") return <svg {...p}><circle cx="50" cy="50" r="44" fill={fill} /></svg>;
+  if (shape === "square") return <svg {...p}><rect x="8" y="8" width="84" height="84" rx="10" fill={fill} /></svg>;
+  if (shape === "triangle") return <svg {...p}><polygon points="50,10 92,88 8,88" fill={fill} /></svg>;
+  if (shape === "star") return <svg {...p}><polygon points="50,8 61,38 93,38 67,58 77,90 50,70 23,90 33,58 7,38 39,38" fill={fill} /></svg>;
+  if (shape === "diamond") return <svg {...p}><polygon points="50,6 94,50 50,94 6,50" fill={fill} /></svg>;
+  if (shape === "hexagon") return <svg {...p}><polygon points="27,8 73,8 96,50 73,92 27,92 4,50" fill={fill} /></svg>;
+  return null;
 }
 
 export default function PulseMatchGame({ data, lang, onComplete }) {
   const t = PULSE_MATCH_LABELS[lang] || PULSE_MATCH_LABELS.he;
   const [roundIdx, setRoundIdx] = useState(0);
+  const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState(null);
-  const [answered, setAnswered] = useState(false);
-  const scoreRef = useRef(0);
-  const timeoutRef = useRef(null);
+  const arenaRef = useRef(null);
+  const [travel, setTravel] = useState(0);
+  const doneRef = useRef(false);
 
   const round = data.rounds[roundIdx];
-  const dir = lang === "ar" ? "rtl" : "rtl";
+  const optionCount = round ? round.options.length : 0;
 
-  const handleAnswer = useCallback((isCorrect) => {
-    if (answered) return;
-    setAnswered(true);
+  useLayoutEffect(() => {
+    const measure = () => {
+      const w = arenaRef.current?.clientWidth || 0;
+      setTravel(Math.max(0, w - SHAPE_PX - 16));
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  const advance = useCallback((isCorrect) => {
+    if (doneRef.current) return;
+    doneRef.current = true;
     setFeedback(isCorrect);
-    if (isCorrect) scoreRef.current += 1;
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (isCorrect) setScore(s => s + 1);
     setTimeout(() => {
       if (roundIdx + 1 < data.rounds.length) {
-        setRoundIdx((i) => i + 1);
+        setRoundIdx(i => i + 1);
         setFeedback(null);
-        setAnswered(false);
+        doneRef.current = false;
       } else {
-        onComplete(scoreRef.current, data.rounds.length);
+        onComplete(score + (isCorrect ? 1 : 0), data.rounds.length);
       }
     }, 900);
-  }, [answered, roundIdx, data.rounds.length, onComplete]);
+  }, [roundIdx, data.rounds.length, onComplete, score]);
 
-  // auto-timeout: if user doesn't answer in time, count as miss
+  // miss timer — one per round
   useEffect(() => {
     if (!round) return;
-    timeoutRef.current = setTimeout(() => {
-      if (!answered) handleAnswer(false);
-    }, round.driftMs + 1500);
-    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
-  }, [roundIdx, round, answered, handleAnswer]);
+    const id = setTimeout(() => advance(false), round.driftMs + 2500);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roundIdx]);
 
   if (!round) return null;
-
   const isShapeRule = round.rule === "shape";
 
   return (
-    <div dir={dir} className="flex flex-col items-center gap-5 p-4 w-full">
-      <div className="w-full flex justify-between items-center">
+    <div dir="rtl" className="flex flex-col items-center gap-4 w-full">
+      <div className="w-full flex justify-between items-center px-1">
         <span className="text-base text-muted-foreground">{t.round} {roundIdx + 1} {t.of} {data.rounds.length}</span>
-        <span className="text-base font-semibold text-primary">{scoreRef.current} ✓</span>
+        <span className="text-base font-bold text-primary">{score} ✓</span>
       </div>
 
-      {/* Rule indicator + target */}
       <div className="flex flex-col items-center gap-2">
-        <span className={`text-sm font-bold px-4 py-1.5 rounded-full ${isShapeRule ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"}`}>
+        <span className={`text-base font-bold px-4 py-1.5 rounded-full ${isShapeRule ? "bg-primary/15 text-primary" : "bg-amber-500/20 text-amber-700"}`}>
           {isShapeRule ? t.matchShape : t.matchColor}
         </span>
-        <div className="flex items-center gap-3 bg-muted rounded-2xl px-6 py-3">
+        <div className="bg-muted rounded-2xl px-8 py-3">
           <Shape shape={round.targetShape} color={round.targetColor.key} size={56} />
         </div>
         <p className="text-base text-muted-foreground">{t.tapMatch}</p>
       </div>
 
-      {/* Moving shapes area */}
-      <div className="relative w-full h-56 bg-card rounded-3xl border-2 border-border overflow-hidden">
+      <div
+        ref={arenaRef}
+        className="relative w-full bg-card rounded-3xl border-2 border-border overflow-hidden"
+        style={{ height: optionCount * ROW_H + 16 }}
+      >
         {round.options.map((opt, i) => {
-          const startX = (i / round.options.length) * 100;
-          const driftDir = i % 2 === 0 ? 1 : -1;
+          const rightToLeft = i % 2 === 0;
+          const from = rightToLeft ? 0 : travel;
+          const to = rightToLeft ? travel : 0;
           return (
             <motion.button
               key={`${roundIdx}-${i}`}
-              onClick={() => handleAnswer(opt.isCorrect)}
-              disabled={answered}
-              initial={{ x: `${driftDir > 0 ? -20 : 120}%`, y: `${20 + (i % 3) * 20}%` }}
-              animate={{ x: `${driftDir > 0 ? 120 : -20}%`, y: `${20 + (i % 3) * 20}%` }}
-              transition={{ duration: round.driftMs / 1000, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
-              className="absolute top-0"
-              style={{ left: `${startX}%` }}
-              aria-label={`option ${i + 1}`}
+              onClick={() => advance(opt.isCorrect)}
+              disabled={feedback !== null}
+              initial={{ x: from }}
+              animate={{ x: [from, to, from] }}
+              transition={{ duration: Math.max(2, round.driftMs / 1000) * 2, ease: "easeInOut", repeat: Infinity }}
+              className="absolute p-1 rounded-2xl"
+              style={{ top: i * ROW_H + 8, left: 8, width: SHAPE_PX + 8, height: SHAPE_PX + 8 }}
+              aria-label={`${opt.shape} ${opt.color.key}`}
             >
-              <div className={`p-2 rounded-2xl transition-all duration-200 ${feedback !== null && opt.isCorrect ? "ring-4 ring-emerald-500" : ""}`}>
-                <Shape shape={opt.shape} color={opt.color.key} size={60} />
-              </div>
+              <span className={`block rounded-2xl ${feedback !== null && opt.isCorrect ? "ring-4 ring-emerald-500" : ""}`}>
+                <Shape shape={opt.shape} color={opt.color.key} />
+              </span>
             </motion.button>
           );
         })}

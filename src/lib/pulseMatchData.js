@@ -41,31 +41,22 @@ function makeRound(rand, level) {
   const targetShape = pick(rand, SHAPES);
   const targetColor = pick(rand, COLORS);
 
-  // Build options: one correct (matches by rule), rest are distractors
-  const options = [];
-  const usedKeys = new Set();
+  const otherShapes = SHAPES.filter(s => s !== targetShape);
+  const otherColors = COLORS.filter(c => c.key !== targetColor.key);
 
-  // correct option
-  const correctShape = rule === "shape" ? targetShape : pick(rand, SHAPES.filter(s => s !== targetShape));
-  const correctColor = rule === "color" ? targetColor : pick(rand, COLORS.filter(c => c.key !== targetColor.key));
-  options.push({ shape: correctShape, color: correctColor, isCorrect: true });
-  usedKeys.add(correctShape + correctColor.key);
+  // exactly one correct option: matches the target on the rule dimension, differs on the other
+  const options = [{
+    shape: rule === "shape" ? targetShape : pick(rand, otherShapes),
+    color: rule === "color" ? targetColor : pick(rand, otherColors),
+    isCorrect: true,
+  }];
 
-  // distractors
+  // distractors: must NOT match the rule dimension
   while (options.length < cfg.options) {
-    let shape, color, key;
-    let attempts = 0;
-    do {
-      shape = pick(rand, SHAPES);
-      color = pick(rand, COLORS);
-      key = shape + color.key;
-      attempts++;
-    } while (usedKeys.has(key) && attempts < 20);
-    usedKeys.add(key);
-    // ensure distractor doesn't accidentally match the rule
-    const matchesRule = rule === "shape" ? shape === targetShape : color.key === targetColor.key;
+    const shape = rule === "shape" ? pick(rand, otherShapes) : pick(rand, SHAPES);
+    const color = rule === "color" ? pick(rand, otherColors) : pick(rand, COLORS);
+    if (options.some(o => o.shape === shape && o.color.key === color.key)) continue;
     options.push({ shape, color, isCorrect: false });
-    if (matchesRule) options[options.length - 1].isCorrect = true;
   }
 
   // shuffle options
@@ -80,6 +71,14 @@ function makeRound(rand, level) {
 export function getPulseMatchDaily(dateStr, level) {
   const cfg = pulseMatchConfig[level] || pulseMatchConfig[1];
   const rand = seededRand(dateSeed(dateStr) + 7);
+  const rounds = Array.from({ length: cfg.rounds }, () => makeRound(rand, level));
+  return { rounds, ...cfg };
+}
+
+// Fresh random session for the standalone page
+export function getPulseMatchSession(level) {
+  const cfg = pulseMatchConfig[level] || pulseMatchConfig[1];
+  const rand = seededRand(Math.floor(Math.random() * 1e9) + 1);
   const rounds = Array.from({ length: cfg.rounds }, () => makeRound(rand, level));
   return { rounds, ...cfg };
 }

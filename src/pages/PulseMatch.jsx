@@ -9,7 +9,7 @@ import FeedbackOverlay from '@/components/games/FeedbackOverlay';
 import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
 import PulseMatchGame from '@/components/games/PulseMatchGame';
-import { getPulseMatchDaily } from '@/lib/pulseMatchData';
+import { getPulseMatchSession } from '@/lib/pulseMatchData';
 
 export default function PulseMatch() {
   const { t, lang } = useLang();
@@ -19,8 +19,7 @@ export default function PulseMatch() {
   const [showNext, setShowNext] = useState(false);
 
   const newSession = useCallback(() => {
-    const today = new Date().toISOString().split('T')[0];
-    setSession(getPulseMatchDaily(today, difficulty.level));
+    setSession(getPulseMatchSession(difficulty.level));
     setShowNext(false);
   }, [difficulty.level]);
 
@@ -82,7 +81,7 @@ export default function PulseMatch() {
         onReset={handleReset}
       />
 
-      <PulseMatchGame data={session} lang={lang} onComplete={handleComplete} />
+      <PulseMatchGame key={session.rounds[0].targetShape + difficulty.totalAttempts} data={session} lang={lang} onComplete={handleComplete} />
 
       {showNext && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center">
