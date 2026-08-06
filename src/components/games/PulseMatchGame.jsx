@@ -28,6 +28,13 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
   const lockRef = useRef(false);
   const doneRef = useRef(false);
 
+  // Track timeouts so we can clear them on unmount and avoid callbacks after unmount
+  const timeoutsRef = useRef([]);
+  const clearAllTimeouts = useCallback(() => {
+    timeoutsRef.current.forEach(clearTimeout);
+    timeoutsRef.current = [];
+  }, []);
+
   const round = rounds[roundIdx];
 
   const advance = useCallback((isCorrect) => {
@@ -36,7 +43,7 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
     const nextScore = score + (isCorrect ? 1 : 0);
     setFeedback(isCorrect ? "correct" : "wrong");
     setScore(nextScore);
-    setTimeout(() => {
+    const id = setTimeout(() => {
       if (roundIdx + 1 < rounds.length) {
         setRoundIdx(roundIdx + 1);
         setFeedback(null);
@@ -46,15 +53,21 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
         onComplete(nextScore, rounds.length);
       }
     }, 700);
+    timeoutsRef.current.push(id);
   }, [score, roundIdx, rounds.length, onComplete]);
+
+  // Clear timeouts on unmount
+  useEffect(() => () => clearAllTimeouts(), [clearAllTimeouts]);
 
   useEffect(() => {
     if (!round) return;
     const ms = (round.driftMs || 5000) + 2000;
     const id = setTimeout(() => advance(false), ms);
-    return () => clearTimeout(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roundIdx]);
+    timeoutsRef.current.push(id);
+    return () => {
+      clearTimeout(id);
+    };
+  }, [roundIdx, advance]);
 
   if (!round) return null;
 
