@@ -13,6 +13,7 @@ import {
 import { useLang } from '@/lib/LanguageContext';
 import { FONT_SIZES, applyFontSize, applyTheme } from '@/lib/ThemeProvider';
 import { isSoundEnabled, setSoundEnabled, playCorrect } from '@/lib/audioFeedback';
+import DifficultySetting from '@/components/settings/DifficultySetting';
 
 export default function Settings() {
   const { t, lang, setLang } = useLang();
@@ -95,6 +96,9 @@ export default function Settings() {
           ))}
         </div>
       </div>
+
+      {/* Difficulty */}
+      <DifficultySetting lang={lang} />
 
       {/* Theme */}
       <div className="bg-card border border-border rounded-xl p-5 space-y-3">
