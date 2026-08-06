@@ -9,6 +9,7 @@ import { useLang } from '@/lib/LanguageContext';
 import GameStartScreen from '@/components/games/GameStartScreen';
 import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
+import useTimeouts from '@/hooks/useTimeouts';
 
 const ALL_IMAGES = [
   { id: 'telescope',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/2e6f554ee_generated_image.png' },
@@ -52,14 +53,10 @@ export default function MemoryGame() {
   const [gameStarted, setGameStarted] = useState(false);
   const [feedback, setFeedback] = useState({ show: false, isCorrect: false, message: '' });
   const [moves, setMoves] = useState(0);
-  const timeoutsRef = useRef([]);
 
-  const clearAllTimeouts = useCallback(() => {
-    timeoutsRef.current.forEach(clearTimeout);
-    timeoutsRef.current = [];
-  }, []);
-
-  useEffect(() => () => clearAllTimeouts(), [clearAllTimeouts]);
+  // ref to keep latest moves value available to effects without listing moves in deps
+  const movesRef = useRef(0);
+  const { setTimeoutAndTrack } = useTimeouts();
 
   const startNewRound = useCallback(() => {
     const pairs = getGridForLevel(difficulty.level);
@@ -73,54 +70,62 @@ export default function MemoryGame() {
     setFlipped([]);
     setMatched([]);
     setMoves(0);
+    movesRef.current = 0;
     setGameStarted(true);
   }, [difficulty.level]);
 
   useEffect(() => {
-    if (flipped.length === 2) {
-      const [first, second] = flipped;
+    if (flipped.length !== 2) return;
 
-      // guard against glitches where cards are not ready
-      if (!cards[first] || !cards[second]) {
-        setFlipped([]);
-        return;
-      }
+    const [first, second] = flipped;
 
-      setMoves(prev => prev + 1);
-
-      if (cards[first].imageId === cards[second].imageId) {
-        const newMatched = [...matched, cards[first].imageId];
-        setMatched(newMatched);
-        setFlipped([]);
-
-        if (newMatched.length === cards.length / 2) {
-          const perfectMoves = cards.length / 2;
-          const isGood = moves + 1 <= perfectMoves + 3;
-          awardCoin(isGood);
-          difficulty.recordAnswer(isGood);
-          saveSession('memory', {
-            level: difficulty.level,
-            streak: difficulty.streak,
-            totalCorrect: difficulty.totalCorrect + (isGood ? 1 : 0),
-            totalAttempts: difficulty.totalAttempts + 1,
-          });
-          setFeedback({
-            show: true,
-            isCorrect: isGood,
-            message: isGood
-              ? `${t.excellent} ${t.completedIn} ${moves + 1} ${t.movesWord}.`
-              : `${moves + 1} ${t.movesWord}. ${t.tryFewer}`,
-          });
-          timeoutsRef.current.push(setTimeout(() => {
-            setFeedback({ show: false, isCorrect: false, message: '' });
-            startNewRound();
-          }, 2000));
-        }
-      } else {
-        timeoutsRef.current.push(setTimeout(() => setFlipped([]), 800));
-      }
+    // Defensive guards
+    if (!cards[first] || !cards[second]) {
+      setFlipped([]);
+      return;
     }
-  }, [flipped, cards, matched, moves, startNewRound, difficulty, t]);
+
+    // update moves both in state (for UI) and ref (for effects)
+    setMoves(prev => {
+      const next = prev + 1;
+      movesRef.current = next;
+      return next;
+    });
+
+    if (cards[first].imageId === cards[second].imageId) {
+      const newMatched = [...matched, cards[first].imageId];
+      setMatched(newMatched);
+      setFlipped([]);
+
+      if (newMatched.length === cards.length / 2) {
+        const perfectMoves = cards.length / 2;
+        const isGood = movesRef.current <= perfectMoves + 3; // use ref for latest moves
+        awardCoin(isGood);
+        difficulty.recordAnswer(isGood);
+        saveSession('memory', {
+          level: difficulty.level,
+          streak: difficulty.streak,
+          totalCorrect: difficulty.totalCorrect + (isGood ? 1 : 0),
+          totalAttempts: difficulty.totalAttempts + 1,
+        });
+
+        setFeedback({
+          show: true,
+          isCorrect: isGood,
+          message: isGood
+            ? `${t.excellent} ${t.completedIn} ${movesRef.current} ${t.movesWord}.`
+            : `${movesRef.current} ${t.movesWord}. ${t.tryFewer}`,
+        });
+
+        setTimeoutAndTrack(() => {
+          setFeedback({ show: false, isCorrect: false, message: '' });
+          startNewRound();
+        }, 2000);
+      }
+    } else {
+      setTimeoutAndTrack(() => setFlipped([]), 800);
+    }
+  }, [flipped, cards, matched, startNewRound, difficulty, t, setTimeoutAndTrack]);
 
   const handleCardClick = (index) => {
     if (flipped.length >= 2) return;
