@@ -5,7 +5,7 @@ import useTimeouts from '@/hooks/useTimeouts';
 const COLOR_MAP = {};
 COLORS.forEach((c) => { COLOR_MAP[c.key] = c.css; });
 
-function Shape({ shape, color, size = 60 }) {
+const Shape = React.memo(function Shape({ shape, color, size = 60 }) {
   const fill = COLOR_MAP[color] || "#888";
   const p = { width: size, height: size, viewBox: "0 0 100 100" };
   if (shape === "circle") return <svg {...p}><circle cx="50" cy="50" r="44" fill={fill} /></svg>;
@@ -14,7 +14,7 @@ function Shape({ shape, color, size = 60 }) {
   if (shape === "star") return <svg {...p}><polygon points="50,8 61,38 93,38 67,58 77,90 50,70 23,90 33,58 7,38 39,38" fill={fill} /></svg>;
   if (shape === "diamond") return <svg {...p}><polygon points="50,6 94,50 50,94 6,50" fill={fill} /></svg>;
   return <svg {...p}><polygon points="27,8 73,8 96,50 73,92 27,92 4,50" fill={fill} /></svg>;
-}
+});
 
 function colorKey(c) {
   return typeof c === "string" ? c : c?.key;
@@ -62,11 +62,31 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
     }, 700);
   }, [onComplete, rounds.length, setTimeoutAndTrack]);
 
+  // inject keyframes once to avoid recreating the <style> block on every render
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (document.getElementById('pmKeyframes')) return;
+    const style = document.createElement('style');
+    style.id = 'pmKeyframes';
+    style.innerHTML = `\n      @keyframes pmDriftA { 0%,100% { transform: translateX(0); } 50% { transform: translateX(calc(min(100vw, 28rem) - 110px)); } }\n      @keyframes pmDriftB { 0%,100% { transform: translateX(calc(min(100vw, 28rem) - 110px)); } 50% { transform: translateX(0); } }\n    `;
+    document.head.appendChild(style);
+    return () => {
+      // leave the style in the document; it's cheap and reused by other mounts
+    };
+  }, []);
+
   useEffect(() => {
     if (!round) return;
     const ms = (round.driftMs || 5000) + 2000;
     setTimeoutAndTrack(() => advance(false), ms);
   }, [round, advance, setTimeoutAndTrack]);
+
+  // shared click handler to avoid creating a new function per button
+  const handleClick = useCallback((e) => {
+    // guard double clicks - advance handles lockRef
+    const isCorrect = e.currentTarget.getAttribute('data-correct') === 'true';
+    advance(!!isCorrect);
+  }, [advance]);
 
   if (!round) return null;
 
@@ -75,10 +95,6 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
 
   return (
     <div dir="rtl" className="flex flex-col items-center gap-4 w-full">
-      <style>{`
-        @keyframes pmDriftA { 0%,100% { transform: translateX(0); } 50% { transform: translateX(calc(min(100vw, 28rem) - 110px)); } }
-        @keyframes pmDriftB { 0%,100% { transform: translateX(calc(min(100vw, 28rem) - 110px)); } 50% { transform: translateX(0); } }
-      `}</style>
 
       <div className="w-full flex justify-between items-center px-1">
         <span className="text-base text-muted-foreground">{t.round} {roundIdx + 1} {t.of} {rounds.length}</span>
@@ -99,24 +115,29 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
         className="relative w-full max-w-md bg-card rounded-3xl border-2 border-border overflow-hidden"
         style={{ height: (round.options?.length || 0) * 88 + 16 }}
       >
-        {(round.options || []).map((opt, i) => (
-          <button
-            key={`${roundIdx}-${i}`}
-            onClick={() => advance(!!opt.isCorrect)}
-            disabled={feedback !== null}
-            className="absolute p-2 rounded-2xl"
-            style={{
-              top: i * 88 + 8,
-              left: 8,
-              animation: `${i % 2 === 0 ? "pmDriftA" : "pmDriftB"} ${cycle * 2}s ease-in-out infinite`,
-            }}
-            aria-label={`${opt.shape} ${colorKey(opt.color)}`}
-          >
-            <span className={`block rounded-2xl ${feedback !== null && opt.isCorrect ? "ring-4 ring-emerald-500" : ""}`}>
-              <Shape shape={opt.shape} color={colorKey(opt.color)} />
-            </span>
-          </button>
-        ))}
+        {(round.options || []).map((opt, i) => {
+          const anim = `${i % 2 === 0 ? "pmDriftA" : "pmDriftB"} ${cycle * 2}s ease-in-out infinite`;
+          const top = i * 88 + 8;
+          return (
+            <button
+              key={`${roundIdx}-${i}`}
+              onClick={handleClick}
+              data-correct={!!opt.isCorrect}
+              disabled={feedback !== null}
+              className="absolute p-2 rounded-2xl"
+              style={{
+                top,
+                left: 8,
+                animation: anim,
+              }}
+              aria-label={`${opt.shape} ${colorKey(opt.color)}`}
+            >
+              <span className={`block rounded-2xl ${feedback !== null && opt.isCorrect ? "ring-4 ring-emerald-500" : ""}`}>
+                <Shape shape={opt.shape} color={colorKey(opt.color)} />
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {feedback !== null && (
