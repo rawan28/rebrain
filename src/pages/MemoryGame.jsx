@@ -79,6 +79,13 @@ export default function MemoryGame() {
   useEffect(() => {
     if (flipped.length === 2) {
       const [first, second] = flipped;
+
+      // guard against glitches where cards are not ready
+      if (!cards[first] || !cards[second]) {
+        setFlipped([]);
+        return;
+      }
+
       setMoves(prev => prev + 1);
 
       if (cards[first].imageId === cards[second].imageId) {
@@ -113,12 +120,12 @@ export default function MemoryGame() {
         timeoutsRef.current.push(setTimeout(() => setFlipped([]), 800));
       }
     }
-  }, [flipped]);
+  }, [flipped, cards, matched, moves, startNewRound, difficulty, t]);
 
   const handleCardClick = (index) => {
     if (flipped.length >= 2) return;
     if (flipped.includes(index)) return;
-    if (matched.includes(cards[index].imageId)) return;
+    if (matched.includes(cards[index]?.imageId)) return;
     setFlipped(prev => [...prev, index]);
   };
 
@@ -149,7 +156,7 @@ export default function MemoryGame() {
       <GameHeader
         title={t.memoryTitle}
         description={t.memorySubDesc}
-        hint={t.dir === 'rtl' ? 'לחץ על שני קלפים — אם הם תואמים הם יישארו פתוחים. מצא את כל הזוגות!' : 'Tap two cards — if they match they stay open. Find all the pairs!'}
+        hint={t.dir === 'rtl' ? 'לחץ על שני קלפים — אם הם תואמים הם יישארו פתוחים. מצא את כל הזוגות!' : 'Tap two cards — if they match they s[...]'}
         level={difficulty.level}
         streak={difficulty.streak}
         totalCorrect={difficulty.totalCorrect}
