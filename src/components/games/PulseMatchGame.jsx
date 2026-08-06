@@ -26,6 +26,9 @@ function avg(arr) {
 }
 
 export default function PulseMatchGame({ data, lang, onComplete }) {
+  // determine dev mode: guard safely for SSR
+  const isDev = typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production';
+
   // instrumentation: counts and timings
   const renderCountRef = useRef(0);
   renderCountRef.current += 1; // increment on each render
@@ -146,12 +149,13 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
     advance(!!isCorrect);
   }, [advance]);
 
-  // Debug overlay state and FPS measurement
+  // Debug overlay state and FPS measurement (only active in dev)
   const [showDebug, setShowDebug] = useState(false);
   const fpsRef = useRef({ lastTime: 0, lastFps: 0, smoothed: 0, rafId: null });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (!isDev) return undefined;
+    if (typeof window === 'undefined') return undefined;
 
     let mounted = true;
     const tick = (ts) => {
@@ -168,9 +172,10 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
     };
     fpsRef.current.rafId = requestAnimationFrame(tick);
     return () => { mounted = false; if (fpsRef.current.rafId) cancelAnimationFrame(fpsRef.current.rafId); };
-  }, []);
+  }, [isDev]);
 
   useEffect(() => {
+    if (!isDev) return undefined;
     const onKey = (e) => {
       // Ctrl/Cmd+D toggles overlay
       if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
@@ -180,7 +185,7 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
     };
     if (typeof window !== 'undefined') window.addEventListener('keydown', onKey);
     return () => { if (typeof window !== 'undefined') window.removeEventListener('keydown', onKey); };
-  }, []);
+  }, [isDev]);
 
   if (!round) return null;
 
@@ -249,18 +254,20 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
         </p>
       )}
 
-      {/* Debug overlay toggle button */}
-      <button
-        onClick={() => setShowDebug(s => !s)}
-        title="Toggle debug overlay (Ctrl/Cmd+D)"
-        style={{ position: 'fixed', right: 12, bottom: 12, zIndex: 9999, padding: 8, borderRadius: 8, background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 12 }}
-        aria-label="Toggle debug overlay"
-      >
-        DBG
-      </button>
+      {/* Debug overlay toggle button (dev only) */}
+      {isDev && (
+        <button
+          onClick={() => setShowDebug(s => !s)}
+          title="Toggle debug overlay (Ctrl/Cmd+D)"
+          style={{ position: 'fixed', right: 12, bottom: 12, zIndex: 9999, padding: 8, borderRadius: 8, background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 12 }}
+          aria-label="Toggle debug overlay"
+        >
+          DBG
+        </button>
+      )}
 
-      {/* Debug overlay panel */}
-      {showDebug && (
+      {/* Debug overlay panel (dev only) */}
+      {isDev && showDebug && (
         <div style={{ position: 'fixed', right: 12, bottom: 56, zIndex: 10000, padding: 10, background: 'rgba(0,0,0,0.75)', color: '#fff', borderRadius: 8, fontSize: 12, minWidth: 180 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
             <strong>PulseMatch</strong>
