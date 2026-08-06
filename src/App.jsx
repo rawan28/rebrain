@@ -27,6 +27,7 @@ import ShapePattern from '@/pages/ShapePattern';
 import MiniSudoku from '@/pages/MiniSudoku';
 import WordSpell from '@/pages/WordSpell';
 import PulseMatch from '@/pages/PulseMatch';
+import Badges from '@/pages/Badges';
 
 
 const AuthenticatedApp = () => {
@@ -74,6 +75,7 @@ const AuthenticatedApp = () => {
         <Route path="/mini-sudoku" element={<MiniSudoku />} />
         <Route path="/word-spell" element={<WordSpell />} />
         <Route path="/pulse-match" element={<PulseMatch />} />
+        <Route path="/badges" element={<Badges />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

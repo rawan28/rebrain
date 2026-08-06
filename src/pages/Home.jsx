@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageSquareHeart, CalendarRange, BellRing } from 'lucide-react';
+import { MessageSquareHeart, CalendarRange, BellRing, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
@@ -113,6 +113,13 @@ export default function Home() {
         >
           <CalendarRange className="w-6 h-6" />
           {t.weeklyReportTitle}
+        </button>
+        <button
+          onClick={() => navigate('/badges')}
+          className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-accent/15 text-accent-foreground border-2 border-accent/30 text-lg font-semibold hover:bg-accent/25 transition-colors active:scale-95"
+        >
+          <Award className="w-6 h-6" />
+          {lang === 'ar' ? 'الأوسمة والإنجازات' : 'תגים והישגים'}
         </button>
         <button
           onClick={() => navigate('/reminder')}
