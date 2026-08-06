@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { PULSE_MATCH_LABELS, COLORS } from "@/lib/pulseMatchData";
 import useTimeouts from '@/hooks/useTimeouts';
 
@@ -21,6 +21,23 @@ function colorKey(c) {
 }
 
 export default function PulseMatchGame({ data, lang, onComplete }) {
+  // instrumentation: counts and timings
+  const renderCountRef = useRef(0);
+  renderCountRef.current += 1; // increment on each render
+
+  const statsRef = useRef(null);
+  if (!statsRef.current) {
+    statsRef.current = {
+      mountedAt: performance?.now ? performance.now() : Date.now(),
+      renderCounts: [],
+      roundDurations: [],
+      clickResponseTimes: [],
+      clicks: 0,
+    };
+    // expose for debugging in console: window.__pulseMatchStats
+    try { window.__pulseMatchStats = statsRef.current; } catch (e) { /* noop in SSR */ }
+  }
+
   const t = PULSE_MATCH_LABELS[lang] || PULSE_MATCH_LABELS.he;
   const rounds = data?.rounds || [];
   const [roundIdx, setRoundIdx] = useState(0);
@@ -41,6 +58,9 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
   useEffect(() => { scoreRef.current = score; }, [score]);
   useEffect(() => { roundIdxRef.current = roundIdx; }, [roundIdx]);
 
+  const clickTimeRef = useRef(null);
+  const roundStartRef = useRef(performance?.now ? performance.now() : Date.now());
+
   const advance = useCallback((isCorrect) => {
     if (lockRef.current || doneRef.current) return;
     lockRef.current = true;
@@ -49,8 +69,22 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
     setScore(nextScore);
     setFeedback(isCorrect ? "correct" : "wrong");
 
+    const clickStart = clickTimeRef.current;
+
     setTimeoutAndTrack(() => {
+      // record click->advance response time
+      if (clickStart && statsRef.current) {
+        try { statsRef.current.clickResponseTimes.push((performance?.now ? performance.now() : Date.now()) - clickStart); } catch (e) { /* noop */ }
+      }
+
       if (roundIdxRef.current + 1 < rounds.length) {
+        // measure round duration
+        try {
+          const now = performance?.now ? performance.now() : Date.now();
+          if (roundStartRef.current && statsRef.current) statsRef.current.roundDurations.push(now - roundStartRef.current);
+          roundStartRef.current = now;
+        } catch (e) { /* noop */ }
+
         roundIdxRef.current = roundIdxRef.current + 1;
         setRoundIdx(roundIdxRef.current);
         setFeedback(null);
@@ -58,6 +92,11 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
       } else {
         doneRef.current = true;
         onComplete(nextScore, rounds.length);
+        // final round duration
+        try {
+          const now = performance?.now ? performance.now() : Date.now();
+          if (roundStartRef.current && statsRef.current) statsRef.current.roundDurations.push(now - roundStartRef.current);
+        } catch (e) { /* noop */ }
       }
     }, 700);
   }, [onComplete, rounds.length, setTimeoutAndTrack]);
@@ -68,16 +107,26 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
     if (document.getElementById('pmKeyframes')) return;
     const style = document.createElement('style');
     style.id = 'pmKeyframes';
-    style.innerHTML = `\n      @keyframes pmDriftA { 0%,100% { transform: translateX(0); } 50% { transform: translateX(calc(min(100vw, 28rem) - 110px)); } }\n      @keyframes pmDriftB { 0%,100% { transform: translateX(calc(min(100vw, 28rem) - 110px)); } 50% { transform: translateX(0); } }\n    `;
+    // use translate3d and keep keyframes cheap
+    style.innerHTML = `\n      @keyframes pmDriftA { 0%,100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(calc(min(100vw, 28rem) - 110px),0,0); } }\n      @keyframes pmDriftB { 0%,100% { transform: translate3d(calc(min(100vw, 28rem) - 110px),0,0); } 50% { transform: translate3d(0,0,0); } }\n    `;
     document.head.appendChild(style);
     return () => {
-      // leave the style in the document; it's cheap and reused by other mounts
+      // leave the style in the document; it's reused and cheap to keep
     };
   }, []);
 
   useEffect(() => {
+    // record render count periodically
+    try {
+      if (statsRef.current) statsRef.current.renderCounts.push(renderCountRef.current);
+    } catch (e) { /* noop */ }
+  }, [renderCountRef.current]);
+
+  useEffect(() => {
     if (!round) return;
     const ms = (round.driftMs || 5000) + 2000;
+    // mark round start time
+    try { roundStartRef.current = performance?.now ? performance.now() : Date.now(); } catch (e) { roundStartRef.current = Date.now(); }
     setTimeoutAndTrack(() => advance(false), ms);
   }, [round, advance, setTimeoutAndTrack]);
 
@@ -85,13 +134,16 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
   const handleClick = useCallback((e) => {
     // guard double clicks - advance handles lockRef
     const isCorrect = e.currentTarget.getAttribute('data-correct') === 'true';
+    clickTimeRef.current = performance?.now ? performance.now() : Date.now();
+    try { if (statsRef.current) { statsRef.current.clicks += 1; } } catch (e) {}
     advance(!!isCorrect);
   }, [advance]);
 
   if (!round) return null;
 
   const isShapeRule = round.rule === "shape";
-  const cycle = Math.max(2.5, (round.driftMs || 5000) / 1000);
+  const cycle = useMemo(() => Math.max(2.5, (round.driftMs || 5000) / 1000), [round.driftMs]);
+  const options = useMemo(() => round.options || [], [round.options]);
 
   return (
     <div dir="rtl" className="flex flex-col items-center gap-4 w-full">
@@ -113,9 +165,9 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
 
       <div
         className="relative w-full max-w-md bg-card rounded-3xl border-2 border-border overflow-hidden"
-        style={{ height: (round.options?.length || 0) * 88 + 16 }}
+        style={{ height: (options.length || 0) * 88 + 16 }}
       >
-        {(round.options || []).map((opt, i) => {
+        {options.map((opt, i) => {
           const anim = `${i % 2 === 0 ? "pmDriftA" : "pmDriftB"} ${cycle * 2}s ease-in-out infinite`;
           const top = i * 88 + 8;
           return (
@@ -129,6 +181,8 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
                 top,
                 left: 8,
                 animation: anim,
+                willChange: 'transform',
+                WebkitTransform: 'translate3d(0,0,0)'
               }}
               aria-label={`${opt.shape} ${colorKey(opt.color)}`}
             >
@@ -145,6 +199,12 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
           {feedback === "correct" ? t.correct : t.wrong}
         </p>
       )}
+
+      {/* lightweight debug console output when devtools open */}
+      <div style={{ position: 'absolute', left: -9999, width: 1, height: 1 }} aria-hidden>
+        { /* touch to allow React to keep this in the tree for inspection */ }
+        <span>{/* no-op */}</span>
+      </div>
     </div>
   );
 }
