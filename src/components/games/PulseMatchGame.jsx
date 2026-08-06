@@ -20,6 +20,11 @@ function colorKey(c) {
   return typeof c === "string" ? c : c?.key;
 }
 
+function avg(arr) {
+  if (!arr || arr.length === 0) return 0;
+  return Math.round(arr.reduce((a, b) => a + b, 0) / arr.length);
+}
+
 export default function PulseMatchGame({ data, lang, onComplete }) {
   // instrumentation: counts and timings
   const renderCountRef = useRef(0);
@@ -33,9 +38,11 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
       roundDurations: [],
       clickResponseTimes: [],
       clicks: 0,
+      lastFps: 0,
+      smoothedFps: 0,
     };
     // expose for debugging in console: window.__pulseMatchStats
-    try { window.__pulseMatchStats = statsRef.current; } catch (e) { /* noop in SSR */ }
+    try { if (typeof window !== 'undefined') window.__pulseMatchStats = statsRef.current; } catch (e) { /* noop in SSR */ }
   }
 
   const t = PULSE_MATCH_LABELS[lang] || PULSE_MATCH_LABELS.he;
@@ -139,11 +146,53 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
     advance(!!isCorrect);
   }, [advance]);
 
+  // Debug overlay state and FPS measurement
+  const [showDebug, setShowDebug] = useState(false);
+  const fpsRef = useRef({ lastTime: 0, lastFps: 0, smoothed: 0, rafId: null });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    let mounted = true;
+    const tick = (ts) => {
+      if (!mounted) return;
+      const prev = fpsRef.current.lastTime || ts;
+      const dt = ts - prev || 16;
+      const fps = 1000 / dt;
+      // smooth
+      fpsRef.current.smoothed = fpsRef.current.smoothed ? (fpsRef.current.smoothed * 0.9 + fps * 0.1) : fps;
+      fpsRef.current.lastTime = ts;
+      fpsRef.current.lastFps = Math.round(fps);
+      if (statsRef.current) statsRef.current.lastFps = Math.round(fpsRef.current.smoothed);
+      fpsRef.current.rafId = requestAnimationFrame(tick);
+    };
+    fpsRef.current.rafId = requestAnimationFrame(tick);
+    return () => { mounted = false; if (fpsRef.current.rafId) cancelAnimationFrame(fpsRef.current.rafId); };
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      // Ctrl/Cmd+D toggles overlay
+      if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+        e.preventDefault();
+        setShowDebug(s => !s);
+      }
+    };
+    if (typeof window !== 'undefined') window.addEventListener('keydown', onKey);
+    return () => { if (typeof window !== 'undefined') window.removeEventListener('keydown', onKey); };
+  }, []);
+
   if (!round) return null;
 
   const isShapeRule = round.rule === "shape";
   const cycle = useMemo(() => Math.max(2.5, (round.driftMs || 5000) / 1000), [round.driftMs]);
   const options = useMemo(() => round.options || [], [round.options]);
+
+  // compute some debug metrics
+  const stats = statsRef.current || {};
+  const avgClick = avg(stats.clickResponseTimes);
+  const avgRound = avg(stats.roundDurations);
+  const lastFps = stats.lastFps || Math.round(fpsRef.current.smoothed || 0);
 
   return (
     <div dir="rtl" className="flex flex-col items-center gap-4 w-full">
@@ -200,11 +249,34 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
         </p>
       )}
 
-      {/* lightweight debug console output when devtools open */}
-      <div style={{ position: 'absolute', left: -9999, width: 1, height: 1 }} aria-hidden>
-        { /* touch to allow React to keep this in the tree for inspection */ }
-        <span>{/* no-op */}</span>
-      </div>
+      {/* Debug overlay toggle button */}
+      <button
+        onClick={() => setShowDebug(s => !s)}
+        title="Toggle debug overlay (Ctrl/Cmd+D)"
+        style={{ position: 'fixed', right: 12, bottom: 12, zIndex: 9999, padding: 8, borderRadius: 8, background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 12 }}
+        aria-label="Toggle debug overlay"
+      >
+        DBG
+      </button>
+
+      {/* Debug overlay panel */}
+      {showDebug && (
+        <div style={{ position: 'fixed', right: 12, bottom: 56, zIndex: 10000, padding: 10, background: 'rgba(0,0,0,0.75)', color: '#fff', borderRadius: 8, fontSize: 12, minWidth: 180 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+            <strong>PulseMatch</strong>
+            <button onClick={() => setShowDebug(false)} style={{ background: 'transparent', border: 'none', color: '#fff' }}>✕</button>
+          </div>
+          <div>FPS: {lastFps} (smoothed: {Math.round(fpsRef.current.smoothed || 0)})</div>
+          <div>Renders: {stats.renderCounts?.length || 0} (last: {stats.renderCounts?.slice(-1)[0] || renderCountRef.current})</div>
+          <div>Rounds played: {stats.roundDurations?.length || 0}</div>
+          <div>Avg round ms: {avgRound} ms</div>
+          <div>Clicks: {stats.clicks || 0}</div>
+          <div>Avg click→resp: {avgClick} ms (last: {stats.clickResponseTimes?.slice(-1)[0] || 0} ms)</div>
+          <div style={{ marginTop: 6 }}>Score: {score} • Round: {roundIdx + 1}/{rounds.length}</div>
+          <div style={{ marginTop: 6, fontSize: 11, opacity: 0.8 }}>Toggle: Ctrl/Cmd+D</div>
+        </div>
+      )}
+
     </div>
   );
 }
