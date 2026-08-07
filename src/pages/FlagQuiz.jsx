@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Flag } from 'lucide-react';
 import useDifficulty from '@/lib/useDifficulty';
@@ -20,6 +20,9 @@ export default function FlagQuiz() {
   const [feedback, setFeedback] = useState({ show: false, isCorrect: false, message: '' });
   const [showNext, setShowNext] = useState(false);
   const [usedFlags, setUsedFlags] = useState([]);
+  const timerRef = useRef(null);
+
+  useEffect(() => () => clearTimeout(timerRef.current), []);
 
   const newQuestion = useCallback(() => {
     const q = getRandomQuestion(lang, usedFlags);
@@ -53,7 +56,8 @@ export default function FlagQuiz() {
       message: isCorrect ? t.greatThinking : `${t.theAnswerWas} ${question.answer}`,
     });
 
-    setTimeout(() => {
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
       setFeedback({ show: false, isCorrect: false, message: '' });
       setShowNext(true);
     }, 1800);
