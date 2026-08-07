@@ -34,6 +34,3 @@ export function initRebrainSettings() {
     console.warn('Failed to initialize Rebrain settings from localStorage:', e);
   }
 }
-
-// Execute immediately at script evaluation time
-initRebrainSettings();
