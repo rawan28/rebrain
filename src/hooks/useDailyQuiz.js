@@ -6,7 +6,6 @@ import { generateDailyAgentGames, AGENT_GAME_TYPES } from "../agentQuizData";
 import { getDailyGameTypes, getDifficultyLevel } from "../dailyVariation";
 import { getNewGamesDailySet } from "../newGamesData";
 import { getAttentionArenaDaily, ATTENTION_ARENA } from "../attentionArenaData";
-import { getPulseMatchDaily, PULSE_MATCH } from "../lib/pulseMatchData";
 
 export function useDailyQuiz({ lang = "he" } = {}) {
   const today = new Date().toISOString().split("T")[0];
@@ -30,9 +29,6 @@ export function useDailyQuiz({ lang = "he" } = {}) {
       }
       if (type === ATTENTION_ARENA) {
         return { type, data: getAttentionArenaDaily(today, gameLevel), level: gameLevel };
-      }
-      if (type === PULSE_MATCH) {
-        return { type, data: getPulseMatchDaily(today, gameLevel), level: gameLevel };
       }
       const cognitive = getNewGamesDailySet(today, gameLevel);
       if (type === "word_association") return { type, data: cognitive.word_association, level: gameLevel };

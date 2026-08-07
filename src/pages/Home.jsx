@@ -51,7 +51,6 @@ export default function Home() {
     { label: t.miniSudokuTitle, icon: '🔢', route: '/mini-sudoku' },
     { label: t.shapePatternTitle, icon: '🔶', route: '/shape-pattern' },
     { label: t.wordSpellTitle, icon: '🔤', route: '/word-spell' },
-    { label: lang === 'ar' ? 'تطابق النبض' : 'התאמת דופק', icon: '⚡', route: '/pulse-match' },
   ];
 
   return (
