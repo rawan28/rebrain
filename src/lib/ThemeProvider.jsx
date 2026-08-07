@@ -11,11 +11,14 @@ export const FONT_SIZES = [
 
 export function applyFontSize(key) {
   const size = FONT_SIZES.find(s => s.key === key) || FONT_SIZES[0];
+  localStorage.setItem('rebrain_fontsize', size.key);
   document.documentElement.style.fontSize = size.clamp;
+  document.documentElement.setAttribute('data-fontsize', size.key);
 }
 
 export function applyTheme(mode) {
   // mode: 'light' | 'dark' | 'system'
+  localStorage.setItem('rebrain_theme', mode);
   if (mode === 'dark') {
     document.documentElement.classList.add('dark');
   } else if (mode === 'light') {

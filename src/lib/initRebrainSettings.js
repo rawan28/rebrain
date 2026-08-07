@@ -1,3 +1,5 @@
+import { FONT_SIZES } from '@/lib/ThemeProvider';
+
 /**
  * Synchronously reads and applies all Rebrain user settings from localStorage
  * BEFORE React mounts to prevent flash of incorrect theme, font size, or direction.
@@ -18,12 +20,11 @@ export function initRebrainSettings() {
       document.documentElement.classList.remove('dark');
     }
 
-    // 3. Font Size (small / medium / large / xlarge)
+    // 3. Font Size (normal / large / xlarge)
     const fontSize = localStorage.getItem('rebrain_fontsize') || 'large';
-    const fontSizeClasses = ['font-size-small', 'font-size-medium', 'font-size-large', 'font-size-xlarge'];
-    document.documentElement.classList.remove(...fontSizeClasses);
-    document.documentElement.classList.add(`font-size-${fontSize}`);
-    document.documentElement.setAttribute('data-fontsize', fontSize);
+    const size = FONT_SIZES.find(s => s.key === fontSize) || FONT_SIZES[0];
+    document.documentElement.style.fontSize = size.clamp;
+    document.documentElement.setAttribute('data-fontsize', size.key);
 
     // 4. Sound Preference Check
     const sound = localStorage.getItem('rebrain_sound');

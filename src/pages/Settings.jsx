@@ -42,13 +42,11 @@ export default function Settings() {
 
   const handleTheme = (mode) => {
     setTheme(mode);
-    localStorage.setItem('rebrain_theme', mode);
     applyTheme(mode);
   };
 
   const handleFontSize = (key) => {
     setFontSize(key);
-    localStorage.setItem('rebrain_fontsize', key);
     applyFontSize(key);
   };
 
