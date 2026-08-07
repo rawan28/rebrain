@@ -27,7 +27,7 @@ function avg(arr) {
 
 export default function PulseMatchGame({ data, lang, onComplete }) {
   // determine dev mode: guard safely for SSR
-  const isDev = typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production';
+  const isDev = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV;
 
   // instrumentation: counts and timings
   const renderCountRef = useRef(0);
@@ -187,11 +187,12 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
     return () => { if (typeof window !== 'undefined') window.removeEventListener('keydown', onKey); };
   }, [isDev]);
 
+  const cycle = useMemo(() => Math.max(2.5, (round?.driftMs || 5000) / 1000), [round?.driftMs]);
+  const options = useMemo(() => round?.options || [], [round?.options]);
+
   if (!round) return null;
 
   const isShapeRule = round.rule === "shape";
-  const cycle = useMemo(() => Math.max(2.5, (round.driftMs || 5000) / 1000), [round.driftMs]);
-  const options = useMemo(() => round.options || [], [round.options]);
 
   // compute some debug metrics
   const stats = statsRef.current || {};
