@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from "react";
 
 const LABELS = {
-  he: { title: "🧠 זיכרון חזותי", memorize: "זכור את הפריטים!", recall: "בחר מה שראית", submit: "בדוק" },
-  ar: { title: "🧠 الذاكرة البصرية", memorize: "تذكّر العناصر!", recall: "اختر ما رأيته", submit: "تحقق" },
+  he: {
+    title: "🧠 זיכרון חזותי",
+    memorize: "הביטו בתמונה ונסו לזכור את הפריטים.",
+    recall: "עכשיו, בחרו את הפריטים שהופיעו בתמונה.",
+    submit: "סיימתי, בדוק אותי",
+  },
+  ar: {
+    title: "🧠 الذاكرة البصرية",
+    memorize: "انظروا إلى الصورة وحاولوا تذكّر العناصر.",
+    recall: "الآن، اختاروا العناصر التي ظهرت في الصورة.",
+    submit: "انتهيت، تحقّق",
+  },
 };
 
 export default function VisualMemoryGame({ data, lang, onComplete }) {
