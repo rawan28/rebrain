@@ -56,9 +56,10 @@ export default function MemoryGame() {
 
   // ref to keep latest moves value available to effects without listing moves in deps
   const movesRef = useRef(0);
-  const { setTimeoutAndTrack } = useTimeouts();
+  const { setTimeoutAndTrack, clearAll } = useTimeouts();
 
   const startNewRound = useCallback(() => {
+    clearAll();
     const pairs = getGridForLevel(difficulty.level);
     const images = shuffleArray(ALL_IMAGES).slice(0, pairs);
     const deck = shuffleArray([...images, ...images]).map((image, i) => ({
@@ -72,7 +73,7 @@ export default function MemoryGame() {
     setMoves(0);
     movesRef.current = 0;
     setGameStarted(true);
-  }, [difficulty.level]);
+  }, [difficulty.level, clearAll]);
 
   useEffect(() => {
     if (flipped.length !== 2) return;
@@ -135,6 +136,9 @@ export default function MemoryGame() {
   };
 
   const handleReset = () => {
+    clearAll();
+    setFlipped([]);
+    setFeedback({ show: false, isCorrect: false, message: '' });
     difficulty.reset();
     setGameStarted(false);
   };
