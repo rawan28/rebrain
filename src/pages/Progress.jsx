@@ -140,7 +140,7 @@ export default function Progress() {
       <div className="flex flex-wrap gap-3">
         <StatCard icon={Zap} label={t.totalSessions} value={totalSessions} color="#3b82f6" />
         <StatCard icon={Trophy} label={t.bestStreak} value={bestStreak} color="#f59e0b" />
-        <StatCard icon={TrendingUp} label={t.maxLevel} value={maxLevel || '—'} color="#8b5cf6" />
+        <StatCard icon={TrendingUp} label={t.maxLevel} value={maxLevel > 0 ? maxLevel : '—'} color="#8b5cf6" />
         <StatCard icon={Target} label={t.avgAccuracy} value={hasData ? `${avgAccuracy}%` : '—'} color="#22c55e" />
       </div>
 
