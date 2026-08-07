@@ -150,7 +150,7 @@ export default function Progress() {
           <CardTitle className="text-lg">{t.levelProgress}</CardTitle>
         </CardHeader>
         <CardContent>
-          {!hasData ? <EmptyState label={t.noDataYet} /> : (
+          {!hasData || mergedData.length === 0 ? <EmptyState label={t.noDataYet} /> : (
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={mergedData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -176,7 +176,7 @@ export default function Progress() {
           <CardTitle className="text-lg">{t.streakProgress}</CardTitle>
         </CardHeader>
         <CardContent>
-          {!hasData ? <EmptyState label={t.noDataYet} /> : (
+          {!hasData || streakData.length === 0 ? <EmptyState label={t.noDataYet} /> : (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={streakData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -202,7 +202,7 @@ export default function Progress() {
           <CardTitle className="text-lg">{t.accuracyProgress}</CardTitle>
         </CardHeader>
         <CardContent>
-          {!hasData ? <EmptyState label={t.noDataYet} /> : (
+          {!hasData || accuracyData.length === 0 ? <EmptyState label={t.noDataYet} /> : (
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={accuracyData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
