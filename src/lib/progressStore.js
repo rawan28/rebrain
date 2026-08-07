@@ -9,7 +9,11 @@ const STORAGE_KEY = 'mindfit_progress';
 export function loadProgress() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : { memory: [], logic: [], numbers: [] };
+    if (!raw) return { memory: [], logic: [], numbers: [] };
+    const parsed = JSON.parse(raw);
+    return (parsed && typeof parsed === 'object' && !Array.isArray(parsed))
+      ? parsed
+      : { memory: [], logic: [], numbers: [] };
   } catch {
     return { memory: [], logic: [], numbers: [] };
   }
