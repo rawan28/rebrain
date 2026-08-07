@@ -118,7 +118,17 @@ export default function PulseMatchGame({ data, lang, onComplete }) {
     const style = document.createElement('style');
     style.id = 'pmKeyframes';
     // use translate3d and keep keyframes cheap
-    style.innerHTML = `\n      @keyframes pmDriftA { 0%,100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(calc(min(100vw, 28rem) - 110px),0,0); } }\n      @keyframes pmDriftB { 0%,100% { transform: translate3d(calc(min(100vw, 28rem) - 110px),0,0); } 50% { transform: translate3d(0,0,0); } }\n    `;
+    style.innerHTML = `
+      @keyframes pmDriftA {
+        0%, 100% { transform: translate3d(0,0,0); }
+        50% { transform: translate3d(calc(min(100vw, 28rem) - 110px), 0, 0); }
+      }
+      @keyframes pmDriftB {
+        0%, 100% { transform: translate3d(0,0,0); }
+        /* move in the opposite direction */
+        50% { transform: translate3d(calc(-1 * (min(100vw, 28rem) - 110px)), 0, 0); }
+      }
+    `;
     document.head.appendChild(style);
     return () => {
       // leave the style in the document; it's reused and cheap to keep
