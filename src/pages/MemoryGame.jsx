@@ -13,22 +13,22 @@ import useTimeouts from '@/hooks/useTimeouts';
 import { getFlipPreviewMs, getMovePar } from '@/lib/adaptiveDifficulty';
 
 const ALL_IMAGES = [
-  { id: 'telescope',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/2e6f554ee_generated_image.png' },
-  { id: 'bust',       img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/5191817f9_generated_image.png' },
-  { id: 'stones',     img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/a388b7d6e_generated_image.png' },
-  { id: 'easel',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/8853f3aac_generated_image.png' },
-  { id: 'compass',    img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/9644fdf7f_generated_image.png' },
-  { id: 'books',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/684948d7b_generated_image.png' },
-  { id: 'watch',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/d84d9b2ba_generated_image.png' },
-  { id: 'hourglass',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/dc3f0be9a_generated_image.png' },
-  { id: 'staircase',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/55c9c75d0_generated_image.png' },
-  { id: 'globe',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/228f0d294_generated_image.png' },
-  { id: 'lantern',    img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/80a4de7b0_generated_image.png' },
-  { id: 'key',        img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/ddd90a237_generated_image.png' },
-  { id: 'mapbottle',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/a4891f222_generated_image.png' },
-  { id: 'astrolabe',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/aa1e0b4b9_generated_image.png' },
-  { id: 'typewriter', img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/10907808d_generated_image.png' },
-  { id: 'gramophone', img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/b625cc795_generated_image.png' },
+  { id: 'conch',     img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/0fd8996cc_generated_image.png' },
+  { id: 'lighthouse',img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/e0c9caced_generated_image.png' },
+  { id: 'anchor',    img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/87dd0b224_generated_image.png' },
+  { id: 'sailboat',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/2a32182d7_generated_image.png' },
+  { id: 'starfish',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/49969a16d_generated_image.png' },
+  { id: 'crab',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/d80e13222_generated_image.png' },
+  { id: 'wave',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/277c6d711_generated_image.png' },
+  { id: 'sanddollar',img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/4abb9555b_generated_image.png' },
+  { id: 'coral',     img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/fc2ba04d4_generated_image.png' },
+  { id: 'oyster',    img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/ce86dea79_generated_image.png' },
+  { id: 'helm',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/656edbf05_generated_image.png' },
+  { id: 'dunegrass', img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/b9a5c5220_generated_image.png' },
+  { id: 'driftwood', img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/e89b24586_generated_image.png' },
+  { id: 'bottle',    img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/6408e1c6d_generated_image.png' },
+  { id: 'compass',   img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/e82f613f7_generated_image.png' },
+  { id: 'seagull',   img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/dced602a4_generated_image.png' },
 ];
 
 function getGridForLevel(level) {
@@ -230,16 +230,16 @@ export default function MemoryGame() {
             >
               {/* Card back */}
               <div className="absolute inset-0 rounded-2xl flex items-center justify-center
-                bg-gradient-to-br from-amber-700 to-amber-900 border-2 border-amber-600/50 shadow-md"
+                bg-gradient-to-br from-teal-700 to-cyan-900 border-2 border-teal-500/50 shadow-md"
                 style={{ backfaceVisibility: 'hidden' }}>
-                <span className="text-3xl md:text-4xl text-amber-200/40 font-bold">?</span>
+                <span className="text-3xl md:text-4xl text-cyan-200/40 font-bold leading-none">〜</span>
               </div>
               {/* Card front */}
               <div className={`absolute inset-0 rounded-2xl overflow-hidden border-2 shadow-lg
                 ${isMatched
-                  ? 'border-emerald-400 ring-2 ring-emerald-300'
-                  : 'border-[#D2C4A7]'}`}
-                style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', backgroundColor: '#F5F0E6' }}>
+                  ? 'border-teal-400 ring-2 ring-teal-300'
+                  : 'border-[#A8C9C2]'}`}
+                style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', backgroundColor: '#E8F1EF' }}>
                 <motion.img
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: isMatched ? 0.75 : 1 }}
