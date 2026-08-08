@@ -41,7 +41,12 @@ export default function GameHeader({ title, description, hint, level, streak, to
       <div className="flex flex-wrap items-center gap-2.5">
         <DifficultyBadge level={level} />
         {levelBadge && (
-          <span className="text-xl leading-none" aria-hidden="true">{levelBadge}</span>
+          <span
+            className="text-xl animate-bounce"
+            aria-label={levelBadge === '📈' ? 'Level increased' : 'Level decreased'}
+          >
+            {levelBadge}
+          </span>
         )}
 
         {streak > 0 && (
