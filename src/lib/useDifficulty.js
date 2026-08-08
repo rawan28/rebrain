@@ -60,7 +60,7 @@ export default function useDifficulty(initialLevel = 1, maxLevel = 10, gameKey =
       setStreak(0);
     }
     const manual = getFixedLevel() !== null;
-    if (manual) return;
+    if (manual) return 'hold';
     if (dda) {
       // ── DDA: compute next level from accuracy zone, not just this round ──
       const { nextLevel, direction } = getNextMemoryDifficulty(
@@ -75,8 +75,10 @@ export default function useDifficulty(initialLevel = 1, maxLevel = 10, gameKey =
       );
       setLevel(nextLevel);
       setLastDirection(direction);
+      return direction;
     } else {
       setLevel(prev => (isCorrect ? Math.min(prev + 1, maxLevel) : Math.max(prev - 1, 1)));
+      return isCorrect ? 'up' : 'down';
     }
   }, [level, totalCorrect, totalAttempts, consecWins, maxLevel, dda]);
 

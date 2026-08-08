@@ -5,7 +5,7 @@ import { useState } from 'react';
 import DifficultyBadge from './DifficultyBadge';
 import { useLang } from '@/lib/LanguageContext';
 
-export default function GameHeader({ title, description, hint, level, streak, totalCorrect, totalAttempts, onReset }) {
+export default function GameHeader({ title, description, hint, level, streak, totalCorrect, totalAttempts, onReset, levelBadge }) {
   const { t } = useLang();
   const accuracy = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
   const [hintOpen, setHintOpen] = useState(false);
@@ -40,6 +40,9 @@ export default function GameHeader({ title, description, hint, level, streak, to
 
       <div className="flex flex-wrap items-center gap-2.5">
         <DifficultyBadge level={level} />
+        {levelBadge && (
+          <span className="text-xl leading-none" aria-hidden="true">{levelBadge}</span>
+        )}
 
         {streak > 0 && (
           <motion.div

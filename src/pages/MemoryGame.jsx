@@ -10,6 +10,7 @@ import GameStartScreen from '@/components/games/GameStartScreen';
 import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
 import useTimeouts from '@/hooks/useTimeouts';
+import { getFlipPreviewMs, getMovePar } from '@/lib/adaptiveDifficulty';
 
 const ALL_IMAGES = [
   { id: 'telescope',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/2e6f554ee_generated_image.png' },
@@ -58,6 +59,11 @@ export default function MemoryGame() {
   const movesRef = useRef(0);
   const { setTimeoutAndTrack, clearAll } = useTimeouts();
 
+  // ── DDA: derive flip preview duration and move par from current level ──
+  const pairCount = getGridForLevel(difficulty.level);
+  const flipPreviewMs = getFlipPreviewMs(difficulty.level);
+  const movePar = getMovePar(pairCount, difficulty.level);
+
   const startNewRound = useCallback(() => {
     clearAll();
     const pairs = getGridForLevel(difficulty.level);
@@ -98,11 +104,11 @@ export default function MemoryGame() {
       setMatched(newMatched);
       setFlipped([]);
 
-      if (newMatched.length === cards.length / 2) {
-        const perfectMoves = cards.length / 2;
-        const isGood = movesRef.current <= perfectMoves + 3; // use ref for latest moves
+      if (newMatched.length === pairCount) {
+        // ── DDA: use dynamic move par from current level ──
+        const isGood = movesRef.current <= movePar;
         awardCoin(isGood);
-        difficulty.recordAnswer(isGood);
+        const direction = difficulty.recordAnswer(isGood);
         saveSession('memory', {
           level: difficulty.level,
           streak: difficulty.streak,
@@ -110,12 +116,21 @@ export default function MemoryGame() {
           totalAttempts: difficulty.totalAttempts + 1,
         });
 
+        // ── DDA: direction-aware feedback message ──
+        const dirNote = {
+          up: t.dir === 'rtl' ? '🎉 הרמה עלתה!' : '🎉 Level up!',
+          down: t.dir === 'rtl' ? 'נתאים את הרמה בשבילך' : 'We adjusted the level for you.',
+          hold: '',
+        };
+        const baseMsg = isGood
+          ? `${t.excellent} ${t.completedIn} ${movesRef.current} ${t.movesWord}.`
+          : `${movesRef.current} ${t.movesWord}. ${t.tryFewer}`;
+        const message = dirNote[direction] ? `${baseMsg} ${dirNote[direction]}` : baseMsg;
+
         setFeedback({
           show: true,
           isCorrect: isGood,
-          message: isGood
-            ? `${t.excellent} ${t.completedIn} ${movesRef.current} ${t.movesWord}.`
-            : `${movesRef.current} ${t.movesWord}. ${t.tryFewer}`,
+          message,
         });
 
         setTimeoutAndTrack(() => {
@@ -124,9 +139,9 @@ export default function MemoryGame() {
         }, 2000);
       }
     } else {
-      setTimeoutAndTrack(() => setFlipped([]), 800);
+      setTimeoutAndTrack(() => setFlipped([]), flipPreviewMs);
     }
-  }, [flipped, cards, matched, startNewRound, difficulty, t, setTimeoutAndTrack]);
+  }, [flipped, cards, matched, startNewRound, difficulty, t, setTimeoutAndTrack, pairCount, movePar, flipPreviewMs]);
 
   const handleCardClick = (index) => {
     if (flipped.length >= 2) return;
@@ -171,6 +186,10 @@ export default function MemoryGame() {
         totalCorrect={difficulty.totalCorrect}
         totalAttempts={difficulty.totalAttempts}
         onReset={handleReset}
+        levelBadge={
+          difficulty.lastDirection === 'up' ? '📈' :
+          difficulty.lastDirection === 'down' ? '📉' : null
+        }
       />
 
       <div className="flex items-center gap-3 flex-wrap">
@@ -179,7 +198,13 @@ export default function MemoryGame() {
           {t.pairsFound}: <span className="font-semibold text-foreground">{matched.length}</span>/{cards.length / 2}
         </p>
         <span className="text-sm bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 font-medium">
-          {t.dir === 'rtl' ? `${cards.length / 2} זוגות` : `${cards.length / 2} pairs`}
+          {t.dir === 'rtl' ? `${pairCount} זוגות` : `${pairCount} pairs`}
+        </span>
+        <span
+          className="text-sm bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-1 font-medium"
+          aria-label={t.dir === 'rtl' ? `יעד: ${movePar} מהלכים או פחות` : `Par: complete in ${movePar} moves or fewer`}
+        >
+          {t.dir === 'rtl' ? `יעד: ${movePar} מהלכים` : `Par: ${movePar} moves`}
         </span>
       </div>
 
