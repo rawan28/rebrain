@@ -10,7 +10,7 @@ import GameStartScreen from '@/components/games/GameStartScreen';
 import { saveSession } from '@/lib/progressStore';
 import { awardCoin } from '@/lib/useCoin';
 import useTimeouts from '@/hooks/useTimeouts';
-import { getFlipPreviewMs, getMovePar } from '@/lib/adaptiveDifficulty';
+import { getFlipPreviewMs, getMovePar, getPairCount } from '@/lib/adaptiveDifficulty';
 
 const ALL_IMAGES = [
   { id: 'conch',     img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/0fd8996cc_generated_image.png' },
@@ -32,8 +32,8 @@ const ALL_IMAGES = [
 ];
 
 function getGridForLevel(level) {
-  // levels 1-15 → 10 to 16 pairs (20–32 cards), stepping up every 2 levels
-  return Math.min(10 + Math.floor((level - 1) / 2), 16);
+  // Calibrated pair counts per level (see difficultyConfig.js)
+  return getPairCount(level);
 }
 
 function shuffleArray(arr) {
