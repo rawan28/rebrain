@@ -46,7 +46,7 @@ function shuffleArray(arr) {
 
 export default function MemoryGame() {
   const { t } = useLang();
-  const difficulty = useDifficulty(1, 15, 'memory');
+  const difficulty = useDifficulty(1, 15, 'memory', { dda: true });
   const [cards, setCards] = useState([]);
   const [flipped, setFlipped] = useState([]);
   const [matched, setMatched] = useState([]);
@@ -102,7 +102,7 @@ export default function MemoryGame() {
         const perfectMoves = cards.length / 2;
         const isGood = movesRef.current <= perfectMoves + 3; // use ref for latest moves
         awardCoin(isGood);
-        difficulty.recordAnswerMomentum(isGood);
+        difficulty.recordAnswer(isGood);
         saveSession('memory', {
           level: difficulty.level,
           streak: difficulty.streak,
