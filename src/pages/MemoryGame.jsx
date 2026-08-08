@@ -102,7 +102,7 @@ export default function MemoryGame() {
         const perfectMoves = cards.length / 2;
         const isGood = movesRef.current <= perfectMoves + 3; // use ref for latest moves
         awardCoin(isGood);
-        difficulty.recordAnswer(isGood);
+        difficulty.recordAnswerMomentum(isGood);
         saveSession('memory', {
           level: difficulty.level,
           streak: difficulty.streak,
