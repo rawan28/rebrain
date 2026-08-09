@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, Settings, Share2, Check, Volume2, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, Settings, Share2, Check, Volume2, ChevronRight, ChevronLeft, Award } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 
 
@@ -48,17 +48,9 @@ export default function Layout() {
 
   const navItems = [
     { path: '/', label: t.navHome, icon: Home },
-    { path: '/memory', label: t.navMemory, icon: Grid3X3 },
-    { path: '/logic', label: t.navLogic, icon: Puzzle },
-    { path: '/flags', label: t.navFlags, icon: Flag },
-    { path: '/word', label: t.navWord, icon: PenLine },
-    { path: '/trivia', label: t.triviaTitle, icon: Lightbulb },
-    { path: '/shape-word', label: t.shapeWordTitle, icon: Shapes },
-    { path: '/shape-pattern', label: t.shapePatternTitle || 'דפוסי צורות', icon: Hexagon },
-    { path: '/word-spell', label: t.wordSpellTitle || 'איות מילים', icon: Volume2 },
-    { path: '/weekly-report', label: t.navWeekly, icon: CalendarRange },
-    { path: '/reminder', label: t.navReminder, icon: BellRing },
     { path: '/progress', label: t.navProgress, icon: BarChart2 },
+    { path: '/reminder', label: t.navReminder, icon: BellRing },
+    { path: '/badges', label: t.navBadges || (lang === 'ar' ? 'الأوسمة' : 'אותות'), icon: Award },
   ];
 
   return (
