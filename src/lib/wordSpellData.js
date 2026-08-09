@@ -104,8 +104,8 @@ export const wordSpellPairs = {
   ],
 };
 
-export function getWordSpellPair(dateStr, level) {
+export function getWordSpellPair(dateStr, level, variation = 0) {
   const pool = wordSpellPairs[level] || wordSpellPairs[1];
-  const seed = dateStr.replace(/-/g, "").split("").reduce((a, c, i) => a + c.charCodeAt(0) * (i + 7), 0);
+  const seed = dateStr.replace(/-/g, "").split("").reduce((a, c, i) => a + c.charCodeAt(0) * (i + 7), 0) + variation * 7;
   return pool[seed % pool.length];
 }

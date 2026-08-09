@@ -31,6 +31,7 @@ export default function WordSpell() {
   const [feedback, setFeedback] = useState({ show: false, isCorrect: false, message: '' });
   const startTimeRef = useRef(null);
   const utteranceRef = useRef(null);
+  const roundRef = useRef(0);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -45,7 +46,7 @@ export default function WordSpell() {
   }, [lang]);
 
   const startNewRound = useCallback(() => {
-    const newPair = getWordSpellPair(today, difficulty.level);
+    const newPair = getWordSpellPair(today, difficulty.level, roundRef.current);
     setPair(newPair);
     setActiveWordIdx(0);
     setPlacedIndices([]);
@@ -76,6 +77,7 @@ export default function WordSpell() {
     difficulty.reset();
     setGameStarted(true);
     startTimeRef.current = Date.now();
+    roundRef.current = 0;
     startNewRound();
   };
 
@@ -152,6 +154,7 @@ export default function WordSpell() {
     setFeedback({ show: false, isCorrect: false, message: '' });
     setPlacedIndices([]);
     setActiveWordIdx(0);
+    roundRef.current += 1;
     startNewRound();
   };
 
