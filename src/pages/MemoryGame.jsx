@@ -173,8 +173,6 @@ export default function MemoryGame() {
     );
   }
 
-  const cols = cards.length <= 16 ? 4 : cards.length <= 24 ? 5 : 6;
-
   return (
     <div className="space-y-4">
       <GameHeader
@@ -209,8 +207,8 @@ export default function MemoryGame() {
       </div>
 
       <div
-        className="grid gap-3 md:gap-4 max-w-lg mx-auto [perspective:1000px]"
-        style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
+        className="grid gap-2 md:gap-4 max-w-lg mx-auto [perspective:1000px]"
+        style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(72px, 1fr))' }}
       >
         {cards.map((card, index) => {
           const isFlipped = flipped.includes(index);

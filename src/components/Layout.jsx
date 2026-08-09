@@ -101,7 +101,7 @@ export default function Layout() {
       </header>
 
       {/* Main Content */}
-      <main id="main-content" tabIndex={-1} className="flex-1 px-4 py-6 md:py-8 md:pb-36 outline-none">
+      <main id="main-content" tabIndex={-1} className="flex-1 px-4 py-6 pb-28 md:py-8 md:pb-36 outline-none">
         <div className="max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
