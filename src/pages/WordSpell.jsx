@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, Trash2, ArrowRight } from 'lucide-react';
+import { Volume2, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLang } from '@/lib/LanguageContext';
 import useDifficulty from '@/lib/useDifficulty';
@@ -274,16 +274,7 @@ export default function WordSpell() {
         </Button>
       </div>
 
-      <FeedbackOverlay {...feedback} />
-
-      {feedback.show && feedback.isCorrect && (
-        <div className="flex justify-center">
-          <Button onClick={handleNextRound} size="lg" className="gap-3 shadow-lg">
-            {t.nextPuzzle}
-            <ArrowRight className="w-5 h-5" />
-          </Button>
-        </div>
-      )}
+      <FeedbackOverlay {...feedback} actionLabel={t.nextPuzzle} onAction={handleNextRound} />
     </div>
   );
 }

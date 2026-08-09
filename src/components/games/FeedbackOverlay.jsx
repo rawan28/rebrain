@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, XCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useLang } from '@/lib/LanguageContext';
 import { playCorrect, playWrong } from '@/lib/audioFeedback';
 
-export default function FeedbackOverlay({ show, isCorrect, message }) {
+export default function FeedbackOverlay({ show, isCorrect, message, actionLabel, onAction }) {
   const { t } = useLang();
 
   useEffect(() => {
@@ -69,6 +70,15 @@ export default function FeedbackOverlay({ show, isCorrect, message }) {
               </p>
               {message && (
                 <p className="text-base md:text-lg text-muted-foreground text-center max-w-xs">{message}</p>
+              )}
+              {actionLabel && onAction && (
+                <Button
+                  onClick={onAction}
+                  size="lg"
+                  className="gap-2 shadow-lg min-h-[48px] mt-2 w-full"
+                >
+                  {actionLabel}
+                </Button>
               )}
             </div>
           </motion.div>
