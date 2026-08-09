@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, Settings, Share2, Check, Volume2 } from 'lucide-react';
+import { Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, Settings, Share2, Check, Volume2, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 
 
@@ -71,15 +71,15 @@ export default function Layout() {
         style={{ paddingTop: `max(1rem, calc(1rem + env(safe-area-inset-top)))` }}
       >
         <div className="max-w-5xl mx-auto flex items-center gap-3">
-          {/* Home button - visible on every non-root page */}
+          {/* Back button - native-like back stack on every non-root page */}
           {!isRoot && (
-            <Link
-              to="/"
+            <button
+              onClick={() => navigate(-1)}
               className="flex p-3 rounded-xl hover:bg-muted transition-colors select-none text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] items-center justify-center"
-              aria-label="Home"
+              aria-label={isRtl ? 'חזור' : 'Back'}
             >
-              <Home className="w-6 h-6" />
-            </Link>
+              {isRtl ? <ChevronRight className="w-6 h-6" /> : <ChevronLeft className="w-6 h-6" />}
+            </button>
           )}
 
           <Link to="/" className="flex items-center gap-3 shrink-0">
@@ -145,10 +145,10 @@ export default function Layout() {
         )}
       </AnimatePresence>
 
-      {/* Bottom Navigation - desktop only */}
+      {/* Bottom Navigation - visible on all devices */}
       <nav
         aria-label={lang === 'ar' ? 'التنقل الرئيسي' : 'ניווט ראשי'}
-        className="hidden md:block bg-card border-t border-border px-2 py-2 md:py-3 fixed bottom-0 left-0 right-0 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.08)] safe-bottom"
+        className="block bg-card border-t border-border px-2 py-2 md:py-3 fixed bottom-0 left-0 right-0 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.08)] safe-bottom"
       >
         <div className="max-w-5xl mx-auto flex justify-around overflow-x-auto">
           {navItems.map(({ path, label, icon: Icon }) => {

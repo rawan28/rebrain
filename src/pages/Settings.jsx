@@ -53,6 +53,13 @@ export default function Settings() {
   const handleDeleteAccount = async () => {
     setDeleting(true);
     try {
+      const user = await base44.auth.me();
+      const uid = user.id;
+      await Promise.all([
+        base44.entities.UserProgress.deleteMany({ created_by_id: uid }),
+        base44.entities.UserCoins.deleteMany({ created_by_id: uid }),
+        base44.entities.ReminderSubscription.deleteMany({ created_by_id: uid }),
+      ]);
       await base44.auth.logout();
     } catch {
       setDeleting(false);

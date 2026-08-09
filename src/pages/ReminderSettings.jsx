@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Mail, BellRing, Check, Clock } from 'lucide-react';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 
 const HOUR_OPTIONS = [7, 8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21, 22];
 
@@ -107,15 +108,16 @@ export default function ReminderSettings() {
             <label className="text-sm font-medium flex items-center gap-2">
               <Clock className="w-4 h-4" /> {t.reminderTime}
             </label>
-            <select
-              value={hour}
-              onChange={(e) => setHour(Number(e.target.value))}
-              className="w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm"
-            >
-              {HOUR_OPTIONS.map((h) => (
-                <option key={h} value={h}>{String(h).padStart(2, '0')}:00</option>
-              ))}
-            </select>
+            <Select value={String(hour)} onValueChange={(v) => setHour(Number(v))}>
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {HOUR_OPTIONS.map((h) => (
+                  <SelectItem key={h} value={String(h)}>{String(h).padStart(2, '0')}:00</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex items-center justify-between py-1">
