@@ -1,10 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { ArrowLeft } from 'lucide-react';
 import ShapeSeriesItem from './ShapeSeriesItem';
 
 const LABELS = {
-  he: { whatNext: 'מה הצורה הבאה בסדרה?', pickAnswer: 'בחר את התשובה:' },
-  ar: { whatNext: 'ما الشكل التالي في المتتالية؟', pickAnswer: 'اختر الإجابة:' },
+  he: { whatNext: 'מה הצורה הבאה בסדרה?', pickAnswer: 'בחר את התשובה:', flow: 'קרא את הרצף מימין לשמאל' },
+  ar: { whatNext: 'ما الشكل التالي في المتتالية؟', pickAnswer: 'اختر الإجابة:', flow: 'اقرأ المتتالية من اليمين إلى اليسار' },
 };
 
 export default function ShapeSeriesBoard({ puzzle, selected, onSelect, lang }) {
@@ -27,16 +28,21 @@ export default function ShapeSeriesBoard({ puzzle, selected, onSelect, lang }) {
               <ShapeSeriesItem item={item} size={56} />
             </motion.div>
           ))}
-          {/* Question mark slot */}
+          {/* Flow arrow — points in reading direction (RTL → left) */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: puzzle.shown.length * 0.12 }}
-            className="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-primary/10 border-2 border-dashed border-primary shadow-sm flex items-center justify-center"
+            initial={{ opacity: 0, x: 6 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: (puzzle.shown.length + 1) * 0.12 }}
+            className="flex items-center justify-center"
+            aria-hidden="true"
           >
-            <span className="text-3xl font-bold text-primary">?</span>
+            <ArrowLeft className="w-7 h-7 text-primary animate-pulse" strokeWidth={3} />
           </motion.div>
         </div>
+        <p className="mt-3 text-sm font-medium text-primary/80 flex items-center justify-center gap-1.5">
+          <ArrowLeft className="w-4 h-4" strokeWidth={2.5} />
+          {L.flow}
+        </p>
       </div>
 
       {/* Options */}
