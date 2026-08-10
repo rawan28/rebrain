@@ -134,6 +134,8 @@ export const translations = {
     wordSpellLetters: 'אותיות זמינות',
     wordSpellClear: 'מחק אות',
     wordSpellWord: 'מילה',
+    shapeSeriesTitle: 'סדרות צורניות',
+    shapeSeriesDesc: 'גלה את כלל ההתמרה (סיבוב, שיקוף, נקודות) ובחר את הצורה הבאה!',
   },
   ar: {
     dir: 'rtl',
@@ -268,6 +270,8 @@ export const translations = {
     wordSpellLetters: 'الحروف المتاحة',
     wordSpellClear: 'حذف حرف',
     wordSpellWord: 'كلمة',
+    shapeSeriesTitle: 'متتاليات الأشكال',
+    shapeSeriesDesc: 'اكتشف قاعدة التحوّل (دوران، انعكاس، نقاط) واختر الشكل التالي!',
   },
 };
 

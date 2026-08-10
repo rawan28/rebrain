@@ -4,7 +4,7 @@ import { loadProgress, syncProgressFromBackend } from '@/lib/progressStore';
 import usePullToRefresh from '@/lib/usePullToRefresh';
 import PullToRefreshIndicator from '@/components/PullToRefreshIndicator';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { TrendingUp, Brain, Puzzle, Calculator, Trophy, Target, Zap } from 'lucide-react';
+import { TrendingUp, Brain, Puzzle, Calculator, Trophy, Target, Zap, Compass } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { aggregateByPillar } from '@/lib/cognitivePillars';
 import PillarSummaryCards from '@/components/progress/PillarSummaryCards';
@@ -20,6 +20,7 @@ const GAME_TITLE_KEYS = {
   'shape-word': 'shapeWordTitle',
   'fruit-algebra': 'fruitAlgebraTitle',
   'connect-dots': 'connectDotsTitle',
+  'shape-series': 'shapeSeriesTitle',
 };
 
 const GAME_CONFIG = {
@@ -32,6 +33,7 @@ const GAME_CONFIG = {
   'shape-word':  { color: '#6366f1', icon: Puzzle },
   'fruit-algebra': { color: '#ef4444', icon: Calculator },
   'connect-dots': { color: '#14b8a6', icon: Brain },
+  'shape-series': { color: '#7c3aed', icon: Compass },
 };
 
 function StatCard({ icon: Icon, label, value, color }) {

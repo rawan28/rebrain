@@ -9,6 +9,7 @@ export const PILLAR_MAPPING = {
   'shape-word':    ['pattern', 'attention'],
   'fruit-algebra': ['logic', 'pattern'],
   'connect-dots':  ['attention', 'pattern'],
+  'shape-series':  ['pattern', 'logic'],
   'daily_quiz_rapid_recall':     ['memory'],
   'daily_quiz_logic_odd_one_out': ['logic'],
   'daily_quiz_spot_difference':   ['attention'],
