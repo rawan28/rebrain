@@ -12,6 +12,9 @@ import { awardCoin } from '@/lib/useCoin';
 import useTimeouts from '@/hooks/useTimeouts';
 import { getFlipPreviewMs, getMovePar } from '@/lib/adaptiveDifficulty';
 
+// Leniency: completing within par + this many moves still counts as success
+const MOVE_TOLERANCE = 3;
+
 const ALL_IMAGES = [
   { id: 'conch',     img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/0fd8996cc_generated_image.png' },
   { id: 'lighthouse',img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/e0c9caced_generated_image.png' },
@@ -106,7 +109,7 @@ export default function MemoryGame() {
 
       if (newMatched.length === pairCount) {
         // ── DDA: use dynamic move par from current level ──
-        const isGood = movesRef.current <= movePar;
+        const isGood = movesRef.current <= movePar + MOVE_TOLERANCE;
         awardCoin(isGood);
         const direction = difficulty.recordAnswer(isGood);
         saveSession('memory', {
@@ -200,9 +203,9 @@ export default function MemoryGame() {
         </span>
         <span
           className="text-sm bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-1 font-medium"
-          aria-label={t.dir === 'rtl' ? `יעד: ${movePar} מהלכים או פחות` : `Par: complete in ${movePar} moves or fewer`}
+          aria-label={t.dir === 'rtl' ? `יעד: ${movePar + MOVE_TOLERANCE} מהלכים או פחות` : `Par: complete in ${movePar + MOVE_TOLERANCE} moves or fewer`}
         >
-          {t.dir === 'rtl' ? `יעד: ${movePar} מהלכים` : `Par: ${movePar} moves`}
+          {t.dir === 'rtl' ? `יעד: ${movePar + MOVE_TOLERANCE} מהלכים` : `Par: ${movePar + MOVE_TOLERANCE} moves`}
         </span>
       </div>
 
