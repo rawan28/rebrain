@@ -3,7 +3,7 @@
 // A rule is a list of step-transformers applied each step (rotation, flip, dot, color).
 // The user sees 4 items of the sequence + "?" and picks the 5th from 4 options.
 
-const SHAPES = ['arrow', 'triangle', 'pacman', 'L'];
+const SHAPES = ['arrow']; // arrow only — clearest directional cue for rotation/flip
 const COLORS = ['#2563eb', '#16a34a', '#dc2626', '#9333ea', '#ea580c', '#0891b2'];
 
 function seededRandom(seed) {
