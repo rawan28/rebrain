@@ -1,4 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 export default function StroopRound({ trials, colorMap, lang, t, onDone }) {
   const [idx, setIdx] = useState(0);
@@ -9,6 +18,8 @@ export default function StroopRound({ trials, colorMap, lang, t, onDone }) {
   const trial = trials[idx];
   const inkColor = colorMap[trial.inkKey];
   const wordColor = colorMap[trial.wordKey];
+  // Shuffle options per trial so the correct answer isn't always first
+  const options = useMemo(() => shuffle(trial.options), [trial]);
 
   const handleAnswer = (colorKey) => {
     if (answered) return;
@@ -44,7 +55,7 @@ export default function StroopRound({ trials, colorMap, lang, t, onDone }) {
 
       <p className="text-lg font-medium text-foreground">{t.inkColor}</p>
       <div className="grid grid-cols-2 gap-3 w-full max-w-xs">
-        {trial.options.map((optKey, i) => {
+        {options.map((optKey, i) => {
           const opt = colorMap[optKey];
           let style = "bg-card border-2 border-border text-foreground";
           if (answered) {
