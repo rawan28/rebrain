@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageSquareHeart, CalendarRange, BellRing, Award } from 'lucide-react';
+import { MessageSquareHeart, CalendarRange, BellRing, Award, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
@@ -107,6 +107,13 @@ export default function Home() {
 
       {/* Tools: weekly report, reminder, feedback */}
       <div className="flex flex-col items-center gap-3 pt-2">
+        <button
+          onClick={() => navigate('/companion')}
+          className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-primary/10 text-primary border-2 border-primary/30 text-lg font-semibold hover:bg-primary/20 transition-colors active:scale-95"
+        >
+          <Heart className="w-6 h-6" />
+          {lang === 'ar' ? 'الرفيق المرافق' : 'הידיד המלווה'}
+        </button>
         <button
           onClick={() => navigate('/weekly-report')}
           className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-accent/15 text-accent-foreground border-2 border-accent/30 text-lg font-semibold hover:bg-accent/25 transition-colors active:scale-95"
