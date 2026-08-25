@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageSquareHeart, CalendarRange, BellRing, Award, Heart } from 'lucide-react';
+import { MessageSquareHeart, CalendarRange, BellRing, Award, Heart, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
@@ -113,6 +113,13 @@ export default function Home() {
         >
           <Heart className="w-6 h-6" />
           {lang === 'ar' ? 'الرفيق المرافق' : 'הידיד המלווה'}
+        </button>
+        <button
+          onClick={() => navigate('/game-maker')}
+          className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-primary to-accent text-primary-foreground text-lg font-semibold hover:opacity-90 transition-opacity active:scale-95 shadow-md"
+        >
+          <Sparkles className="w-6 h-6" />
+          {lang === 'ar' ? 'صانع الألعاب' : 'יוצר המשחקים'}
         </button>
         <button
           onClick={() => navigate('/weekly-report')}

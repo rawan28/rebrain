@@ -29,6 +29,7 @@ import WordSpell from '@/pages/WordSpell';
 import ShapeSeries from '@/pages/ShapeSeries';
 import Badges from '@/pages/Badges';
 import Companion from '@/pages/Companion';
+import GameMaker from '@/pages/GameMaker';
 
 
 const AuthenticatedApp = () => {
@@ -78,6 +79,7 @@ const AuthenticatedApp = () => {
         <Route path="/shape-series" element={<ShapeSeries />} />
         <Route path="/badges" element={<Badges />} />
         <Route path="/companion" element={<Companion />} />
+        <Route path="/game-maker" element={<GameMaker />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
