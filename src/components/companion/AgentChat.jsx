@@ -10,8 +10,9 @@ import MessageBubble from '@/components/companion/MessageBubble';
  */
 export default function AgentChat({ agentName, title, subtitle, greeting, icon: Icon = Heart }) {
   const { lang } = useLang();
+  const greetingMsg = greeting[lang] || greeting.he;
   const [conversationId, setConversationId] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([{ role: 'assistant', content: greetingMsg }]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -36,15 +37,12 @@ export default function AgentChat({ agentName, title, subtitle, greeting, icon: 
         }
         if (cancelled) return;
         setConversationId(conv.id);
-        let msgs = conv.messages || [];
-        if (msgs.length === 0) {
-          const updated = await base44.agents.addMessage(conv, { role: 'assistant', content: greeting[lang] || greeting.he });
-          msgs = updated.messages || [];
-        }
+        const msgs = conv.messages || [];
         if (cancelled) return;
-        setMessages(msgs);
+        // Keep the local greeting until the agent has real messages
+        if (msgs.length > 0) setMessages(msgs);
       } catch (e) {
-        if (!cancelled) setError(e?.message || 'Something went wrong');
+        if (!cancelled) setError(typeof e?.message === 'string' && e.message ? e.message : 'Something went wrong');
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -79,7 +77,7 @@ export default function AgentChat({ agentName, title, subtitle, greeting, icon: 
       setMessages(updated.messages || []);
     } catch (e) {
       setSending(false);
-      setError(e?.message || 'Could not send message');
+      setError(typeof e?.message === 'string' && e.message ? e.message : 'Could not send message');
     }
   };
 
