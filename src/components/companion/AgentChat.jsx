@@ -10,7 +10,7 @@ import MessageBubble from '@/components/companion/MessageBubble';
  */
 export default function AgentChat({ agentName, title, subtitle, greeting, icon: Icon = Heart }) {
   const { lang } = useLang();
-  const [conversation, setConversation] = useState(null);
+  const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
@@ -18,28 +18,33 @@ export default function AgentChat({ agentName, title, subtitle, greeting, icon: 
   const [error, setError] = useState(null);
   const scrollRef = useRef(null);
 
+  // Load (or create) the conversation for this agent
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const existing = base44.agents.listConversations({ agent_name: agentName });
-        const list = Array.isArray(existing) ? existing : [];
-        let conv = list[0];
+        const list = await base44.agents.listConversations({ agent_name: agentName });
+        const arr = Array.isArray(list) ? list : (list?.items || []);
+        let conv = arr[0];
         if (!conv) {
-          conv = base44.agents.createConversation({
+          conv = await base44.agents.createConversation({
             agent_name: agentName,
             metadata: { name: title, description: subtitle },
           });
+        } else {
+          conv = await base44.agents.getConversation(conv.id);
         }
         if (cancelled) return;
-        setConversation(conv);
-        setMessages(conv.messages || []);
-        if (!conv.messages || conv.messages.length === 0) {
-          const seeded = base44.agents.addMessage(conv, { role: 'assistant', content: greeting[lang] || greeting.he });
-          setMessages(seeded.messages);
+        setConversationId(conv.id);
+        let msgs = conv.messages || [];
+        if (msgs.length === 0) {
+          const updated = await base44.agents.addMessage(conv, { role: 'assistant', content: greeting[lang] || greeting.he });
+          msgs = updated.messages || [];
         }
+        if (cancelled) return;
+        setMessages(msgs);
       } catch (e) {
-        if (!cancelled) setError(e.message || 'Something went wrong');
+        if (!cancelled) setError(e?.message || 'Something went wrong');
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -47,14 +52,15 @@ export default function AgentChat({ agentName, title, subtitle, greeting, icon: 
     return () => { cancelled = true; };
   }, [agentName, lang]);
 
+  // Subscribe to live updates
   useEffect(() => {
-    if (!conversation) return;
-    const unsubscribe = base44.agents.subscribeToConversation(conversation.id, (data) => {
-      setMessages(data.messages);
+    if (!conversationId) return;
+    const unsubscribe = base44.agents.subscribeToConversation(conversationId, (data) => {
+      setMessages(data.messages || []);
       setSending(false);
     });
     return () => unsubscribe();
-  }, [conversation]);
+  }, [conversationId]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -62,18 +68,18 @@ export default function AgentChat({ agentName, title, subtitle, greeting, icon: 
     }
   }, [messages]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     const text = input.trim();
-    if (!text || !conversation || sending) return;
+    if (!text || !conversationId || sending) return;
     setInput('');
     setSending(true);
     try {
-      const updated = base44.agents.addMessage(conversation, { role: 'user', content: text });
-      setConversation(updated);
-      setMessages(updated.messages);
+      const conv = await base44.agents.getConversation(conversationId);
+      const updated = await base44.agents.addMessage(conv, { role: 'user', content: text });
+      setMessages(updated.messages || []);
     } catch (e) {
       setSending(false);
-      setError(e.message || 'Could not send message');
+      setError(e?.message || 'Could not send message');
     }
   };
 
