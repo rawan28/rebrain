@@ -48,6 +48,7 @@ export default function Home() {
     { label: t.wordSpellTitle, icon: '🔤', route: '/word-spell' },
     { label: t.shapeSeriesTitle, icon: '🧭', route: '/shape-series' },
     { label: lang === 'ar' ? 'صل النقاط' : 'חבר את הנקודות', icon: '➿', route: '/connect-dots' },
+    { label: lang === 'ar' ? 'الأسهم' : 'חיצים', icon: '🏹', route: '/arrows' },
   ];
 
   return (
