@@ -1,11 +1,12 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, Settings, Share2, Check, Volume2, ChevronRight, ChevronLeft, Award } from 'lucide-react';
+import { Grid3X3, Calculator, Puzzle, Home, BarChart2, Flag, PenLine, Lightbulb, Shapes, Hexagon, CalendarRange, BellRing, Settings, Share2, Check, Volume2, ChevronRight, ChevronLeft, Award, MessageSquareHeart } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import SkipLink from '@/components/SkipLink';
+import FeedbackSurvey from '@/components/FeedbackSurvey';
 
 export default function Layout() {
   const location = useLocation();
@@ -14,6 +15,7 @@ export default function Layout() {
   const isRoot = location.pathname === '/';
   const isRtl = t.dir === 'rtl';
   const [copied, setCopied] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   const handleShare = async () => {
     const shareUrl = window.location.origin;
@@ -49,8 +51,10 @@ export default function Layout() {
   const navItems = [
     { path: '/', label: t.navHome, icon: Home },
     { path: '/progress', label: t.navProgress, icon: BarChart2 },
+    { path: '/weekly-report', label: t.weeklyReportTitle, icon: CalendarRange },
     { path: '/reminder', label: t.navReminder, icon: BellRing },
     { path: '/badges', label: t.navBadges || (lang === 'ar' ? 'الأوسمة' : 'אותות'), icon: Award },
+    { action: 'feedback', label: lang === 'ar' ? 'رأيكم' : 'משוב', icon: MessageSquareHeart },
   ];
 
   return (
@@ -143,18 +147,30 @@ export default function Layout() {
         className="block bg-card border-t border-border px-2 py-2 md:py-3 fixed bottom-0 left-0 right-0 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.08)] safe-bottom"
       >
         <div className="max-w-5xl mx-auto flex justify-around overflow-x-auto">
-          {navItems.map(({ path, label, icon: Icon }) => {
-            const isActive = location.pathname === path;
+          {navItems.map((item) => {
+            const { path, action, label, icon: Icon } = item;
+            const isActive = path && location.pathname === path;
+            const cls = `flex flex-col items-center gap-1 px-2 py-2.5 rounded-xl transition-all min-w-[52px] min-h-[56px] justify-center select-none
+              ${isActive
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+              }`;
+            if (action === 'feedback') {
+              return (
+                <button
+                  key="feedback"
+                  type="button"
+                  onClick={() => setFeedbackOpen(true)}
+                  className={cls}
+                  aria-label={label}
+                >
+                  <Icon className="w-6 h-6 md:w-7 md:h-7" strokeWidth={2} />
+                  <span className="text-xs md:text-sm font-medium whitespace-nowrap">{label}</span>
+                </button>
+              );
+            }
             return (
-              <Link
-                key={path}
-                to={path}
-                className={`flex flex-col items-center gap-1 px-3 py-2.5 rounded-xl transition-all min-w-[64px] min-h-[56px] justify-center select-none
-                  ${isActive
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                  }`}
-              >
+              <Link key={path} to={path} className={cls}>
                 <Icon className="w-6 h-6 md:w-7 md:h-7" strokeWidth={isActive ? 2.5 : 2} />
                 <span className={`text-xs md:text-sm font-medium ${isActive ? 'font-semibold' : ''} whitespace-nowrap`}>
                   {label}
@@ -164,6 +180,8 @@ export default function Layout() {
           })}
         </div>
       </nav>
+
+      <FeedbackSurvey open={feedbackOpen} onOpenChange={setFeedbackOpen} />
     </div>
   );
 }
