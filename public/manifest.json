@@ -1,0 +1,33 @@
+{
+  "name": "ReBrain",
+  "short_name": "ReBrain",
+  "description": "אימון יומי למוח ולזיכרון — Daily cognitive training",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#0A58CA",
+  "dir": "rtl",
+  "lang": "he",
+  "icons": [
+    {
+      "src": "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/1a9046fc8_Copilot_20260703_160930.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/1a9046fc8_Copilot_20260703_160930.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/1a9046fc8_Copilot_20260703_160930.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
