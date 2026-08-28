@@ -28,6 +28,7 @@ import MiniSudoku from '@/pages/MiniSudoku';
 import WordSpell from '@/pages/WordSpell';
 import ShapeSeries from '@/pages/ShapeSeries';
 import Badges from '@/pages/Badges';
+import ConnectDots from '@/pages/ConnectDots';
 
 
 const AuthenticatedApp = () => {
@@ -76,6 +77,7 @@ const AuthenticatedApp = () => {
         <Route path="/word-spell" element={<WordSpell />} />
         <Route path="/shape-series" element={<ShapeSeries />} />
         <Route path="/badges" element={<Badges />} />
+        <Route path="/connect-dots" element={<ConnectDots />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
