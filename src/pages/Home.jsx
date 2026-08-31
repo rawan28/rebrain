@@ -1,27 +1,15 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import usePullToRefresh from '@/lib/usePullToRefresh';
 import PullToRefreshIndicator from '@/components/PullToRefreshIndicator';
 import DailyHeroCard from '@/components/home/DailyHeroCard';
-import QuickPlayCard from '@/components/home/QuickPlayCard';
 import AllGamesGrid from '@/components/home/AllGamesGrid';
 import useDailyStreak from '@/hooks/useDailyStreak';
 
 const LABELS = {
-  he: {
-    quickPlay: 'משחק מהיר',
-    moreGames: 'עוד משחקים',
-    diffEasy: 'קל',
-    diffMedium: 'בינוני',
-  },
-  ar: {
-    quickPlay: 'لعب سريع',
-    moreGames: 'ألعاب أخرى',
-    diffEasy: 'سهل',
-    diffMedium: 'متوسط',
-  },
+  he: { games: 'משחקים' },
+  ar: { games: 'ألعاب' },
 };
 
 export default function Home() {
@@ -29,18 +17,14 @@ export default function Home() {
   const navigate = useNavigate();
   const streak = useDailyStreak();
   const { pullY, refreshing, progress } = usePullToRefresh(() => new Promise(r => setTimeout(r, 800)));
-  const [showAllGames, setShowAllGames] = useState(false);
   const L = LABELS[lang] || LABELS.he;
-
-  const quickPlay = [
-    { label: t.memoryTitle, icon: '🃏', route: '/memory', difficulty: L.diffEasy, color: 'from-purple-400 to-indigo-500' },
-    { label: t.logicTitle, icon: '🧩', route: '/logic', difficulty: L.diffMedium, color: 'from-teal-400 to-cyan-500' },
-    { label: t.fruitAlgebraTitle, icon: '🍎', route: '/fruit-algebra', difficulty: L.diffEasy, color: 'from-orange-400 to-rose-500' },
-  ];
 
   const allGames = [
     { label: lang === 'ar' ? 'الأسهم' : 'חיצים', icon: '🏹', route: '/arrows' },
     { label: lang === 'ar' ? 'صل النقاط' : 'חבר את הנקודות', icon: '➿', route: '/connect-dots' },
+    { label: t.memoryTitle, icon: '🃏', route: '/memory' },
+    { label: t.logicTitle, icon: '🧩', route: '/logic' },
+    { label: t.fruitAlgebraTitle, icon: '🍎', route: '/fruit-algebra' },
     { label: t.shapeSeriesTitle, icon: '🧭', route: '/shape-series' },
     { label: t.wordSpellTitle, icon: '🔤', route: '/word-spell' },
     { label: t.shapePatternTitle, icon: '🔶', route: '/shape-pattern' },
@@ -55,51 +39,17 @@ export default function Home() {
     <div className="max-w-md mx-auto space-y-6 pb-8">
       <PullToRefreshIndicator pullY={pullY} progress={progress} refreshing={refreshing} />
 
-      {/* Zone 1: Daily Challenge Hero */}
+      {/* Daily Challenge Hero */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
         <DailyHeroCard lang={lang} streak={streak} onStart={() => navigate('/daily-quiz')} />
       </motion.div>
 
-      {/* Zone 2: Quick Play strip */}
-      <section aria-labelledby="quick-play-heading">
-        <h2 id="quick-play-heading" className="text-xl font-bold text-foreground mb-3">
-          {L.quickPlay}
+      {/* All Games */}
+      <section aria-labelledby="games-heading">
+        <h2 id="games-heading" className="text-xl font-bold text-foreground mb-3">
+          {L.games}
         </h2>
-        <div
-          className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4"
-          style={{ scrollSnapType: 'x mandatory' }}
-          role="list"
-        >
-          {quickPlay.map((game) => (
-            <div key={game.route} role="listitem" style={{ scrollSnapAlign: 'start' }}>
-              <QuickPlayCard game={game} onClick={() => navigate(game.route)} />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Zone 3: More Games (collapsed) */}
-      <section>
-        <button
-          onClick={() => setShowAllGames((prev) => !prev)}
-          className="w-full flex items-center justify-between text-xl font-bold text-foreground py-3 min-h-[52px] border-t border-border"
-          aria-expanded={showAllGames}
-          aria-controls="all-games-grid"
-        >
-          <span>{L.moreGames}</span>
-          <span
-            className="text-muted-foreground transition-transform duration-200"
-            style={{ transform: showAllGames ? 'rotate(180deg)' : 'none' }}
-            aria-hidden="true"
-          >
-            ▼
-          </span>
-        </button>
-        {showAllGames && (
-          <div id="all-games-grid" className="mt-3">
-            <AllGamesGrid games={allGames} onSelect={(route) => navigate(route)} />
-          </div>
-        )}
+        <AllGamesGrid games={allGames} onSelect={(route) => navigate(route)} />
       </section>
     </div>
   );
