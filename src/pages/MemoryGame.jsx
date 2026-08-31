@@ -16,22 +16,22 @@ import { getFlipPreviewMs, getMovePar } from '@/lib/adaptiveDifficulty';
 const MOVE_TOLERANCE = 3;
 
 const ALL_IMAGES = [
-  { id: 'conch',     img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/0fd8996cc_generated_image.png' },
-  { id: 'lighthouse',img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/e0c9caced_generated_image.png' },
-  { id: 'anchor',    img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/87dd0b224_generated_image.png' },
-  { id: 'sailboat',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/2a32182d7_generated_image.png' },
-  { id: 'starfish',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/49969a16d_generated_image.png' },
-  { id: 'crab',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/d80e13222_generated_image.png' },
-  { id: 'wave',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/277c6d711_generated_image.png' },
-  { id: 'sanddollar',img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/4abb9555b_generated_image.png' },
-  { id: 'coral',     img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/fc2ba04d4_generated_image.png' },
-  { id: 'oyster',    img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/ce86dea79_generated_image.png' },
-  { id: 'helm',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/656edbf05_generated_image.png' },
-  { id: 'dunegrass', img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/b9a5c5220_generated_image.png' },
-  { id: 'driftwood', img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/e89b24586_generated_image.png' },
-  { id: 'bottle',    img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/6408e1c6d_generated_image.png' },
-  { id: 'compass',   img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/e82f613f7_generated_image.png' },
-  { id: 'seagull',   img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/dced602a4_generated_image.png' },
+  { id: 'eiffel',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/d2af6e22c_generated_image.png' },
+  { id: 'liberty',     img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/64f7ed4a0_generated_image.png' },
+  { id: 'bigben',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/768838e00_generated_image.png' },
+  { id: 'tajmahal',    img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/e2780d8f7_generated_image.png' },
+  { id: 'colosseum',   img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/90e931c00_generated_image.png' },
+  { id: 'pyramids',    img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/75c325358_generated_image.png' },
+  { id: 'operahouse',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/a553d5345_generated_image.png' },
+  { id: 'greatwall',   img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/b3ebf795d_generated_image.png' },
+  { id: 'pisa',        img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/6fbde287b_generated_image.png' },
+  { id: 'christ',      img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/cffeb3e6a_generated_image.png' },
+  { id: 'towerbridge', img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/a828b18f5_generated_image.png' },
+  { id: 'sagrada',     img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/e593de0c4_generated_image.png' },
+  { id: 'goldengate',  img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/1e64608a8_generated_image.png' },
+  { id: 'burjkhalifa', img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/5238655d8_generated_image.png' },
+  { id: 'stbasil',     img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/b80dc634a_generated_image.png' },
+  { id: 'fuji',        img: 'https://media.base44.com/images/public/6a073374b4c5bba3a2e2bb0e/9f2d3082e_generated_image.png' },
 ];
 
 function getGridForLevel(level) {
@@ -231,16 +231,16 @@ export default function MemoryGame() {
             >
               {/* Card back */}
               <div className="absolute inset-0 rounded-2xl flex items-center justify-center
-                bg-gradient-to-br from-teal-700 to-cyan-900 border-2 border-teal-500/50 shadow-md"
+                bg-gradient-to-br from-sky-400 via-indigo-400 to-fuchsia-400 border-2 border-white/60 shadow-md"
                 style={{ backfaceVisibility: 'hidden' }}>
-                <span className="text-3xl md:text-4xl text-cyan-200/40 font-bold leading-none">〜</span>
+                <span className="text-3xl md:text-4xl text-white/80 font-bold leading-none drop-shadow">★</span>
               </div>
               {/* Card front */}
               <div className={`absolute inset-0 rounded-2xl overflow-hidden border-2 shadow-lg
                 ${isMatched
-                  ? 'border-teal-400 ring-2 ring-teal-300'
-                  : 'border-[#A8C9C2]'}`}
-                style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', backgroundColor: '#E8F1EF' }}>
+                  ? 'border-amber-400 ring-2 ring-amber-300'
+                  : 'border-white'}`}
+                style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', backgroundColor: '#ffffff' }}>
                 <motion.img
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: isMatched ? 0.75 : 1 }}
