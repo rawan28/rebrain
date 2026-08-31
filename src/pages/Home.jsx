@@ -39,16 +39,16 @@ export default function Home() {
   ];
 
   const allGames = [
-    { label: t.flagTitle, icon: '🏳️', route: '/flags' },
-    { label: t.wordTitle, icon: '📝', route: '/word' },
-    { label: t.triviaTitle, icon: '💡', route: '/trivia' },
-    { label: t.shapeWordTitle, icon: '🔷', route: '/shape-word' },
-    { label: t.miniSudokuTitle, icon: '🔢', route: '/mini-sudoku' },
-    { label: t.shapePatternTitle, icon: '🔶', route: '/shape-pattern' },
-    { label: t.wordSpellTitle, icon: '🔤', route: '/word-spell' },
-    { label: t.shapeSeriesTitle, icon: '🧭', route: '/shape-series' },
-    { label: lang === 'ar' ? 'صل النقاط' : 'חבר את הנקודות', icon: '➿', route: '/connect-dots' },
     { label: lang === 'ar' ? 'الأسهم' : 'חיצים', icon: '🏹', route: '/arrows' },
+    { label: lang === 'ar' ? 'صل النقاط' : 'חבר את הנקודות', icon: '➿', route: '/connect-dots' },
+    { label: t.shapeSeriesTitle, icon: '🧭', route: '/shape-series' },
+    { label: t.wordSpellTitle, icon: '🔤', route: '/word-spell' },
+    { label: t.shapePatternTitle, icon: '🔶', route: '/shape-pattern' },
+    { label: t.miniSudokuTitle, icon: '🔢', route: '/mini-sudoku' },
+    { label: t.shapeWordTitle, icon: '🔷', route: '/shape-word' },
+    { label: t.triviaTitle, icon: '💡', route: '/trivia' },
+    { label: t.wordTitle, icon: '📝', route: '/word' },
+    { label: t.flagTitle, icon: '🏳️', route: '/flags' },
   ];
 
   return (
