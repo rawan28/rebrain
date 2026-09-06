@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const LABELS = {
   he: {
-    instructions: 'מלאו את הרשת כך שכל שורה, עמודה ומשבצת תכיל את המספרים 1–6 ללא חזרות',
+    instructions: 'מלאו את הרשת כך שכל שורה, עמודה ומשבצת 3×3 תכיל את המספרים 1–9 ללא חזרות',
     newGame: 'משחק חדש',
     erase: 'מחק',
     time: 'זמן',
@@ -18,7 +18,7 @@ const LABELS = {
     playAgain: 'משחק חדש',
   },
   ar: {
-    instructions: 'املأ الشبكة بحيث يحتوي كل صف وعمود ومربع على الأرقام 1–6 دون تكرار',
+    instructions: 'املأ الشبكة بحيث يحتوي كل صف وعمود ومربع 3×3 على الأرقام 1–9 دون تكرار',
     newGame: 'لعبة جديدة',
     erase: 'مسح',
     time: 'الوقت',
@@ -36,11 +36,11 @@ const formatTime = (s) => {
   return `${m}:${sec.toString().padStart(2, '0')}`;
 };
 
-// Block layout: 2 rows × 3 cols per block, 3 block-rows × 2 block-cols
-const BLOCK_R = 2;
+// Block layout: 3 rows × 3 cols per block, 3 block-rows × 3 block-cols (full 9×9)
+const BLOCK_R = 3;
 const BLOCK_C = 3;
 const BLOCK_ROW_COUNT = 3;
-const BLOCK_COL_COUNT = 2;
+const BLOCK_COL_COUNT = 3;
 
 export default function MiniSudoku() {
   const { lang } = useLang();
@@ -90,8 +90,8 @@ export default function MiniSudoku() {
         game: 'mini_sudoku',
         date: today,
         level,
-        totalCorrect: 36,
-        totalAttempts: 36,
+        totalCorrect: 81,
+        totalAttempts: 81,
         accuracy: 100,
         responseTimeMs: elapsed * 1000,
         streak: 1,
@@ -130,7 +130,7 @@ export default function MiniSudoku() {
   return (
     <div dir="rtl" className="max-w-md mx-auto space-y-5 py-2">
       <div className="text-center">
-        <h1 className="text-3xl font-bold">{lang === 'ar' ? 'سودوكو مصغر' : 'מיני סודוקו'}</h1>
+        <h1 className="text-3xl font-bold">{lang === 'ar' ? 'سودوكو' : 'סודוקו'}</h1>
         <p className="text-muted-foreground mt-1 text-sm">{L.instructions}</p>
       </div>
 
@@ -166,7 +166,7 @@ export default function MiniSudoku() {
       {/* Sudoku grid — nested grids: thick gaps between blocks, thin gaps within */}
       <div className="relative">
         <div className="bg-foreground rounded-xl p-[3px]">
-          <div className="grid grid-cols-2 gap-[3px]">
+          <div className="grid grid-cols-3 gap-[3px]">
             {Array.from({ length: BLOCK_ROW_COUNT }).map((_, blockRow) =>
               Array.from({ length: BLOCK_COL_COUNT }).map((_, blockCol) => {
                 const cells = [];
@@ -184,7 +184,7 @@ export default function MiniSudoku() {
                       const isSameRow = selected && r === selected[0];
                       const isSameCol = selected && c === selected[1];
                       const isSameBlock = selected &&
-                        Math.floor(r / 2) === Math.floor(selected[0] / 2) &&
+                        Math.floor(r / 3) === Math.floor(selected[0] / 3) &&
                         Math.floor(c / 3) === Math.floor(selected[1] / 3);
                       const isRelated = isSameRow || isSameCol || isSameBlock;
                       const isSameValue = selectedValue && val !== 0 && val === selectedValue;
@@ -201,7 +201,7 @@ export default function MiniSudoku() {
                         <button
                           key={`${r}-${c}`}
                           onClick={() => setSelected([r, c])}
-                          className={`aspect-square flex items-center justify-center text-2xl md:text-3xl transition-colors ${cellClass}`}
+                          className={`aspect-square flex items-center justify-center text-xl md:text-2xl transition-colors ${cellClass}`}
                         >
                           {val !== 0 ? val : ''}
                         </button>
@@ -244,18 +244,18 @@ export default function MiniSudoku() {
       {/* Number pad */}
       {!won && (
         <div className="flex items-center justify-center gap-2 flex-wrap">
-          {[1, 2, 3, 4, 5, 6].map((num) => (
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
             <button
               key={num}
               onClick={() => enterNumber(num)}
-              className="w-14 h-14 flex items-center justify-center text-2xl font-bold rounded-xl border-2 border-border bg-card text-foreground hover:border-primary hover:bg-primary/10 transition-all active:scale-95"
+              className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center text-2xl font-bold rounded-xl border-2 border-border bg-card text-foreground hover:border-primary hover:bg-primary/10 transition-all active:scale-95"
             >
               {num}
             </button>
           ))}
           <button
             onClick={eraseCell}
-            className="w-14 h-14 flex items-center justify-center rounded-xl border-2 border-border bg-card text-muted-foreground hover:border-destructive hover:bg-destructive/10 transition-all active:scale-95"
+            className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-xl border-2 border-border bg-card text-muted-foreground hover:border-destructive hover:bg-destructive/10 transition-all active:scale-95"
           >
             <Eraser className="w-5 h-5" />
           </button>

@@ -1,20 +1,23 @@
-// miniSudokuData.js — 6×6 Sudoku puzzle generation & validation
-// Blocks are 2 rows × 3 columns (3 block-rows × 2 block-cols = 6 blocks total)
-// Numbers: 1–6. No repeats in any row, column, or block.
+// miniSudokuData.js — 9×9 Sudoku puzzle generation & validation
+// Blocks are 3 rows × 3 columns (3 block-rows × 3 block-cols = 9 blocks total)
+// Numbers: 1–9. No repeats in any row, column, or block.
 
-const SIZE = 6;
-const BLOCK_ROWS = 2;
+const SIZE = 9;
+const BLOCK_ROWS = 3;
 const BLOCK_COLS = 3;
 const BLOCK_ROW_COUNT = 3;
-const BLOCK_COL_COUNT = 2;
+const BLOCK_COL_COUNT = 3;
 
 const BASE_SOLUTION = [
-  [1, 2, 3, 4, 5, 6],
-  [4, 5, 6, 1, 2, 3],
-  [2, 3, 1, 5, 6, 4],
-  [5, 6, 4, 2, 3, 1],
-  [3, 1, 2, 6, 4, 5],
-  [6, 4, 5, 3, 1, 2],
+  [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  [4, 5, 6, 7, 8, 9, 1, 2, 3],
+  [7, 8, 9, 1, 2, 3, 4, 5, 6],
+  [2, 3, 1, 5, 6, 4, 8, 9, 7],
+  [5, 6, 4, 8, 9, 7, 2, 3, 1],
+  [8, 9, 7, 2, 3, 1, 5, 6, 4],
+  [3, 1, 2, 6, 4, 5, 9, 7, 8],
+  [6, 4, 5, 9, 7, 8, 3, 1, 2],
+  [9, 7, 8, 3, 1, 2, 6, 4, 5],
 ];
 
 function shuffleArray(arr) {
@@ -29,29 +32,31 @@ function shuffleArray(arr) {
 function transformSolution(base) {
   let grid = base.map(row => [...row]);
 
-  // 1. Permute digits
-  const digitPerm = shuffleArray([1, 2, 3, 4, 5, 6]);
+  // 1. Permute digits 1–9
+  const digitPerm = shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]);
   const digitMap = [0, ...digitPerm];
   grid = grid.map(row => row.map(v => digitMap[v]));
 
-  // 2. Swap rows within each band
+  // 2. Permute rows within each band
   for (let b = 0; b < BLOCK_ROW_COUNT; b++) {
-    if (Math.random() < 0.5) {
-      const r0 = b * BLOCK_ROWS;
-      [grid[r0], grid[r0 + 1]] = [grid[r0 + 1], grid[r0]];
-    }
+    const rowPerm = shuffleArray([0, 1, 2]);
+    const r0 = b * BLOCK_ROWS;
+    const orig = [grid[r0], grid[r0 + 1], grid[r0 + 2]];
+    grid[r0] = orig[rowPerm[0]];
+    grid[r0 + 1] = orig[rowPerm[1]];
+    grid[r0 + 2] = orig[rowPerm[2]];
   }
 
   // 3. Reorder bands
   const bandOrder = shuffleArray([0, 1, 2]);
   const afterBands = [];
   for (const b of bandOrder) {
-    afterBands.push(grid[b * BLOCK_ROWS]);
-    afterBands.push(grid[b * BLOCK_ROWS + 1]);
+    const r0 = b * BLOCK_ROWS;
+    afterBands.push(grid[r0], grid[r0 + 1], grid[r0 + 2]);
   }
   grid = afterBands;
 
-  // 4. Swap columns within each stack
+  // 4. Permute columns within each stack
   for (let s = 0; s < BLOCK_COL_COUNT; s++) {
     const colPerm = shuffleArray([0, 1, 2]);
     grid = grid.map(row => {
@@ -65,9 +70,26 @@ function transformSolution(base) {
     });
   }
 
-  // 5. Swap stacks
+  // 5. Reorder stacks
+  const stackOrder = shuffleArray([0, 1, 2]);
+  grid = grid.map(row => {
+    const newRow = [];
+    for (const s of stackOrder) {
+      const base_c = s * BLOCK_COLS;
+      newRow.push(row[base_c], row[base_c + 1], row[base_c + 2]);
+    }
+    return newRow;
+  });
+
+  // 6. Transpose (preserves validity, adds variety)
   if (Math.random() < 0.5) {
-    grid = grid.map(row => [...row.slice(BLOCK_COLS), ...row.slice(0, BLOCK_COLS)]);
+    const transposed = Array.from({ length: SIZE }, () => Array(SIZE).fill(0));
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++) {
+        transposed[c][r] = grid[r][c];
+      }
+    }
+    grid = transposed;
   }
 
   return grid;
@@ -90,9 +112,9 @@ function removeCells(solution, removeCount) {
 }
 
 export const DIFFICULTY = {
-  easy:   { removeCount: 14, label: { he: 'קל', ar: 'سهل' }, level: 1 },
-  medium: { removeCount: 20, label: { he: 'בינוני', ar: 'متوسط' }, level: 2 },
-  hard:   { removeCount: 26, label: { he: 'קשה', ar: 'صعب' }, level: 3 },
+  easy:   { removeCount: 40, label: { he: 'קל', ar: 'سهل' }, level: 1 },
+  medium: { removeCount: 48, label: { he: 'בינוני', ar: 'متوسط' }, level: 2 },
+  hard:   { removeCount: 55, label: { he: 'קשה', ar: 'صعب' }, level: 3 },
 };
 
 export function generatePuzzle(difficulty) {
