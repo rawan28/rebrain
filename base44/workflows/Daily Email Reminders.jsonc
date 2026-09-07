@@ -1,0 +1,44 @@
+{
+  "name": "Daily Email Reminders",
+  "description": "\u05d1\u05d5\u05d3\u05e7 \u05de\u05d3\u05d9 \u05e9\u05e2\u05d4 \u05de\u05e0\u05d5\u05d9\u05d9\u05dd \u05e4\u05e2\u05d9\u05dc\u05d9\u05dd \u05d5\u05e9\u05d5\u05dc\u05d7 \u05ea\u05d6\u05db\u05d5\u05e8\u05ea \u05de\u05d9\u05d9\u05dc \u05de\u05e2\u05d5\u05d3\u05d3\u05ea \u05dc\u05de\u05d9 \u05e9\u05d4\u05e9\u05e2\u05d4 \u05de\u05ea\u05d0\u05d9\u05de\u05d4",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "interval",
+      "cron_expression": null,
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": 1,
+      "interval_unit": "hours",
+      "interval_anchor": "2026-06-22T21:05:00",
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_email_reminders",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "sendDailyReminders",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "sendDailyReminders"
+  }
+}
